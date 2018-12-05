@@ -8,6 +8,8 @@ import Engine.GameStateManager;
 import Engine.State;
 
 public class MenuState extends State {
+	
+	int test;
 
 	public MenuState(GameStateManager gsm) {
 		super(gsm);
