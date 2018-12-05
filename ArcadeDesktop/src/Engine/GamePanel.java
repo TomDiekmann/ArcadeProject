@@ -50,7 +50,7 @@ public class GamePanel extends JPanel implements ComponentListener, Runnable, Ke
 		width = 1400;
 		height = 788;
 		mouse = new Mouse(this);
-		gsm = new GameStateManager(GameStateManager.MARIOSTATE);
+		gsm = new GameStateManager(GameStateManager.MAINSTATE);
 	}
 
 	@Override

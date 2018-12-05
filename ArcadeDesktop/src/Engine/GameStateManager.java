@@ -9,7 +9,7 @@ import Menu.MainState;
 
 public class GameStateManager {
 	
-	public static final int MENUSTATE = 0;
+	public static final int MAINSTATE = 0;
 	public static final int MARIOSTATE = 1;
 	
 	private State[] states;

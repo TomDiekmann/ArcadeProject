@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
 
+import SuperMarioBros.Material;
+
 public class Game extends JFrame {
 	
 	/**
@@ -13,7 +15,6 @@ public class Game extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	public static ImageLoader imageLoader = new ImageLoader();
-	
 	public static GamePanel gamepanel;
 	public Game() {
 		super("Arcade Project");

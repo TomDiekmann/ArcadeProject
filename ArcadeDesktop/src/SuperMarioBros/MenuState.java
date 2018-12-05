@@ -12,19 +12,11 @@ import Engine.State;
 public class MenuState extends State{
 	 
 	
-	public static Spritesheet sprite = new Spritesheet(Engine.Game.imageLoader.load("images/blocks.png"), 33, 428, 448);
+	public static Spritesheet sprite = new Spritesheet(Engine.Game.imageLoader.load("images/blocks.png"), 33, 16, 16);
 	private Material debug;
 	
 	public MenuState(GameStateManager gsm) {
 		super(gsm);
-		// TODO Auto-generated constructor stub
-		try {
-			Class.forName("SuperMarioBros.Material");
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println("Test2");
 		debug = Material.BROWN_BROKEN_GROUND;
 	}
 

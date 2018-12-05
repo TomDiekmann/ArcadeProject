@@ -5,7 +5,7 @@ public enum Material {
 	
 	
 	BROWN_BROKEN_GROUND(0, true),
-	BROWN_BRICK(2,true);
+	BROWN_BRICKS(2,true);
 	
 	private int id;
 	private boolean walkable;
@@ -16,7 +16,6 @@ public enum Material {
 		this.id = id;
 		this.walkable = walkable;
 		this.image = MenuState.sprite.getTexture(id);
-		System.out.println("Test");
 	}
 	
 	public int getID() {
