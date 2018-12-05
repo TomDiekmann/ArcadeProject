@@ -23,7 +23,7 @@ import javax.swing.JPanel;
 public class GamePanel extends JPanel implements ComponentListener, Runnable, KeyListener, MouseListener, MouseMotionListener  {
 
 	private static final long serialVersionUID = 1L;
-	public static int SCALE = 3;
+	public static int SCALE = 1;
 	public static int width;
 	public static int height;
 	public static Mouse mouse;
@@ -50,7 +50,7 @@ public class GamePanel extends JPanel implements ComponentListener, Runnable, Ke
 		width = 1400;
 		height = 788;
 		mouse = new Mouse(this);
-		gsm = new GameStateManager(GameStateManager.MENUSTATE);
+		gsm = new GameStateManager(GameStateManager.MARIOSTATE);
 	}
 
 	@Override

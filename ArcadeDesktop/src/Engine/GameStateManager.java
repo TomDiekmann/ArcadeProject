@@ -3,13 +3,14 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-import Menu.MenuState;
+import Menu.MainState;
 
 
 
 public class GameStateManager {
 	
 	public static final int MENUSTATE = 0;
+	public static final int MARIOSTATE = 1;
 	
 	private State[] states;
 	private int state;
@@ -17,8 +18,8 @@ public class GameStateManager {
 	public GameStateManager(int state) {
 		this.state = state;
 		states = new State[2];
-		states[0] = new MenuState(this);	
-
+		states[0] = new MainState(this);	
+		states[1] = new SuperMarioBros.MenuState(this);
 		
 	}
 	

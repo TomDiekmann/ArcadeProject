@@ -7,10 +7,10 @@ import java.awt.event.MouseEvent;
 import Engine.GameStateManager;
 import Engine.State;
 
-public class MenuState extends State {
+public class MainState extends State {
 	
 
-	public MenuState(GameStateManager gsm) {
+	public MainState(GameStateManager gsm) {
 		super(gsm);
 		// TODO Auto-generated constructor stub
 	}
