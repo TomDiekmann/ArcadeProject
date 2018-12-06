@@ -14,7 +14,7 @@ public abstract class Entity extends GameObject {
 		//CONSTANTS
 		private final float GRAVITY = 0.2F;
 		private final float MAX_FALLING_SPEED = 2.5F;
-		private final float JUMP_START = -3.0F;
+		private final float JUMP_START = -5.0F;
 		
 		//MOVEMENT
 		protected float dx;

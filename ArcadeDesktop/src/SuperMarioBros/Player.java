@@ -17,7 +17,7 @@ public class Player extends Entity {
 	
 	
 	public Player(float x, float y, int width, int height, float speed) {
-		super(new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/MarioBig.png"), 2, 20, 32), x, y, width, height, speed);
+		super(new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/Walking.png"), 2, 16, 32), x, y, width, height, speed);
 	}
 	
 	@Override
