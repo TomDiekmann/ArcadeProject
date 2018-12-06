@@ -84,16 +84,6 @@ public class Player extends Entity {
 		} else return false;
 	}
 	
-	//CHECK IF PLAYER IS IN PLACING BLOCK
-	private boolean isBlockInPlayer(int x,int y) {
-		int pX = x - (x%16);
-		int pY = y - (y%16);
-		
-		if(this.x > pX && this.x < pX+16 && this.y > pY-16 && this.y <= pY+1) {
-			return true;
-		}
-		return false;
-	}
 	
 	public void keyPressed(KeyEvent e, int k) {
 		switch(k) {

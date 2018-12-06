@@ -1,16 +1,13 @@
 package SuperMarioBros;
 
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import Engine.GamePanel;
 
@@ -21,11 +18,9 @@ public class World {
 	private Block[][] blocks;
 	public List<Entity> items = new ArrayList<Entity>();
 	private int[][] blockIDs;
-	private String filepath;
 	public static final int BLOCKSIZE = 16;
 
 	public World(String filepath) {
-		this.filepath = filepath;
 		loadWorld(filepath);
 	}
 

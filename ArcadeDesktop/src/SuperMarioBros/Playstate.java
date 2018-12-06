@@ -6,7 +6,6 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
-import Engine.Game;
 import Engine.GamePanel;
 import Engine.GameStateManager;
 import Engine.Mouse;

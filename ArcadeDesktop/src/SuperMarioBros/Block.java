@@ -3,10 +3,7 @@ package SuperMarioBros;
 import java.awt.Graphics2D;
 import java.awt.Point;
 
-import javax.xml.stream.events.StartElement;
-
 import Engine.Animation;
-import Engine.AudioFilePlayer;
 import Engine.GamePanel;
 
 
@@ -16,11 +13,6 @@ public class Block extends GameObject {
 	
 	private Material material;
 	private Animation animation;
-	private AudioFilePlayer soundPlayer;
-	
-	//Gravity
-	private boolean startedFalling = false;
-	private float saveY;
 	
 	//BLOCK DESTROYING
 	private long destroyStartTime;
@@ -33,7 +25,6 @@ public class Block extends GameObject {
 		super(x, y, width, height);
 		this.material = material;
 //		animation = new Animation(destroy, dt);
-		soundPlayer = new AudioFilePlayer();
 		marker = false;
 	}
 
