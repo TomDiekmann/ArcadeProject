@@ -42,7 +42,7 @@ public class MainState extends State {
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
-
+		Engine.Game.gamepanel.gsm.setState(GameStateManager.MARIOWORLD1);
 	}
 
 	@Override

@@ -26,6 +26,7 @@ public class Game extends JFrame {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setVisible(true);
+		setResizable(false);
 	}
 	
 	public static void main(String args[]) {

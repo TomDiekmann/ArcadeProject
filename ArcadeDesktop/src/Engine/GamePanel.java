@@ -29,7 +29,7 @@ public class GamePanel extends JPanel implements ComponentListener, Runnable, Ke
 	public static Mouse mouse;
 	
 	private static VolatileImage image;
-	private GameStateManager gsm;
+	public GameStateManager gsm;
 	private Thread thread;
 	private boolean running;
 	
@@ -39,7 +39,7 @@ public class GamePanel extends JPanel implements ComponentListener, Runnable, Ke
 	public GamePanel() {
 		super();
 		setOpaque(false);
-		setPreferredSize(new Dimension(1400, 788));
+		setPreferredSize(new Dimension(640, 360));
 		addComponentListener(this);
 		setFocusable(true);
 		requestFocus();
@@ -47,8 +47,8 @@ public class GamePanel extends JPanel implements ComponentListener, Runnable, Ke
 		addMouseListener(this);
 		addMouseMotionListener(this);
 		
-		width = 1400;
-		height = 788;
+		width = 640;
+		height = 360;
 		mouse = new Mouse(this);
 		gsm = new GameStateManager(GameStateManager.MAINSTATE);
 	}
@@ -63,7 +63,7 @@ public class GamePanel extends JPanel implements ComponentListener, Runnable, Ke
 	
 	@Override
 	public void run() {
-		image = createVolatileImage(600 / SCALE, 400 / SCALE);
+		image = createVolatileImage(640 / SCALE, 360 / SCALE);
 		
 		long startTime;
 		long URDTimeMillis;

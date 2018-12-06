@@ -10,17 +10,18 @@ import Menu.MainState;
 public class GameStateManager {
 	
 	public static final int MAINSTATE = 0;
-	public static final int MARIOSTATE = 1;
+	public static final int MARIOMENU = 1;
+	public static final int MARIOWORLD1 = 2;
 	
 	private State[] states;
 	private int state;
 	
 	public GameStateManager(int state) {
 		this.state = state;
-		states = new State[2];
+		states = new State[3];
 		states[0] = new MainState(this);	
 		states[1] = new SuperMarioBros.MenuState(this);
-		
+		states[2] = new SuperMarioBros.Playstate(this, "files/SuperMarioBros/world1.txt");
 	}
 	
 	
@@ -57,4 +58,5 @@ public class GameStateManager {
 	public void setState(int state) {
 		this.state = state;
 	}
+	
 }
