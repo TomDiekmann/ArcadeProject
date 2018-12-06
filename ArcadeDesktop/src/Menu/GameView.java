@@ -9,17 +9,15 @@ import Engine.GamePanel;
 public class GameView {
 	private String name;
 	private int state;
-	private int midY;
 	private boolean selected;
 	
-	public GameView(String name, int state, int midY) {
+	public GameView(String name, int state) {
 		this.name = name;
 		this.state = state;
-		this.midY = midY;
 		selected = false;
 	}
 	
-	public void render(Graphics2D g) {
+	public void render(Graphics2D g, int midY) {
 		g.setColor(Color.black);
 		if(selected) g.setColor(Color.RED);
 		g.setFont(new Font("Arial Black", 1, 20));

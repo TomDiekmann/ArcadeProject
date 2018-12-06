@@ -4,6 +4,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import Menu.MainState;
+import snake.SnakeGameState;
 
 
 
@@ -12,16 +13,18 @@ public class GameStateManager {
 	public static final int MAINSTATE = 0;
 	public static final int MARIOMENU = 1;
 	public static final int MARIOWORLD1 = 2;
+	public static final int SNAKEGAMESTATE = 3;
 	
 	private State[] states;
 	private int state;
 	
 	public GameStateManager(int state) {
 		this.state = state;
-		states = new State[3];
+		states = new State[4];
 		states[0] = new MainState(this);	
 		states[1] = new SuperMarioBros.MenuState(this);
 		states[2] = new SuperMarioBros.Playstate(this, "files/SuperMarioBros/world1.txt");
+		states[3] = new SnakeGameState(this);
 	}
 	
 	
