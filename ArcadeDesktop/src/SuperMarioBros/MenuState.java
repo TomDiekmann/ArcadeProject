@@ -12,7 +12,7 @@ import Engine.State;
 public class MenuState extends State{
 	 
 	
-	public static Spritesheet sprite = new Spritesheet(Engine.Game.imageLoader.load("images/blocks.png"), 33, 16, 16);
+	public static Spritesheet sprite = new Spritesheet(Engine.Game.imageLoader.load("images/SuperMarioBros/blocks.png"), 33, 16, 16);
 	private Material debug;
 	
 	public MenuState(GameStateManager gsm) {

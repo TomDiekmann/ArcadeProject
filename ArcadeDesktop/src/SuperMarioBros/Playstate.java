@@ -45,7 +45,7 @@ public class Playstate extends State {
 		endButtonY =  GamePanel.height / GamePanel.SCALE / 2 + 5;
 		
 		world = new World(filepath);
-		player = new Player(50, 3100, 8, 31, 1f);
+		player = new Player(world.getBlocks()[0][1].getCenterX(), world.getBlocks()[5][1].getCenterY(), 8, 31, 1f);
 		camera = new Camera(player);
 		mouse = GamePanel.mouse;
 	}

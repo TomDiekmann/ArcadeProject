@@ -3,9 +3,10 @@ import java.awt.image.BufferedImage;
 
 public enum Material {	
 	
-	
+	AIR(30, false),
 	BROWN_BROKEN_GROUND(0, true),
-	BROWN_BRICKS(2,true);
+	BROWN_BRICKS(1,true),
+	ITEM_BLOCK(24, true);
 	
 	private int id;
 	private boolean walkable;

@@ -81,7 +81,6 @@ public class World {
 				for (int col = 0; col < blocksX; col++) {
 					int id = Integer.parseInt(tokens[col]);
 					Material material = Material.values()[id];
-					blockIDs[row][col] = id;
 					blocks[row][col] = new Block(material, col * BLOCKSIZE, row * BLOCKSIZE, BLOCKSIZE,
 							BLOCKSIZE);
 				}
