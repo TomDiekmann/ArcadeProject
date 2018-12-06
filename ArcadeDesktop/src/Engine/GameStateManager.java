@@ -56,6 +56,10 @@ public class GameStateManager {
 	}
 	
 	public void setState(int state) {
+		if(state == MARIOWORLD1) {
+			Game.gamepanel.SCALE = 2;
+			Game.gamepanel.scaleChanged();
+		}
 		this.state = state;
 	}
 	
