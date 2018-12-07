@@ -57,18 +57,18 @@ public class MainState extends State {
 			break;
 		case KeyEvent.VK_UP:
 			selectedGame.setSelected(false);
-			if (games.indexOf(selectedGame) + 1 > games.size() - 1)
-				selectedGame = games.get(0);
-			else
-				selectedGame = games.get(games.indexOf(selectedGame) + 1);
-			selectedGame.setSelected(true);
-			break;
-		case KeyEvent.VK_DOWN:
-			selectedGame.setSelected(false);
 			if (games.indexOf(selectedGame) - 1 < 0)
 				selectedGame = games.get(games.size() - 1);
 			else
 				selectedGame = games.get(games.indexOf(selectedGame) - 1);
+			selectedGame.setSelected(true);
+			break;
+		case KeyEvent.VK_DOWN:
+			selectedGame.setSelected(false);
+			if (games.indexOf(selectedGame) + 1 > games.size() - 1)
+				selectedGame = games.get(0);
+			else
+				selectedGame = games.get(games.indexOf(selectedGame) + 1);
 			selectedGame.setSelected(true);
 			break;
 		}

@@ -30,6 +30,7 @@ public abstract class Entity extends GameObject {
 		protected boolean jumping;
 		
 		protected boolean inWater;
+		protected boolean stopMoving;
 		
 		//COLLISION
 		protected boolean topLeft;
@@ -79,7 +80,7 @@ public abstract class Entity extends GameObject {
 		}
 		
 		private void calculateCollisions() {
-			World world = Playstate.world;
+			World world = MarioWorldState.world;
 			float tox = x + dx;
 			float toy = y + dy;
 			
@@ -102,7 +103,7 @@ public abstract class Entity extends GameObject {
 			if(topLeft || topRight) {
 				dy = 0;
 				falling = true;
-				int playerrow = Playstate.world.getRowTile((int)toy);
+				int playerrow = MarioWorldState.world.getRowTile((int)toy);
 				y = (playerrow + 1) * World.BLOCKSIZE;
 			}
 			
@@ -124,7 +125,7 @@ public abstract class Entity extends GameObject {
 		
 		
 		private void calculateCorners(float x, float y) {
-			World world = Playstate.world;
+			World world = MarioWorldState.world;
 			int leftTile = world.getColTile((int)x);
 			int rightTile = world.getColTile((int)x + width - 1);
 			int topTile = world.getRowTile((int)y);
@@ -173,8 +174,10 @@ public abstract class Entity extends GameObject {
 		}
 		
 		private void move() {
-			x += dx;
-			y += dy;
+			if(!stopMoving) {
+				x += dx;
+				y += dy;
+			}
 			dx = 0;
 		}
 

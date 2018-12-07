@@ -30,6 +30,12 @@ public class Player extends Entity {
 			destroyBlock();
 		}
 		
+		if(falling) {
+			RunningMonster tmp = MarioWorldState.world.enemyAt((int)x + width / 2, (int)y + height);
+			if(tmp != null)
+				tmp.headHit();
+		}
+		
 //		//Check if items nearby
 //		for(int i = 0; i < Playstate.world.items.size(); i++) {
 //			if(Playstate.world.items.get(i).getX() > (x  - Game.ITEM_SIZE - 8) && Playstate.world.items.get(i).getX() < (x +8)) {
@@ -52,21 +58,21 @@ public class Player extends Entity {
 	private void destroyBlock() {
 		if(isMouseOnScreen()) {
 			if(isBlockInRadius(new Point(GamePanel.mouse.mouseConvertedX, GamePanel.mouse.mouseConvertedY), 2)) {
-				Playstate.world.getBlock(GamePanel.mouse.mouseConvertedX, GamePanel.mouse.mouseConvertedY).destroyBlock();	
+				MarioWorldState.world.getBlock(GamePanel.mouse.mouseConvertedX, GamePanel.mouse.mouseConvertedY).destroyBlock();	
 			}
 		}
 	}
 	
 	//CHECK IF BLOCK IS IN RADIUS
 	public boolean isBlockInRadius(Point p, int radius) {
-		int colstart = Playstate.world.getColTile((int)getCenterX()) - radius;
-		int rowstart = Playstate.world.getRowTile((int)getCenterY()) - radius;
+		int colstart = MarioWorldState.world.getColTile((int)getCenterX()) - radius;
+		int rowstart = MarioWorldState.world.getRowTile((int)getCenterY()) - radius;
 		for(int row = 0; row < 2*radius+1; row++) {
 			for(int col = 0; col < 2*radius+1; col++) {
 				int blockX = colstart+col;
 				int blockY = rowstart+row;
-				if(blockX >= 0 && blockY >= 0 && blockX < Playstate.world.getBlocksX() && blockY < Playstate.world.getBlocksY()) {
-					if(Playstate.world.getBlocks()[blockY][blockX].getBox().contains(p)) {
+				if(blockX >= 0 && blockY >= 0 && blockX < MarioWorldState.world.getBlocksX() && blockY < MarioWorldState.world.getBlocksY()) {
+					if(MarioWorldState.world.getBlocks()[blockY][blockX].getBox().contains(p)) {
 						return true;
 					}
 				}
@@ -78,7 +84,7 @@ public class Player extends Entity {
 	
 	//CHECK IF MOUSE IS INSIDE WORLD
 	private boolean isMouseOnScreen() {
-		World world = Playstate.world;
+		World world = MarioWorldState.world;
 		int mx = GamePanel.mouse.mouseConvertedX;
 		int my = GamePanel.mouse.mouseConvertedY;
 		if(mx >= 0 && my >= 0 && mx <= world.getBlocksX() * World.BLOCKSIZE && my <= world.getBlocksY() * World.BLOCKSIZE) {

@@ -28,7 +28,7 @@ public class World {
 
 
 	public void render(Graphics2D g) {
-		Player player = Playstate.player;
+		Player player = MarioWorldState.player;
 		int startX = (int) player.getCenterX() - GamePanel.width / GamePanel.SCALE / 2;
 		int startY = (int) player.getCenterY() - GamePanel.height / GamePanel.SCALE / 2;
 		int endX = (int) player.getCenterX() + GamePanel.width / GamePanel.SCALE / 2 + BLOCKSIZE;
@@ -121,5 +121,16 @@ public class World {
 
 	public void setBlock(int x, int y, Block block) {
 		blocks[getRowTile(y)][getColTile(x)] = block;
+	}
+	
+	public RunningMonster enemyAt(int x, int y) {
+		for(int i = 0; i < enemies.size(); i++) {
+			if(enemies.get(i).getX() <= x && enemies.get(i).getX() + enemies.get(i).getWidth()  >= x) {
+				if(enemies.get(i).getY() <= y && enemies.get(i).getY() + enemies.get(i).getHeight()  >= y) {
+					return enemies.get(i);
+				}
+			}
+		}
+		return null;
 	}
 }

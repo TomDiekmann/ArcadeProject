@@ -9,6 +9,8 @@ import Engine.Game;
 public class RunningMonster extends Entity{
 	
 	private boolean lastLeft;
+	private Type type;
+	private int fadeTick = 0;
 	
 	public enum Type{
 		GOOMBA(new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/GoombaWalking.png"), 2, 16, 16), 16, 16),
@@ -65,7 +67,20 @@ public class RunningMonster extends Entity{
 	}
 	
 	public void render(Graphics2D g, int startX, int startY) {
-		g.drawImage(animation.getImage(),(int) x - startX,(int) y - startY, null);
+		if(fadeTick == 0) {
+			g.drawImage(animation.getImage(),(int) x - startX,(int) y - startY, null);
+		}
+		else {
+			g.drawImage(Game.imageLoader.load("images/SuperMarioBros/GoombaSmall.png"),(int) x - startX,(int) y - startY, null);
+			
+		}
+	}
+	
+	public void headHit() {
+		if(type == Type.GOOMBA) {
+			
+		}
+		MarioWorldState.world.enemies.remove(this);
 	}
 	
 }

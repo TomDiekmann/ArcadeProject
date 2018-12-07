@@ -12,7 +12,7 @@ import Engine.Mouse;
 import Engine.State;
 
 
-public class Playstate extends State {
+public class MarioWorldState extends State {
 
 	public static final int SCALE = 3;
 	public static int mouseX;
@@ -34,7 +34,7 @@ public class Playstate extends State {
 	private int endButtonX;
 	private int endButtonY;
 	
-	public Playstate(GameStateManager gsm, String filepath) {
+	public MarioWorldState(GameStateManager gsm, String filepath) {
 		super(gsm);
 		
 		lanButtonX = GamePanel.width / GamePanel.SCALE  / 2 - 50;

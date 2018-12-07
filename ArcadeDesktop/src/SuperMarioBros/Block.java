@@ -38,7 +38,7 @@ public class Block extends GameObject {
 			animation.update();
 			
 			//INTERRUPTS IF CONDITIONS ARE NOT FULFILLED 
-			if(!GamePanel.mouse.pressed || !getBox().contains(new Point(mouseX, mouseY)) || !Playstate.player.isBlockInRadius(new Point((int)x, (int)y), 2)) {
+			if(!GamePanel.mouse.pressed || !getBox().contains(new Point(mouseX, mouseY)) || !MarioWorldState.player.isBlockInRadius(new Point((int)x, (int)y), 2)) {
 				destroying = false;	
 				animation.stop();
 			}
@@ -59,13 +59,13 @@ public class Block extends GameObject {
 	}
 	
 	public void render(Graphics2D g) {
-		g.drawImage(material.getTexture(), (int)x - Playstate.camera.getCamX(), 
-				(int)y - Playstate.camera.getCamY(), null);
+		g.drawImage(material.getTexture(), (int)x - MarioWorldState.camera.getCamX(), 
+				(int)y - MarioWorldState.camera.getCamY(), null);
 		
 		//DESTROYING ANIMATION
 		if(destroying) {
-			g.drawImage(animation.getImage(), (int)x - Playstate.camera.getCamX(), 
-					(int)y - Playstate.camera.getCamY(), null);
+			g.drawImage(animation.getImage(), (int)x - MarioWorldState.camera.getCamX(), 
+					(int)y - MarioWorldState.camera.getCamY(), null);
 		}
 		
 	}

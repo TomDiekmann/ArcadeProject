@@ -6,7 +6,7 @@ import java.awt.event.MouseEvent;
 import Menu.MainState;
 import snake.SnakeGameState;
 import SuperMarioBros.MenuState;
-import SuperMarioBros.Playstate;
+import SuperMarioBros.MarioWorldState;
 
 
 public class GameStateManager {
@@ -24,7 +24,7 @@ public class GameStateManager {
 		states = new State[4];
 		states[0] = new MainState(this);	
 		states[1] = new MenuState(this);
-		states[2] = new Playstate(this, "files/SuperMarioBros/world1.txt");
+		states[2] = new MarioWorldState(this, "files/SuperMarioBros/world1.txt");
 		states[3] = new SnakeGameState(this);
 	}
 	
@@ -63,7 +63,7 @@ public class GameStateManager {
 		if(state == MARIOWORLD) {
 			Game.gamepanel.SCALE = 2;
 			Game.gamepanel.scaleChanged();
-			states[MARIOWORLD] = new Playstate(this,"files/SuperMarioBros/world1.txt");
+			states[MARIOWORLD] = new MarioWorldState(this,"files/SuperMarioBros/world1.txt");
 		}
 		if(state == SNAKEGAMESTATE) {
 			states[SNAKEGAMESTATE] = new SnakeGameState(this);
