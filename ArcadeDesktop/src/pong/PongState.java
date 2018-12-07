@@ -11,11 +11,13 @@ import Engine.State;
 
 public class PongState extends State {
 	
-	String test = "";
+	Variablen variablen;
+	Bewegung bewegung;
 	
 	public PongState(GameStateManager gsm) {
 		super(gsm);
-		// TODO Auto-generated constructor stub
+		variablen = new Variablen();
+		bewegung = new Bewegung();
 	}
 
 	@Override
@@ -35,6 +37,14 @@ public class PongState extends State {
 		{
 			g.fillRect(GamePanel.width/2-5, z*20, 10, 10);
 		}
+		
+		g.fillRect(Variablen.x, Variablen.y, 15, 110);
+		g.fillRect(Variablen.x1, Variablen.y2, 15, 110);
+		g.setFont(Variablen.pongpixel);
+		g.drawString(""+Variablen.punkte1, Variablen.bsb/2-40, 55);
+		g.drawString(""+Variablen.punkte2, Variablen.bsb/2+25, 55);
+		g.fillRect(Variablen.bx, Variablen.by, 20, 20);
+		
 	}
 
 	@Override
