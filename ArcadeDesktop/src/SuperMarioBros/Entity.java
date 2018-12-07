@@ -151,7 +151,6 @@ public abstract class Entity extends GameObject {
 				dy = JUMP_START;
 				if(!inWater) {
 					jumping = false;
-					System.out.println("Test2");
 					falling = true;
 				}
 				else jumping = true;

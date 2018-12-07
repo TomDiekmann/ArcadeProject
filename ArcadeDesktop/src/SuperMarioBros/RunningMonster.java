@@ -27,7 +27,6 @@ public class RunningMonster extends Entity{
 			if(sprite.getSprite().getHeight()>height) {
 				int tmp[] = {0,1,0,1};
 				states = tmp;
-				System.out.println("1");
 			}
 			else { 
 				int tmp[] = {0,0,0,0};
