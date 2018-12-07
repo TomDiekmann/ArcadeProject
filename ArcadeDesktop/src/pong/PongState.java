@@ -39,13 +39,25 @@ public class PongState extends State {
 
 	@Override
 	public void keyPressed(KeyEvent e, int k) {
-		// TODO Auto-generated method stub
+		if(e.getKeyCode()==KeyEvent.VK_W)
+		{
+		Variablen.moveup = true;
+		}else if(e.getKeyCode()==KeyEvent.VK_S)
+		{
+			Variablen.movedown = true;
+		}
 		
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e, int k) {
-		// TODO Auto-generated method stub
+		if(e.getKeyCode()==KeyEvent.VK_W)
+		{
+		Variablen.moveup = false;
+		}else if(e.getKeyCode()==KeyEvent.VK_S)
+		{
+			Variablen.movedown = false;
+		}
 		
 	}
 
