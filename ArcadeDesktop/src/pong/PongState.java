@@ -10,7 +10,9 @@ import Engine.GameStateManager;
 import Engine.State;
 
 public class PongState extends State {
-
+	
+	String test = "";
+	
 	public PongState(GameStateManager gsm) {
 		super(gsm);
 		// TODO Auto-generated constructor stub
