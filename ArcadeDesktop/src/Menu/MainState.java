@@ -19,7 +19,7 @@ public class MainState extends State {
 
 	public MainState(GameStateManager gsm) {
 		super(gsm);
-		selectedGame = new GameView("Super Mario Bros", GameStateManager.MARIOWORLD1);
+		selectedGame = new GameView("Super Mario Bros", GameStateManager.MARIOWORLD);
 		selectedGame.setSelected(true);
 		games.add(selectedGame);
 		games.add(new GameView("Snake", GameStateManager.SNAKEGAMESTATE));
