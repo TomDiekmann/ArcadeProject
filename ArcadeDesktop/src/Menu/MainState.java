@@ -23,6 +23,7 @@ public class MainState extends State {
 		selectedGame.setSelected(true);
 		games.add(selectedGame);
 		games.add(new GameView("Snake", GameStateManager.SNAKEGAMESTATE));
+		games.add(new GameView("Pong", GameStateManager.PONGSTATE));
 	}
 
 	@Override
