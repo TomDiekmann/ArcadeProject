@@ -47,6 +47,7 @@ public class RunningMonster extends Entity{
 		super(type.sprite, x, y, type.width, type.height, type.speed, type.states, type.frames);
 		lastLeft = true;
 		left = true;
+		this.type = type;
 	}
 	
 	public void update() {
@@ -72,15 +73,17 @@ public class RunningMonster extends Entity{
 		}
 		else {
 			g.drawImage(Game.imageLoader.load("images/SuperMarioBros/GoombaSmall.png"),(int) x - startX,(int) y - startY, null);
-			
+			fadeTick++;
+			if(fadeTick > 120)
+				MarioWorldState.world.enemies.remove(this);
 		}
 	}
 	
 	public void headHit() {
-		if(type == Type.GOOMBA) {
-			
+		if(type.equals(Type.GOOMBA)) {
+			fadeTick++;
+			stopMoving = true;
 		}
-		MarioWorldState.world.enemies.remove(this);
 	}
 	
 }

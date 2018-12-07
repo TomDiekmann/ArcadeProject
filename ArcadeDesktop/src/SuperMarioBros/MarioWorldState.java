@@ -93,7 +93,6 @@ public class MarioWorldState extends State {
 	@Override
 	public void keyPressed(KeyEvent e, int k) {
 		if(k == KeyEvent.VK_ESCAPE) {
-			System.out.print("D");
 			if(menuOpen) menuOpen = false;
 			else menuOpen = true;
 		}
