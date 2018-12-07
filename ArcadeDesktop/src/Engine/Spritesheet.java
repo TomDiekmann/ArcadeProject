@@ -30,5 +30,13 @@ public class Spritesheet {
 	public int getCols() {
 		return col;
 	}
+	
+	public int getHeight() {
+		return height;
+	}
+	
+	public BufferedImage getSprite() {
+		return sprite;
+	}
 }
 

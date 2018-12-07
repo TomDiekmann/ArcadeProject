@@ -16,12 +16,14 @@ public class World {
 	private int blocksX;
 	private int blocksY;
 	private Block[][] blocks;
-	public List<Entity> items = new ArrayList<Entity>();
+	public List<RunningMonster> enemies = new ArrayList<RunningMonster>();
 	private int[][] blockIDs;
 	public static final int BLOCKSIZE = 16;
 
 	public World(String filepath) {
 		loadWorld(filepath);
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 160, 224));
+		enemies.add(new RunningMonster(RunningMonster.Type.KOOPA_TROOPER, 400, 224));
 	}
 
 
@@ -42,12 +44,14 @@ public class World {
 				}
 			}
 		}
-
-		for (int i = 0; i < items.size(); i++) {
-			items.get(i).render(g);
-			items.get(i).update();
+		
+		for(int i = 0; i < enemies.size();i++) {
+			RunningMonster enemy = enemies.get(i);
+			enemy.update();
+			if(enemy.getX() > startX && enemy.getX() < endX) {
+				enemy.render(g, startX, startY);
+			}
 		}
-
 	}
 
 	public boolean placeBlock(Material material, int x, int y) {

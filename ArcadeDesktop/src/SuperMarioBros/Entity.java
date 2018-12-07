@@ -16,6 +16,8 @@ public abstract class Entity extends GameObject {
 		private final float MAX_FALLING_SPEED = 2.5F;
 		private final float JUMP_START = -5.0F;
 		
+		
+		
 		//MOVEMENT
 		protected float dx;
 		protected float dy;
@@ -38,18 +40,25 @@ public abstract class Entity extends GameObject {
 		protected boolean midRight;
 		protected boolean hasfallen;
 		
+		protected boolean saveCollision;
+		
 		//ANIMATION
 		private int idle;
-		private final int IDLE_LEFT = 0;
-		private final int IDLE_RIGHT = 1;
-		private final int LEFT = 2;
-		private final int RIGHT = 3;
-		private final int[] frames = {1, 1, 2, 2};
+		private int IDLE_LEFT;
+		private int IDLE_RIGHT;
+		private int LEFT;
+		private int RIGHT;
+		private int[] frames;
 		protected Spritesheet sprite;
 		protected Animation animation;
 		
-		public Entity(Spritesheet spritesheet, float x, float y, int width, int height, float speed) {
+		public Entity(Spritesheet spritesheet, float x, float y, int width, int height, float speed, int[] states, int[] frames) {
 			super(x, y, width, height);
+			IDLE_LEFT = states[0];
+			IDLE_RIGHT = states[1];
+			LEFT = states[2];
+			RIGHT = states[3];
+			this.frames = frames;
 			this.speed = speed;
 			this.sprite = spritesheet;
 			this.idle = IDLE_LEFT;
@@ -78,12 +87,14 @@ public abstract class Entity extends GameObject {
 			if(dx < 0) {
 				if(topLeft || bottomLeft || midLeft) {
 					dx = 0;
+					saveCollision = true;
 				}
 			}
 			
 			if(dx > 0) {
 				if(topRight || bottomRight || midRight) {
 					dx = 0;
+					saveCollision = true;
 				}
 			}
 			

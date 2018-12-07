@@ -14,10 +14,12 @@ public class Player extends Entity {
 
 	
 	private boolean destroyingBlock;
+	private static int[] states = {0,1,2,3};
+	private static int[] frames = {1,1,2,2};
 	
 	
 	public Player(float x, float y, int width, int height, float speed) {
-		super(new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/Walking.png"), 2, 16, 32), x, y, width, height, speed);
+		super(new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/Walking.png"), 2, 16, 32), x, y, width, height, speed,states, frames);
 	}
 	
 	@Override
