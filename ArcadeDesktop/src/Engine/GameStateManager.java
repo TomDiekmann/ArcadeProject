@@ -7,6 +7,7 @@ import Menu.MainState;
 import snake.SnakeGameState;
 import SuperMarioBros.MenuState;
 import SuperMarioBros.Playstate;
+import pong.PongState;
 
 
 public class GameStateManager {
@@ -15,17 +16,19 @@ public class GameStateManager {
 	public static final int MARIOMENU = 1;
 	public static final int MARIOWORLD = 2;
 	public static final int SNAKEGAMESTATE = 3;
+	public static final int PONGSTATE = 4;
 	
 	private State[] states;
 	private int state;
 	
 	public GameStateManager(int state) {
 		this.state = state;
-		states = new State[4];
+		states = new State[5];
 		states[0] = new MainState(this);	
 		states[1] = new MenuState(this);
 		states[2] = new Playstate(this, "files/SuperMarioBros/world1.txt");
 		states[3] = new SnakeGameState(this);
+		states[4] = new PongState(this);
 	}
 	
 	
