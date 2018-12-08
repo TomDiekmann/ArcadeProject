@@ -188,4 +188,8 @@ public abstract class Entity extends GameObject {
 	public void setHealth(float health) {
 		this.health = health;
 	}
+	
+	public void changeSprite(Spritesheet sprite) {
+		animation = new Animation(sprite,150L, LEFT, frames[LEFT]);
+	}
 }

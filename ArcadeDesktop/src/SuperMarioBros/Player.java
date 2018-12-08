@@ -7,6 +7,7 @@ import java.awt.event.MouseEvent;
 
 import Engine.Game;
 import Engine.GamePanel;
+import Engine.GameStateManager;
 import Engine.Spritesheet;
 
 public class Player extends Entity {
@@ -14,10 +15,23 @@ public class Player extends Entity {
 	private boolean destroyingBlock;
 	private static int[] states = { 0, 1, 2, 3 };
 	private static int[] frames = { 1, 1, 2, 2 };
+	private boolean playerIsSmall;
+	private Spritesheet bigPlayer;
+	private Spritesheet smallPlayer;
+	
+	//Die animation
+	private boolean died;
+	private float diffY = 0;
+	private boolean down;
+
+	private int dieAnimationCounter = 0;
 
 	public Player(float x, float y, int width, int height, float speed) {
-		super(new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/Walking.png"), 2, 16, 32), x, y, width,
+		super(new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/BigWalking.png"), 2, 16, 32), x, y, width,
 				height, speed, states, frames);
+		bigPlayer = new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/BigWalking.png"), 2, 16, 32);
+		smallPlayer = new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/SmallWalking.png"), 2, 16, 16);
+		playerIsSmall = false;
 	}
 
 	@Override
@@ -27,17 +41,21 @@ public class Player extends Entity {
 		if (destroyingBlock) {
 			destroyBlock();
 		}
-		
+
 		RunningMonster tmp = MarioWorldState.world.enemyAt((int) x + width / 2, (int) y + height);
 		if (tmp != null) {
-			if (falling && (int) (y + height) - 4 <= (int)tmp.getY() && (int) (y + height) + 4 >= (int)tmp.getY()) {
+			if (falling && (int) (y + height) - 4 <= (int) tmp.getY() && (int) (y + height) + 4 >= (int) tmp.getY()) {
 				tmp.headHit();
 				falling = false;
 				jumping = true;
-			}
-			else{
-				System.out.println(tmp.y + " " + (y + height));
-				System.out.println(height + " " + y);
+			} else {
+				if (!playerIsSmall && dieAnimationCounter == 0) {
+					dieAnimationCounter = 110;
+					stopMoving = true;
+				} else if (playerIsSmall && dieAnimationCounter == 0) {
+					died = true;
+					stopMoving = true;
+				}
 				System.out.println("Got hit");
 			}
 
@@ -56,9 +74,45 @@ public class Player extends Entity {
 
 	@Override
 	public void render(Graphics2D g) {
-		g.drawImage(animation.getImage(), GamePanel.width / 2 / GamePanel.SCALE - width / 2 - 7,
-				GamePanel.height / 2 / GamePanel.SCALE - height / 2, null);
-
+		if (!died) {
+			if (dieAnimationCounter != 0) {
+				if (dieAnimationCounter % 10 == 0) {
+					if (playerIsSmall) {
+						changeSprite(bigPlayer);
+						playerIsSmall = false;
+					} else {
+						changeSprite(smallPlayer);
+						playerIsSmall = true;
+					}
+					if (dieAnimationCounter == 10) {
+						y += 16;
+						height = 16;
+						stopMoving = false;
+					}
+				}
+				dieAnimationCounter--;
+			}
+			g.drawImage(animation.getImage(), GamePanel.width / 2 / GamePanel.SCALE - width / 2 - 7,
+					GamePanel.height / 2 / GamePanel.SCALE - height / 2, null);
+		} else {
+			float drawY;
+			if(!down) {
+				drawY = y + diffY;
+				diffY -= 2;
+				if(diffY < -32) {
+					down = true;
+				}
+			}
+			else {
+				drawY = y + diffY;
+				diffY += 2;
+				if(drawY > Game.gamepanel.height) {
+					Game.gamepanel.gsm.setState(GameStateManager.MARIOWORLD);
+				}
+			}
+			System.out.println(drawY);
+			g.drawImage(Game.imageLoader.load("images/SuperMarioBros/died.png"), (int)GamePanel.width / 2 / GamePanel.SCALE - width / 2 - 7, (int) (GamePanel.height / 2 / GamePanel.SCALE - height / 2 + diffY), null);
+		}
 	}
 
 	// BLOCK DESTROYING
