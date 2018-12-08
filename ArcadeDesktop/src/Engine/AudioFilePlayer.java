@@ -15,18 +15,19 @@ import static javax.sound.sampled.AudioSystem.getAudioInputStream;
 import static javax.sound.sampled.AudioFormat.Encoding.PCM_SIGNED;
  
 public class AudioFilePlayer {
- 
+	
+	private SourceDataLine line;
+	
     public void play(String filePath) {
         final File file = new File(filePath);
  
         try (final AudioInputStream in = getAudioInputStream(file)) {
-             
             final AudioFormat outFormat = getOutFormat(in.getFormat());
             final Info info = new Info(SourceDataLine.class, outFormat);
  
             try (final SourceDataLine line =
                      (SourceDataLine) AudioSystem.getLine(info)) {
- 
+            	this.line = line;
                 if (line != null) {
                     line.open(outFormat);
                     line.start();
@@ -50,10 +51,15 @@ public class AudioFilePlayer {
     }
  
     private void stream(AudioInputStream in, SourceDataLine line) 
-        throws IOException {
+    		throws IOException {
+    	
         final byte[] buffer = new byte[65536];
         for (int n = 0; n != -1; n = in.read(buffer, 0, buffer.length)) {
             line.write(buffer, 0, n);
         }
+    }
+    
+    public void stop() {
+			line.stop();
     }
 }

@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import Engine.AudioFilePlayer;
+import Engine.Game;
 import Engine.GamePanel;
 
 public class World {
@@ -19,15 +21,28 @@ public class World {
 	public List<RunningMonster> enemies = new ArrayList<RunningMonster>();
 	private int[][] blockIDs;
 	public static final int BLOCKSIZE = 16;
-
+	public boolean soundPlayed;
+	
+	private AudioFilePlayer musicPlayer = new AudioFilePlayer();
+	private Thread musicThread;
+	
 	public World(String filepath) {
 		loadWorld(filepath);
 		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 160, 224));
 		enemies.add(new RunningMonster(RunningMonster.Type.KOOPA_TROOPER, 400, 224));
+		soundPlayed = false;
+		musicThread = new Thread(){
+			 public void run(){
+				 musicPlayer.play("sounds/SuperMarioBros/01-main-theme-overworld.wav");
+			 }
+		};
 	}
 
 
 	public void render(Graphics2D g) {
+		if(!musicThread.isAlive() && !MarioWorldState.player.died) {
+			musicThread.start();
+		}
 		Player player = MarioWorldState.player;
 		int startX = (int) player.getCenterX() - GamePanel.width / GamePanel.SCALE / 2;
 		int startY = (int) player.getCenterY() - GamePanel.height / GamePanel.SCALE / 2;
@@ -132,5 +147,9 @@ public class World {
 			}
 		}
 		return null;
+	}
+	
+	public void stopMusic(){
+		musicPlayer.stop();
 	}
 }

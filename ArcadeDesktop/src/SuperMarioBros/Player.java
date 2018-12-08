@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+import Engine.AudioFilePlayer;
 import Engine.Game;
 import Engine.GamePanel;
 import Engine.GameStateManager;
@@ -18,13 +19,16 @@ public class Player extends Entity {
 	private boolean playerIsSmall;
 	private Spritesheet bigPlayer;
 	private Spritesheet smallPlayer;
+	private AudioFilePlayer soundPlayer = new AudioFilePlayer();
+	
+	private Thread jumpSound;
 	
 	//Die animation
-	private boolean died;
+	public boolean died;
 	private float diffY = 0;
 	private boolean down;
-
 	private int dieAnimationCounter = 0;
+	private Thread dieSound;
 
 	public Player(float x, float y, int width, int height, float speed) {
 		super(new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/BigWalking.png"), 2, 16, 32), x, y, width,
@@ -32,6 +36,16 @@ public class Player extends Entity {
 		bigPlayer = new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/BigWalking.png"), 2, 16, 32);
 		smallPlayer = new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/SmallWalking.png"), 2, 16, 16);
 		playerIsSmall = false;
+		dieSound = new Thread(){
+			 public void run(){
+				 soundPlayer.play("sounds/SuperMarioBros/MarioDies.wav");
+			 }
+		};
+		jumpSound = new Thread(){
+			 public void run(){
+				 soundPlayer.play("sounds/SuperMarioBros/highJump.wav");
+			 }
+		};
 	}
 
 	@Override
@@ -41,6 +55,10 @@ public class Player extends Entity {
 		if (destroyingBlock) {
 			destroyBlock();
 		}
+		
+		if(falling) {
+			jumpSound.interrupt();
+		}
 
 		RunningMonster tmp = MarioWorldState.world.enemyAt((int) x + width / 2, (int) y + height);
 		if (tmp != null) {
@@ -48,6 +66,11 @@ public class Player extends Entity {
 				tmp.headHit();
 				falling = false;
 				jumping = true;
+				new Thread(){
+					 public void run(){
+						 soundPlayer.play("sounds/SuperMarioBros/stomp.wav");
+					 }
+				}.start();
 			} else {
 				if (!playerIsSmall && dieAnimationCounter == 0) {
 					dieAnimationCounter = 110;
@@ -55,10 +78,11 @@ public class Player extends Entity {
 				} else if (playerIsSmall && dieAnimationCounter == 0) {
 					died = true;
 					stopMoving = true;
-				}
-				System.out.println("Got hit");
+					MarioWorldState.world.stopMusic();
+					if(!dieSound.isAlive())
+						dieSound.start();
 			}
-
+			}
 		}
 
 //		//Check if items nearby
@@ -106,7 +130,8 @@ public class Player extends Entity {
 			else {
 				drawY = y + diffY;
 				diffY += 2;
-				if(drawY > Game.gamepanel.height) {
+				if(drawY > Game.gamepanel.getHeight()) {
+					dieSound.interrupt();
 					Game.gamepanel.gsm.setState(GameStateManager.MARIOWORLD);
 				}
 			}
@@ -165,8 +190,14 @@ public class Player extends Entity {
 			right = true;
 			break;
 		case KeyEvent.VK_SPACE: {
-			if (!inWater && !falling && !jumping)
+			if (!inWater && !falling && !jumping) {
 				jumping = true;
+				new Thread(){
+					 public void run(){
+						 soundPlayer.play("sounds/SuperMarioBros/highJump.wav");
+					 }
+				}.start();
+			}
 			else if (inWater)
 				jumping = true;
 			break;
