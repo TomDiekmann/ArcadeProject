@@ -71,7 +71,7 @@ public class RunningMonster extends Entity{
 	}
 	
 	public void render(Graphics2D g, int startX, int startY) {
-		if(fadeTick == 0) {
+		if(fadeTick == 0 ) {
 			g.drawImage(animation.getImage(),(int) x - startX,(int) y - startY, null);
 		}
 		else {
@@ -97,11 +97,14 @@ public class RunningMonster extends Entity{
 		return fadeTick != 0;
 	}
 	
-	public boolean isShell() {
-		return type == Type.KOOOPA_SHELL;
+	public boolean isStaticShell() {
+		return type == Type.KOOOPA_SHELL && stopMoving == true;
 	}
 	
-	public void startMoving() {
+	public void startMoving(boolean left) {
 		stopMoving = false;
+		this.left = left;
+		right = !left;
 	}
+	
 }

@@ -72,7 +72,7 @@ public class Player extends Entity {
 					}
 				}.start();
 			} else {
-				if (!tmp.isShell()) {
+				if (!tmp.isStaticShell()) {
 					if (!playerIsSmall && dieAnimationCounter == 0) {
 						dieAnimationCounter = 110;
 						stopMoving = true;
@@ -85,7 +85,11 @@ public class Player extends Entity {
 					}
 				}
 				else {
-					tmp.startMoving();
+					if(x > tmp.getCenterX()) {
+						tmp.startMoving(true);
+					}
+					else
+						tmp.startMoving(false);
 				}
 			}
 
