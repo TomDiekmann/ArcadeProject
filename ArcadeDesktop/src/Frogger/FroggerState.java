@@ -16,7 +16,8 @@ import Frogger.MovingObjects.Type;
 public class FroggerState extends Engine.State {
 
 	public static BufferedImage background;
-	public static ArrayList<MovingObjects> cars;
+	public static BufferedImage title;
+	public static ArrayList<MovingObjects> moving;
 	
 	private AudioFilePlayer musicPlayer = new AudioFilePlayer();
 	private Thread musicThread;
@@ -30,11 +31,22 @@ public class FroggerState extends Engine.State {
 	private int raceCounter2;
 	private int pinkCounter;
 	private int pinkCounter2;
+	private int log1Counter;
+	private int log1Counter2;
+	private int turtle2Counter;
+	private int turtle2Counter2;
+	private int log3Counter;
+	private int log4Counter;
+	private int log4Counter2;
+	private int turtle5Counter;
+	private int turtle5Counter2;
+	
+	private int titleTicks;
 	
 	public FroggerState(GameStateManager gsm) {
 		super(gsm);
 		setBackground(Game.imageLoader.load("images/Frogger/background.png"));
-		cars = new ArrayList<MovingObjects>();
+		moving = new ArrayList<MovingObjects>();
 		truckCounter = 0;
 		carCounter = 0;
 		carCounter2 = 0;
@@ -44,6 +56,17 @@ public class FroggerState extends Engine.State {
 		raceCounter2 = 0;
 		pinkCounter = 0;
 		pinkCounter2 = 0;
+		log1Counter = 0;
+		log1Counter2 = 0;
+		turtle2Counter = 0;
+		turtle2Counter2 = 0;
+		log3Counter = 0;
+		log4Counter = 0;
+		log4Counter2 = 0;
+		turtle5Counter = 0;
+		turtle5Counter2 = 0;
+		
+		titleTicks = 150;
 		
 		musicThread = new Thread(){
 			 public void run(){
@@ -63,48 +86,20 @@ public class FroggerState extends Engine.State {
 			musicThread.start();
 		}
 		
-		for(int i = 0; i < cars.size(); i++) {
-			cars.get(i).update();
+		for(int i = 0; i < moving.size(); i++) {
+			moving.get(i).update();
 		}
 		
 		//Truck spawning
 		if(truckCounter == 0) {
-			cars.add(new MovingObjects(Type.Truck6));
+			moving.add(new MovingObjects(Type.Truck6));
 			truckCounter = 225;
 		}
 		truckCounter--;
 		
-		//Yellow Car spawning
-		if(carCounter == 0) {
-			cars.add(new MovingObjects(Type.Car10));
-			if(carCounter2 == 0) {
-				carCounter = 200;
-				carCounter2 = 2;
-			}
-			else {
-				carCounter = 100;
-				carCounter2--;
-			}
-		}
-		carCounter--;
-		
-		//Bagger spawning
-		if(baggerCounter == 0) {
-			cars.add(new MovingObjects(Type.Bagger9));
-			if(baggerCounter2 == 0) {
-				baggerCounter = 150;
-				baggerCounter2 = 1;
-			}
-			else {
-				baggerCounter = 100;
-				baggerCounter2--;
-			}
-		}
-		baggerCounter--;
-		
 		//Race Car spawning
 		if(raceCounter == 0) {
-			cars.add(new MovingObjects(Type.RaceCar7));
+			moving.add(new MovingObjects(Type.RaceCar7));
 			if(raceCounter2 == 0) {
 				raceCounter = 100;
 				raceCounter2 = 1;
@@ -118,7 +113,7 @@ public class FroggerState extends Engine.State {
 		
 		//Pink Car spawning
 		if(pinkCounter == 0) {
-			cars.add(new MovingObjects(Type.Pink8));
+			moving.add(new MovingObjects(Type.Pink8));
 			if(pinkCounter2 == 0) {
 				pinkCounter = 100;
 				pinkCounter2 = 2;
@@ -129,18 +124,116 @@ public class FroggerState extends Engine.State {
 			}
 		}
 		pinkCounter--;
+		
+		//Bagger spawning
+		if(baggerCounter == 0) {
+			moving.add(new MovingObjects(Type.Bagger9));
+			if(baggerCounter2 == 0) {
+				baggerCounter = 150;
+				baggerCounter2 = 1;
+			}
+			else {
+				baggerCounter = 100;
+				baggerCounter2--;
+			}
+		}
+		baggerCounter--;
+		
+		//Yellow Car spawning
+		if(carCounter == 0) {
+			moving.add(new MovingObjects(Type.Car10));
+			if(carCounter2 == 0) {
+				carCounter = 200;
+				carCounter2 = 2;
+			}
+			else {
+				carCounter = 100;
+				carCounter2--;
+			}
+		}
+		carCounter--;
+		
+		//Log spawning
+		if(log1Counter == 0) {
+			moving.add(new MovingObjects(Type.Log1));
+			if(log1Counter2 == 0) {
+				log1Counter = 200;
+				log1Counter2 = 2;
+			}
+			else {
+				log1Counter = 100;
+				log1Counter2--;
+			}
+		}
+		log1Counter--;
+				
+		//Turtle spawning
+		if(turtle2Counter == 0) {
+			moving.add(new MovingObjects(Type.Turtle2));
+			if(turtle2Counter2 == 0) {
+				turtle2Counter = 200;
+				turtle2Counter2 = 2;
+			}
+			else {
+				turtle2Counter = 100;
+				turtle2Counter2--;
+			}
+		}
+		turtle2Counter--;
+		
+		//Log spawning
+		if(log3Counter == 0) {
+			moving.add(new MovingObjects(Type.Log3));
+			log3Counter = 225;
+		}
+		log3Counter--;
+		
+		//Log spawning
+		if(log4Counter == 0) {
+			moving.add(new MovingObjects(Type.Log4));
+			if(log4Counter2 == 0) {
+				log4Counter = 200;
+				log4Counter2 = 2;
+			}
+			else {
+				log4Counter = 100;
+				log4Counter2--;
+			}
+		}
+		log4Counter--;
+		
+		//Turtle spawning
+		if(turtle5Counter == 0) {
+			moving.add(new MovingObjects(Type.Turtle5));
+			if(turtle5Counter2 == 0) {
+				turtle5Counter = 200;
+				turtle5Counter2 = 2;
+			}
+			else {
+				turtle5Counter = 100;
+				turtle5Counter2--;
+			}
+		}
+		turtle5Counter--;
 	}
 
 	@Override
 	public void render(Graphics2D g) {
 		g.setColor(Color.black);
 		g.fillRect(0, 0, GamePanel.width, GamePanel.height);
+		if(titleTicks != 0) {
+			setTitle(Game.imageLoader.load("images/Frogger/title.png"));
+			g.drawImage(getTitle(), GamePanel.width/2-getBackground().getWidth()/2, 0, null);
+			titleTicks--;
+		}
+		else {
 		g.drawImage(getBackground(), GamePanel.width/2-getBackground().getWidth()/2, 0, null);
-		for(int i = 0; i < cars.size(); i++) {
-			cars.get(i).render(g);
+		for(int i = 0; i < moving.size(); i++) {
+			moving.get(i).render(g);
 		}
 		g.fillRect(0, 0, GamePanel.width/2-getBackground().getWidth()/2, GamePanel.height);
 		g.fillRect(GamePanel.width/2+getBackground().getWidth()/2, 0, GamePanel.width/2-getBackground().getWidth()/2, GamePanel.height);
+		}
 	}
 
 	@Override
@@ -176,4 +269,11 @@ public class FroggerState extends Engine.State {
 		FroggerState.background = background;
 	}
 
+	public static BufferedImage getTitle() {
+		return title;
+	}
+
+	public static void setTitle(BufferedImage title) {
+		FroggerState.title = title;
+	}
 }

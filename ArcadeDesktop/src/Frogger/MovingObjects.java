@@ -14,7 +14,7 @@ public class MovingObjects {
 	public MovingObjects(Type type) {
 		this.type = type;
 		if(type.fromleft)
-			currentX = GamePanel.width/2-FroggerState.getBackground().getWidth()/2;
+			currentX = GamePanel.width/2-FroggerState.getBackground().getWidth()/2-type.image.getWidth();
 		else
 			currentX = GamePanel.width/2+FroggerState.getBackground().getWidth()/2;
 	}
@@ -26,10 +26,10 @@ public class MovingObjects {
 	
 	public void update() {
 		if(type.fromleft && currentX > GamePanel.width/2+FroggerState.getBackground().getWidth()/2) {
-			FroggerState.cars.remove(this);
+			FroggerState.moving.remove(this);
 		}
 		else if(!type.fromleft && currentX+type.image.getWidth() < GamePanel.width/2-FroggerState.getBackground().getWidth()/2) {
-			FroggerState.cars.remove(this);
+			FroggerState.moving.remove(this);
 		}
 		if(type.fromleft) {
 			currentX += type.speed;
@@ -40,11 +40,11 @@ public class MovingObjects {
 	}
 	
 	public enum Type {
-		Log1(Game.imageLoader.load("images/Frogger/log_0.png"), true, 345, 1.25f),
-		Turtle2(Game.imageLoader.load("images/Frogger/turtle_1.png"), false, 234, 0.7f),
-		Log3(Game.imageLoader.load("images/Frogger/log_0.png"), true, 234, 0.8f),
-		Log4(Game.imageLoader.load("images/Frogger/log_0.png"), true, 345, 0.6f),
-		Turtle5(Game.imageLoader.load("images/Frogger/turtle_1.png"), false, 345, 1f),
+		Log1(Game.imageLoader.load("images/Frogger/log_0.png"), true, 73, 1.25f),
+		Turtle2(Game.imageLoader.load("images/Frogger/turtle_1.png"), false, 93, 0.7f),
+		Log3(Game.imageLoader.load("images/Frogger/log_0.png"), true, 118, 0.8f),
+		Log4(Game.imageLoader.load("images/Frogger/log_0.png"), true, 138, 0.6f),
+		Turtle5(Game.imageLoader.load("images/Frogger/turtle_1.png"), false, 158, 1f),
 		
 		Truck6(Game.imageLoader.load("images/Frogger/car_c_0.png"), false, 208, 0.5f),
 		RaceCar7(Game.imageLoader.load("images/Frogger/car_a_0.png"), true, 227, 2f), 
