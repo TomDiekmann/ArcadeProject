@@ -17,6 +17,7 @@ public class Camera {
 	public void update(){
 		camX = (int)player.getX() + player.getWidth() / 2 - GamePanel.width / 2 / GamePanel.SCALE;
 		camY = (int)player.getY() + player.getHeight() / 2 - GamePanel.height / 2 / GamePanel.SCALE;
+		
 	}
 	
 	public int getCamX(){

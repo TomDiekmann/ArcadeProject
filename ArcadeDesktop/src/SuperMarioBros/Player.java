@@ -20,10 +20,10 @@ public class Player extends Entity {
 	private Spritesheet bigPlayer;
 	private Spritesheet smallPlayer;
 	private AudioFilePlayer soundPlayer = new AudioFilePlayer();
-	
+
 	private Thread jumpSound;
-	
-	//Die animation
+
+	// Die animation
 	public boolean died;
 	private float diffY = 0;
 	private boolean down;
@@ -36,15 +36,15 @@ public class Player extends Entity {
 		bigPlayer = new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/BigWalking.png"), 2, 16, 32);
 		smallPlayer = new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/SmallWalking.png"), 2, 16, 16);
 		playerIsSmall = false;
-		dieSound = new Thread(){
-			 public void run(){
-				 soundPlayer.play("sounds/SuperMarioBros/MarioDies.wav");
-			 }
+		dieSound = new Thread() {
+			public void run() {
+				soundPlayer.play("sounds/SuperMarioBros/MarioDies.wav");
+			}
 		};
-		jumpSound = new Thread(){
-			 public void run(){
-				 soundPlayer.play("sounds/SuperMarioBros/highJump.wav");
-			 }
+		jumpSound = new Thread() {
+			public void run() {
+				soundPlayer.play("sounds/SuperMarioBros/highJump.wav");
+			}
 		};
 	}
 
@@ -55,35 +55,42 @@ public class Player extends Entity {
 		if (destroyingBlock) {
 			destroyBlock();
 		}
-		
-		if(falling) {
+
+		if (falling) {
 			jumpSound.interrupt();
 		}
 
 		RunningMonster tmp = MarioWorldState.world.enemyAt((int) x + width / 2, (int) y + height);
-		if (tmp != null) {
+		if (tmp != null && !tmp.isDead()) {
 			if (falling && (int) (y + height) - 4 <= (int) tmp.getY() && (int) (y + height) + 4 >= (int) tmp.getY()) {
 				tmp.headHit();
 				falling = false;
 				jumping = true;
-				new Thread(){
-					 public void run(){
-						 soundPlayer.play("sounds/SuperMarioBros/stomp.wav");
-					 }
+				new Thread() {
+					public void run() {
+						soundPlayer.play("sounds/SuperMarioBros/stomp.wav");
+					}
 				}.start();
 			} else {
-				if (!playerIsSmall && dieAnimationCounter == 0) {
-					dieAnimationCounter = 110;
-					stopMoving = true;
-				} else if (playerIsSmall && dieAnimationCounter == 0) {
-					died = true;
-					stopMoving = true;
-					MarioWorldState.world.stopMusic();
-					if(!dieSound.isAlive())
-						dieSound.start();
+				if (!tmp.isShell()) {
+					if (!playerIsSmall && dieAnimationCounter == 0) {
+						dieAnimationCounter = 110;
+						stopMoving = true;
+					} else if (playerIsSmall && dieAnimationCounter == 0) {
+						died = true;
+						stopMoving = true;
+						MarioWorldState.world.stopMusic();
+						if (!dieSound.isAlive())
+							dieSound.start();
+					}
+				}
+				else {
+					tmp.startMoving();
+				}
 			}
-			}
+
 		}
+
 
 //		//Check if items nearby
 //		for(int i = 0; i < Playstate.world.items.size(); i++) {
@@ -120,23 +127,24 @@ public class Player extends Entity {
 					GamePanel.height / 2 / GamePanel.SCALE - height / 2, null);
 		} else {
 			float drawY;
-			if(!down) {
+			if (!down) {
 				drawY = y + diffY;
 				diffY -= 2;
-				if(diffY < -32) {
+				if (diffY < -32) {
 					down = true;
 				}
-			}
-			else {
+			} else {
 				drawY = y + diffY;
 				diffY += 2;
-				if(drawY > Game.gamepanel.getHeight()) {
+				if (drawY > Game.gamepanel.getHeight()) {
 					dieSound.interrupt();
 					Game.gamepanel.gsm.setState(GameStateManager.MARIOWORLD);
 				}
 			}
 			System.out.println(drawY);
-			g.drawImage(Game.imageLoader.load("images/SuperMarioBros/died.png"), (int)GamePanel.width / 2 / GamePanel.SCALE - width / 2 - 7, (int) (GamePanel.height / 2 / GamePanel.SCALE - height / 2 + diffY), null);
+			g.drawImage(Game.imageLoader.load("images/SuperMarioBros/died.png"),
+					(int) GamePanel.width / 2 / GamePanel.SCALE - width / 2 - 7,
+					(int) (GamePanel.height / 2 / GamePanel.SCALE - height / 2 + diffY), null);
 		}
 	}
 
@@ -192,13 +200,12 @@ public class Player extends Entity {
 		case KeyEvent.VK_SPACE: {
 			if (!inWater && !falling && !jumping) {
 				jumping = true;
-				new Thread(){
-					 public void run(){
-						 soundPlayer.play("sounds/SuperMarioBros/highJump.wav");
-					 }
+				new Thread() {
+					public void run() {
+						soundPlayer.play("sounds/SuperMarioBros/highJump.wav");
+					}
 				}.start();
-			}
-			else if (inWater)
+			} else if (inWater)
 				jumping = true;
 			break;
 		}
@@ -225,5 +232,6 @@ public class Player extends Entity {
 
 	public void mouseReleased(MouseEvent e) {
 		destroyingBlock = false;
+
 	}
 }

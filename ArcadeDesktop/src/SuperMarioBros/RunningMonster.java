@@ -13,9 +13,9 @@ public class RunningMonster extends Entity{
 	private int fadeTick = 0;
 	
 	public enum Type{
-		GOOMBA(new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/GoombaWalking.png"), 2, 16, 16), 16, 16),
-		KOOPA_TROOPER(new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/KooperWalking.png"), 2, 16, 24), 16, 24);
-		
+		GOOMBA(new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/GoombaWalking.png"), 2, 16, 16), 16, 16, 1f),
+		KOOPA_TROOPER(new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/KoopaWalking.png"), 2, 16, 24), 16, 24, 1f),
+		KOOOPA_SHELL(new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/KoopaShell.png"), 2, 16, 14), 16, 14, 2f);
 		
 		public Spritesheet sprite;
 		public int[] states;
@@ -24,7 +24,7 @@ public class RunningMonster extends Entity{
 		public int height;
 		public float speed;
 		
-		private Type(Spritesheet spritesheet, int width, int height) {
+		private Type(Spritesheet spritesheet, int width, int height,float speed) {
 			sprite = spritesheet;
 			if(sprite.getSprite().getHeight()>height) {
 				int tmp[] = {0,1,0,1};
@@ -38,7 +38,7 @@ public class RunningMonster extends Entity{
 			frames = tmp;
 			this.width = width;
 			this.height = height;
-			speed = 1f;
+			this.speed = speed;
 		}
 	}
 	
@@ -48,6 +48,9 @@ public class RunningMonster extends Entity{
 		lastLeft = true;
 		left = true;
 		this.type = type;
+		if(type == Type.KOOOPA_SHELL) {
+			stopMoving = true;
+		}
 	}
 	
 	public void update() {
@@ -84,6 +87,21 @@ public class RunningMonster extends Entity{
 			fadeTick++;
 			stopMoving = true;
 		}
+		else if(type.equals(Type.KOOPA_TROOPER)) {
+			MarioWorldState.world.enemies.remove(this);
+			MarioWorldState.world.enemies.add(new RunningMonster(Type.KOOOPA_SHELL, x, y + 10));
+		}
 	}
 	
+	public boolean isDead() {
+		return fadeTick != 0;
+	}
+	
+	public boolean isShell() {
+		return type == Type.KOOOPA_SHELL;
+	}
+	
+	public void startMoving() {
+		stopMoving = false;
+	}
 }

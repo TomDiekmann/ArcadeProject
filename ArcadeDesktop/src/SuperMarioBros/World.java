@@ -47,7 +47,7 @@ public class World {
 		int startX = (int) player.getCenterX() - GamePanel.width / GamePanel.SCALE / 2;
 		int startY = (int) player.getCenterY() - GamePanel.height / GamePanel.SCALE / 2;
 		int endX = (int) player.getCenterX() + GamePanel.width / GamePanel.SCALE / 2 + BLOCKSIZE;
-		int endY = (int) player.getCenterY() + GamePanel.height / GamePanel.SCALE / 2 +BLOCKSIZE;
+		int endY = (int) player.getCenterY() + GamePanel.height / GamePanel.SCALE / 2 +BLOCKSIZE ;
 
 		for (int row = startY; row <= endY; row += BLOCKSIZE) {
 			for (int col = startX; col < endX; col += BLOCKSIZE) {
