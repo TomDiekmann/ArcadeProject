@@ -68,6 +68,9 @@ public class RunningMonster extends Entity{
 			left = true;
 			lastLeft = true;
 		}
+		if(x <= 1) {
+			MarioWorldState.world.enemies.remove(this);
+		}
 	}
 	
 	public void render(Graphics2D g, int startX, int startY) {

@@ -51,7 +51,9 @@ public class Player extends Entity {
 	@Override
 	public void update() {
 		super.update();
-
+		
+		System.out.println(y);
+		
 		if (destroyingBlock) {
 			destroyBlock();
 		}

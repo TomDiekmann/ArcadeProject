@@ -1,13 +1,20 @@
 package SuperMarioBros;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+
 
 import Engine.AudioFilePlayer;
 import Engine.Game;
@@ -17,7 +24,7 @@ public class World {
 
 	private int blocksX;
 	private int blocksY;
-	private Block[][] blocks;
+	public Block[][] blocks;
 	public List<RunningMonster> enemies = new ArrayList<RunningMonster>();
 	private int[][] blockIDs;
 	public static final int BLOCKSIZE = 16;
@@ -27,9 +34,10 @@ public class World {
 	private Thread musicThread;
 	
 	public World(String filepath) {
-		loadWorld(filepath);
-		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 160, 224));
-		enemies.add(new RunningMonster(RunningMonster.Type.KOOPA_TROOPER, 400, 224));
+		loadWorld2();
+		loadWorld("files/SuperMarioBros/world.txt");
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 160, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.KOOPA_TROOPER, 200, 150));
 		soundPlayed = false;
 		musicThread = new Thread(){
 			 public void run(){
@@ -43,6 +51,10 @@ public class World {
 		if(!musicThread.isAlive() && !MarioWorldState.player.died) {
 			musicThread.start();
 		}
+		
+		g.setColor(new Color(112, 140,255));
+		g.fillRect(0,0, Game.gamepanel.width, Game.gamepanel.height);
+		
 		Player player = MarioWorldState.player;
 		int startX = (int) player.getCenterX() - GamePanel.width / GamePanel.SCALE / 2;
 		int startY = (int) player.getCenterY() - GamePanel.height / GamePanel.SCALE / 2;
@@ -109,6 +121,33 @@ public class World {
 			e.printStackTrace();
 		}
 	}
+	
+	private void loadWorld2() {
+		 try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(new File("files/SuperMarioBros/world.txt")));
+			BufferedImage world= Game.imageLoader.load("images/SuperMarioBros/World1Test.png");
+			writer.write((world.getWidth() - 16)/16 + "\n");
+			writer.write((int) world.getHeight()/16 + "\n");
+			blocks = new Block[world.getHeight()/16][world.getWidth()/16];
+			for(int blockY = 0;blockY < world.getHeight() -16; blockY += 16) {
+				for(int blockX = 0;blockX < world.getWidth() - 8; blockX += 16) {
+					BufferedImage blockImage = world.getSubimage(blockX, blockY, 16, 16);
+					Material[] materials = Material.values();
+					for(int i = 0; i < materials.length; i++) {
+						if(compareImages(materials[i].getTexture(), blockImage)) {
+							writer.write(i + " ");
+							break;
+							}
+					}
+				}
+				writer.write("\n");
+			}
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	public int getColTile(int x) {
 		return x / BLOCKSIZE;
@@ -152,4 +191,26 @@ public class World {
 	public void stopMusic(){
 		musicPlayer.stop();
 	}
+	
+	public static boolean compareImages(BufferedImage imgA, BufferedImage imgB) {
+		  // The images must be the same size.
+		  if (imgA.getWidth() != imgB.getWidth() || imgA.getHeight() != imgB.getHeight()) {
+		    return false;
+		  }
+
+		  int width  = imgA.getWidth();
+		  int height = imgA.getHeight();
+
+		  // Loop over every pixel.
+		  for (int y = 0; y < height; y++) {
+		    for (int x = 0; x < width; x++) {
+		      // Compare the pixels for equality.
+		      if (imgA.getRGB(x, y) != imgB.getRGB(x, y)) {
+		        return false;
+		      }
+		    }
+		  }
+
+		  return true;
+		}
 }

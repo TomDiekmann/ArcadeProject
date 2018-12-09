@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+import Engine.Game;
 import Engine.GamePanel;
 import Engine.GameStateManager;
 import Engine.Mouse;
@@ -44,7 +45,7 @@ public class MarioWorldState extends State {
 		endButtonY =  GamePanel.height / GamePanel.SCALE / 2 + 5;
 		
 		world = new World(filepath);
-		player = new Player(world.getBlocks()[0][1].getCenterX(), world.getBlocks()[5][1].getCenterY(), 8, 31, 2f);
+		player = new Player(10, 160, 8, 31, 2f);
 		camera = new Camera(player);
 		mouse = GamePanel.mouse;
 	}
