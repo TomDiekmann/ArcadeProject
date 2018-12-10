@@ -38,8 +38,8 @@ public class PongState extends State {
 			g.fillRect(GamePanel.width/2-5, z*20, 10, 10);
 		}
 		
-		g.fillRect(Variablen.x, Variablen.y, 15, 110);
-		g.fillRect(Variablen.x1, Variablen.y2, 15, 110);
+		g.fillRect(Variablen.x1, Variablen.y1, 15, 110);
+		g.fillRect(Variablen.x2, Variablen.y2, 15, 110);
 		g.setFont(Variablen.pongpixel);
 		g.drawString(""+Variablen.punkte1, Variablen.bsb/2-40, 55);
 		g.drawString(""+Variablen.punkte2, Variablen.bsb/2+25, 55);
@@ -51,10 +51,17 @@ public class PongState extends State {
 	public void keyPressed(KeyEvent e, int k) {
 		if(e.getKeyCode()==KeyEvent.VK_W)
 		{
-		Variablen.moveup = true;
+		Variablen.moveup1 = true;
 		}else if(e.getKeyCode()==KeyEvent.VK_S)
 		{
-			Variablen.movedown = true;
+			Variablen.movedown1 = true;
+		}
+		if(e.getKeyCode()==KeyEvent.VK_UP)
+		{
+		Variablen.moveup2 = true;
+		}else if(e.getKeyCode()==KeyEvent.VK_DOWN)
+		{
+			Variablen.movedown2 = true;
 		}
 		
 	}
@@ -63,10 +70,17 @@ public class PongState extends State {
 	public void keyReleased(KeyEvent e, int k) {
 		if(e.getKeyCode()==KeyEvent.VK_W)
 		{
-		Variablen.moveup = false;
+		Variablen.moveup1 = false;
 		}else if(e.getKeyCode()==KeyEvent.VK_S)
 		{
-			Variablen.movedown = false;
+			Variablen.movedown1 = false;
+		}
+		if(e.getKeyCode()==KeyEvent.VK_UP)
+		{
+		Variablen.moveup2 = false;
+		}else if(e.getKeyCode()==KeyEvent.VK_DOWN)
+		{
+			Variablen.movedown2 = false;
 		}
 		
 	}

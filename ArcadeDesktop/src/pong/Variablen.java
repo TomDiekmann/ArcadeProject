@@ -14,10 +14,10 @@ public class Variablen {
 	static int bsb = 640;
     static int bsh = 360;
     
-	static int x = 20;
-	static int y = 125;
+	static int x1 = 20;
+	static int y1 = 125;
 	
-	static int x1 = 605;
+	static int x2 = 605;
 	static int y2= 125;
 	
 	static int bx = 315;
@@ -26,8 +26,11 @@ public class Variablen {
 	static int punkte1 = 0;
 	static int punkte2 = 0;
 	
-	static boolean moveup = false;
-	static boolean movedown = false;
+	static boolean moveup1 = false;
+	static boolean movedown1 = false;
+
+	static boolean moveup2 = false;
+	static boolean movedown2 = false;
 	
 	static int ballx = 1;
 	static int bally = -1;
