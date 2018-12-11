@@ -22,6 +22,7 @@ public class Player extends Entity {
 	private AudioFilePlayer soundPlayer = new AudioFilePlayer();
 
 	private Thread jumpSound;
+	private boolean stopMovingLeft;
 
 	// Die animation
 	public boolean died;
@@ -129,8 +130,8 @@ public class Player extends Entity {
 				}
 				dieAnimationCounter--;
 			}
-			g.drawImage(animation.getImage(), GamePanel.width / 2 / GamePanel.SCALE - width / 2 - 7,
-					GamePanel.height / 2 / GamePanel.SCALE - height / 2, null);
+			g.drawImage(animation.getImage(), (int) (x - MarioWorldState.camera.getCamX()),
+					(int) (y - MarioWorldState.camera.getCamY()), null);
 		} else {
 			float drawY;
 			if (!down) {
@@ -147,11 +148,18 @@ public class Player extends Entity {
 					Game.gamepanel.gsm.setState(GameStateManager.MARIOWORLD);
 				}
 			}
-			System.out.println(drawY);
 			g.drawImage(Game.imageLoader.load("images/SuperMarioBros/died.png"),
 					(int) GamePanel.width / 2 / GamePanel.SCALE - width / 2 - 7,
 					(int) (GamePanel.height / 2 / GamePanel.SCALE - height / 2 + diffY), null);
 		}
+		
+		if(x <= MarioWorldState.camera.getCamX()) {
+			left = false;
+			stopMovingLeft = true;
+		}
+		else
+			stopMovingLeft = false;
+			
 	}
 
 	// BLOCK DESTROYING
@@ -198,7 +206,8 @@ public class Player extends Entity {
 	public void keyPressed(KeyEvent e, int k) {
 		switch (k) {
 		case KeyEvent.VK_A:
-			left = true;
+			if(!stopMovingLeft)
+				left = true;
 			break;
 		case KeyEvent.VK_D:
 			right = true;

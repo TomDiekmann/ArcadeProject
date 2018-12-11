@@ -56,10 +56,10 @@ public class World {
 		g.fillRect(0,0, Game.gamepanel.width, Game.gamepanel.height);
 		
 		Player player = MarioWorldState.player;
-		int startX = (int) player.getCenterX() - GamePanel.width / GamePanel.SCALE / 2;
-		int startY = (int) player.getCenterY() - GamePanel.height / GamePanel.SCALE / 2;
-		int endX = (int) player.getCenterX() + GamePanel.width / GamePanel.SCALE / 2 + BLOCKSIZE;
-		int endY = (int) player.getCenterY() + GamePanel.height / GamePanel.SCALE / 2 +BLOCKSIZE ;
+		int startX = MarioWorldState.camera.getCamX();
+		int startY = MarioWorldState.camera.getCamY();
+		int endX = MarioWorldState.camera.getCamX() + GamePanel.width;
+		int endY = MarioWorldState.camera.getCamY() + GamePanel.height;
 
 		for (int row = startY; row <= endY; row += BLOCKSIZE) {
 			for (int col = startX; col < endX; col += BLOCKSIZE) {
