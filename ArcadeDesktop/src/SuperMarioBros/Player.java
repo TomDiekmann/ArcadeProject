@@ -83,8 +83,9 @@ public class Player extends Entity {
 						died = true;
 						stopMoving = true;
 						MarioWorldState.world.stopMusic();
-						if (!dieSound.isAlive())
+						if (!dieSound.isAlive()){
 							dieSound.start();
+						}
 					}
 				} else {
 					if (x < tmp.getX() + 16 && x > tmp.getX()) {

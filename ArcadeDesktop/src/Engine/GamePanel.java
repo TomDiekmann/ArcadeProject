@@ -89,7 +89,6 @@ public class GamePanel extends JPanel
 			try {
 				Thread.sleep(waitTime);
 			} catch (Exception e) {
-				e.printStackTrace();
 			}
 
 			totalTime += System.nanoTime() - startTime;

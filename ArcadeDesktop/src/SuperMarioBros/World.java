@@ -17,6 +17,7 @@ import java.util.List;
 import Engine.AudioFilePlayer;
 import Engine.Game;
 import Engine.GamePanel;
+import Engine.GameStateManager;
 
 public class World {
 
@@ -34,7 +35,6 @@ public class World {
 	public World(String filepath) {
 		loadWorld2();
 		loadWorld("files/SuperMarioBros/world.txt");
-		enemies.add(new RunningMonster(RunningMonster.Type.KOOPA_TROOPER, 150, 168));
 		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 352, 176));
 		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 640, 176));
 		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 816, 176));
@@ -61,7 +61,7 @@ public class World {
 	}
 
 	public void render(Graphics2D g) {
-		if (!musicThread.isAlive() && !MarioWorldState.player.died) {
+		if (!musicThread.isAlive() && !MarioWorldState.player.died && Game.gamepanel.gsm.getActiveState() == GameStateManager.MARIOWORLD) {
 			musicThread.start();
 		}
 

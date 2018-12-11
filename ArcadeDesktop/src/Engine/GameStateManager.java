@@ -63,8 +63,8 @@ public class GameStateManager {
 	}
 
 	public void setState(int state) {
-		if (state == MARIOWORLD) {
-			Game.gamepanel.SCALE = 2;
+		if (state == MARIOMENU || state == MARIOWORLD) {
+			GamePanel.SCALE = 2;
 			Game.gamepanel.scaleChanged();
 			states[MARIOWORLD] = new MarioWorldState(this, "files/SuperMarioBros/world1.txt");
 		}
@@ -72,6 +72,14 @@ public class GameStateManager {
 			states[SNAKEGAMESTATE] = new SnakeGameState(this);
 		}
 		this.state = state;
+	}
+	
+	public State getState(int state) {
+		return states[state];
+	}
+	
+	public int getActiveState() {
+		return state;
 	}
 
 }
