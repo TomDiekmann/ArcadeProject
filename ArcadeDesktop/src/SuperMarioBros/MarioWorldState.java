@@ -45,7 +45,7 @@ public class MarioWorldState extends State {
 		endButtonY =  GamePanel.height / GamePanel.SCALE / 2 + 5;
 		
 		world = new World(filepath);
-		player = new Player(10, 160, 8, 31, 2f);
+		player = new Player(64, 160, 8, 31, 2f);
 		camera = new Camera(player);
 		mouse = GamePanel.mouse;
 	}

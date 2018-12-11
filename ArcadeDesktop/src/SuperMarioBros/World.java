@@ -127,17 +127,24 @@ public class World {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(new File("files/SuperMarioBros/world.txt")));
 			BufferedImage world= Game.imageLoader.load("images/SuperMarioBros/World1Test.png");
 			writer.write((world.getWidth() - 16)/16 + "\n");
-			writer.write((int) world.getHeight()/16 + "\n");
+			writer.write(((int) world.getHeight()/16 + 1) + "\n");
 			blocks = new Block[world.getHeight()/16][world.getWidth()/16];
-			for(int blockY = 0;blockY < world.getHeight() -16; blockY += 16) {
-				for(int blockX = 0;blockX < world.getWidth() - 8; blockX += 16) {
-					BufferedImage blockImage = world.getSubimage(blockX, blockY, 16, 16);
+			for(int blockY = 0;blockY < world.getHeight(); blockY += 16) {
+				for(int blockX = 0;blockX < world.getWidth() - 16; blockX += 16) {
+					BufferedImage blockImage;
+					if(blockY == world.getHeight() - 8) {
+						blockImage = world.getSubimage(blockX, blockY - 16, 16, 16);
+					}
+					else {
+						blockImage = world.getSubimage(blockX, blockY, 16, 16);
+					}
 					Material[] materials = Material.values();
 					for(int i = 0; i < materials.length; i++) {
 						if(compareImages(materials[i].getTexture(), blockImage)) {
 							writer.write(i + " ");
 							break;
 							}
+						if(i == materials.length -1) writer.write(0 + " ");
 					}
 				}
 				writer.write("\n");

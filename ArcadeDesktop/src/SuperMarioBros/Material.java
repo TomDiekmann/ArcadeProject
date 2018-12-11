@@ -14,7 +14,7 @@ public enum Material {
 	ITEM_BLOCK_MIDDLE(25, false),
 	ITEM_BLOCK_DARK(26, false),
 	BROWN_ITEM_OUT(3,false),
-	BROWN_HARD_BLOCK(34, false),
+	BROWN_HARD_BLOCK(33, false),
 	HILL_UP(272, true),
 	HILL_TOP(273, true),
 	HILL_DOWN(274, true),
