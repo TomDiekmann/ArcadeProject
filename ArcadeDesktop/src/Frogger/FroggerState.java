@@ -86,7 +86,7 @@ public class FroggerState extends Engine.State {
 			musicThread.start();
 		}
 		
-		for(int i = 0; i < moving.size(); i++) {
+		for(int i = moving.size()-1; i >= 0; i--) {
 			moving.get(i).update();
 		}
 		
@@ -157,11 +157,11 @@ public class FroggerState extends Engine.State {
 		if(log1Counter == 0) {
 			moving.add(new MovingObjects(Type.Log1));
 			if(log1Counter2 == 0) {
-				log1Counter = 200;
+				log1Counter = 100;
 				log1Counter2 = 2;
 			}
 			else {
-				log1Counter = 100;
+				log1Counter = 28;
 				log1Counter2--;
 			}
 		}
@@ -171,11 +171,11 @@ public class FroggerState extends Engine.State {
 		if(turtle2Counter == 0) {
 			moving.add(new MovingObjects(Type.Turtle2));
 			if(turtle2Counter2 == 0) {
-				turtle2Counter = 200;
+				turtle2Counter = 100;
 				turtle2Counter2 = 2;
 			}
 			else {
-				turtle2Counter = 100;
+				turtle2Counter = 30;
 				turtle2Counter2--;
 			}
 		}
@@ -193,10 +193,10 @@ public class FroggerState extends Engine.State {
 			moving.add(new MovingObjects(Type.Log4));
 			if(log4Counter2 == 0) {
 				log4Counter = 200;
-				log4Counter2 = 2;
+				log4Counter2 = 1;
 			}
 			else {
-				log4Counter = 100;
+				log4Counter = 28;
 				log4Counter2--;
 			}
 		}
@@ -206,11 +206,11 @@ public class FroggerState extends Engine.State {
 		if(turtle5Counter == 0) {
 			moving.add(new MovingObjects(Type.Turtle5));
 			if(turtle5Counter2 == 0) {
-				turtle5Counter = 200;
-				turtle5Counter2 = 2;
+				turtle5Counter = 60;
+				turtle5Counter2 = 1;
 			}
 			else {
-				turtle5Counter = 100;
+				turtle5Counter = 21;
 				turtle5Counter2--;
 			}
 		}
@@ -228,7 +228,7 @@ public class FroggerState extends Engine.State {
 		}
 		else {
 		g.drawImage(getBackground(), GamePanel.width/2-getBackground().getWidth()/2, 0, null);
-		for(int i = 0; i < moving.size(); i++) {
+		for(int i = moving.size()-1; i >= 0; i--) {
 			moving.get(i).render(g);
 		}
 		g.fillRect(0, 0, GamePanel.width/2-getBackground().getWidth()/2, GamePanel.height);
