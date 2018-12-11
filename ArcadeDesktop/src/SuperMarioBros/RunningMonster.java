@@ -5,12 +5,14 @@ import java.awt.Image;
 
 import Engine.Spritesheet;
 import Engine.Game;
+import Engine.GamePanel;
 
 public class RunningMonster extends Entity{
 	
 	private boolean lastLeft;
 	private Type type;
 	private int fadeTick = 0;
+	private boolean activated;
 	
 	public enum Type{
 		GOOMBA(new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/GoombaWalking.png"), 2, 16, 16), 16, 16, 1f),
@@ -51,6 +53,7 @@ public class RunningMonster extends Entity{
 		if(type == Type.KOOOPA_SHELL) {
 			stopMoving = true;
 		}
+		stopMoving = true;
 	}
 	
 	public void update() {
@@ -71,6 +74,8 @@ public class RunningMonster extends Entity{
 		if(x <= 1) {
 			MarioWorldState.world.enemies.remove(this);
 		}
+		if(y > 180)
+			MarioWorldState.world.enemies.remove(this);
 	}
 	
 	public void render(Graphics2D g, int startX, int startY) {
@@ -108,6 +113,17 @@ public class RunningMonster extends Entity{
 		stopMoving = false;
 		this.left = left;
 		right = !left;
+	}
+	
+	public void triggerMoving() {
+		if(type != Type.KOOOPA_SHELL && !activated) {
+			stopMoving = false;
+			activated = true;
+		}
+	}
+	
+	public boolean isShell() {
+		return type == Type.KOOOPA_SHELL;
 	}
 	
 }

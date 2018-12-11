@@ -30,6 +30,8 @@ public class Player extends Entity {
 	private boolean down;
 	private int dieAnimationCounter = 0;
 	private Thread dieSound;
+	
+	private int shellImuneTime = 0;
 
 	public Player(float x, float y, int width, int height, float speed) {
 		super(new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/BigWalking.png"), 2, 16, 32), x, y, width,
@@ -75,7 +77,7 @@ public class Player extends Entity {
 					}
 				}.start();
 			} else {
-				if (!tmp.isStaticShell()) {
+				if (!tmp.isStaticShell() && (!tmp.isShell() || shellImuneTime == 0)) {
 					if (!playerIsSmall && dieAnimationCounter == 0) {
 						dieAnimationCounter = 110;
 						stopMoving = true;
@@ -88,13 +90,18 @@ public class Player extends Entity {
 					}
 				}
 				else {
-					if(x > tmp.getCenterX()) {
+					if(x < tmp.getX() + 16 && x > tmp.getX()) {
 						tmp.startMoving(true);
+						shellImuneTime = 2;
 					}
-					else
+					else if(x +16 > tmp.getX()){
 						tmp.startMoving(false);
+						shellImuneTime = 2;
+					}
 				}
 			}
+			if(shellImuneTime > 0)
+				shellImuneTime--;
 
 		}
 

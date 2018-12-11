@@ -36,8 +36,24 @@ public class World {
 	public World(String filepath) {
 		loadWorld2();
 		loadWorld("files/SuperMarioBros/world.txt");
-		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 160, 176));
-		enemies.add(new RunningMonster(RunningMonster.Type.KOOPA_TROOPER, 200, 150));
+		enemies.add(new RunningMonster(RunningMonster.Type.KOOPA_TROOPER, 150, 168));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 352, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 640, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 816, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 848, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 1280, 48));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 1312, 48));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 1552, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 1572, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 1822, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 1848, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 1967, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 1993, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 2046, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 2074, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 2775, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 2810, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.KOOPA_TROOPER, 1714, 168));
 		soundPlayed = false;
 		musicThread = new Thread(){
 			 public void run(){
@@ -58,8 +74,8 @@ public class World {
 		Player player = MarioWorldState.player;
 		int startX = MarioWorldState.camera.getCamX();
 		int startY = MarioWorldState.camera.getCamY();
-		int endX = MarioWorldState.camera.getCamX() + GamePanel.width;
-		int endY = MarioWorldState.camera.getCamY() + GamePanel.height;
+		int endX = MarioWorldState.camera.getCamX() + GamePanel.width /GamePanel.SCALE + 16;
+		int endY = MarioWorldState.camera.getCamY() + GamePanel.height/GamePanel.SCALE + 16;
 
 		for (int row = startY; row <= endY; row += BLOCKSIZE) {
 			for (int col = startX; col < endX; col += BLOCKSIZE) {
@@ -77,6 +93,7 @@ public class World {
 			enemy.update();
 			if(enemy.getX() > startX && enemy.getX() < endX) {
 				enemy.render(g, startX, startY);
+				enemy.triggerMoving();
 			}
 		}
 	}
