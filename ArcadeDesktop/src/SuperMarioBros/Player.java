@@ -101,6 +101,11 @@ public class Player extends Entity {
 				shellImuneTime--;
 
 		}
+		
+		if(y>185 && !died) {
+			MarioWorldState.world.stopMusic();
+			Game.gamepanel.gsm.setState(GameStateManager.MARIOWORLD);
+		}
 
 //		//Check if items nearby
 //		for(int i = 0; i < Playstate.world.items.size(); i++) {
