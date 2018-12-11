@@ -1,13 +1,20 @@
 package SuperMarioBros;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+
 
 import Engine.AudioFilePlayer;
 import Engine.Game;
@@ -17,7 +24,7 @@ public class World {
 
 	private int blocksX;
 	private int blocksY;
-	private Block[][] blocks;
+	public Block[][] blocks;
 	public List<RunningMonster> enemies = new ArrayList<RunningMonster>();
 	private int[][] blockIDs;
 	public static final int BLOCKSIZE = 16;
@@ -27,9 +34,26 @@ public class World {
 	private Thread musicThread;
 	
 	public World(String filepath) {
-		loadWorld(filepath);
-		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 160, 224));
-		enemies.add(new RunningMonster(RunningMonster.Type.KOOPA_TROOPER, 400, 224));
+		loadWorld2();
+		loadWorld("files/SuperMarioBros/world.txt");
+		enemies.add(new RunningMonster(RunningMonster.Type.KOOPA_TROOPER, 150, 168));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 352, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 640, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 816, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 848, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 1280, 48));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 1312, 48));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 1552, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 1572, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 1822, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 1848, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 1967, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 1993, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 2046, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 2074, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 2775, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 2810, 176));
+		enemies.add(new RunningMonster(RunningMonster.Type.KOOPA_TROOPER, 1714, 168));
 		soundPlayed = false;
 		musicThread = new Thread(){
 			 public void run(){
@@ -43,11 +67,15 @@ public class World {
 		if(!musicThread.isAlive() && !MarioWorldState.player.died) {
 			musicThread.start();
 		}
+		
+		g.setColor(new Color(112, 140,255));
+		g.fillRect(0,0, Game.gamepanel.width, Game.gamepanel.height);
+		
 		Player player = MarioWorldState.player;
-		int startX = (int) player.getCenterX() - GamePanel.width / GamePanel.SCALE / 2;
-		int startY = (int) player.getCenterY() - GamePanel.height / GamePanel.SCALE / 2;
-		int endX = (int) player.getCenterX() + GamePanel.width / GamePanel.SCALE / 2 + BLOCKSIZE;
-		int endY = (int) player.getCenterY() + GamePanel.height / GamePanel.SCALE / 2 +BLOCKSIZE;
+		int startX = MarioWorldState.camera.getCamX();
+		int startY = MarioWorldState.camera.getCamY();
+		int endX = MarioWorldState.camera.getCamX() + GamePanel.width /GamePanel.SCALE + 16;
+		int endY = MarioWorldState.camera.getCamY() + GamePanel.height/GamePanel.SCALE + 16;
 
 		for (int row = startY; row <= endY; row += BLOCKSIZE) {
 			for (int col = startX; col < endX; col += BLOCKSIZE) {
@@ -65,6 +93,7 @@ public class World {
 			enemy.update();
 			if(enemy.getX() > startX && enemy.getX() < endX) {
 				enemy.render(g, startX, startY);
+				enemy.triggerMoving();
 			}
 		}
 	}
@@ -106,6 +135,40 @@ public class World {
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void loadWorld2() {
+		 try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(new File("files/SuperMarioBros/world.txt")));
+			BufferedImage world= Game.imageLoader.load("images/SuperMarioBros/World1Test.png");
+			writer.write((world.getWidth() - 16)/16 + "\n");
+			writer.write(((int) world.getHeight()/16 + 1) + "\n");
+			blocks = new Block[world.getHeight()/16][world.getWidth()/16];
+			for(int blockY = 0;blockY < world.getHeight(); blockY += 16) {
+				for(int blockX = 0;blockX < world.getWidth() - 16; blockX += 16) {
+					BufferedImage blockImage;
+					if(blockY == world.getHeight() - 8) {
+						blockImage = world.getSubimage(blockX, blockY - 16, 16, 16);
+					}
+					else {
+						blockImage = world.getSubimage(blockX, blockY, 16, 16);
+					}
+					Material[] materials = Material.values();
+					for(int i = 0; i < materials.length; i++) {
+						if(compareImages(materials[i].getTexture(), blockImage)) {
+							writer.write(i + " ");
+							break;
+							}
+						if(i == materials.length -1) writer.write(0 + " ");
+					}
+				}
+				writer.write("\n");
+			}
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -152,4 +215,26 @@ public class World {
 	public void stopMusic(){
 		musicPlayer.stop();
 	}
+	
+	public static boolean compareImages(BufferedImage imgA, BufferedImage imgB) {
+		  // The images must be the same size.
+		  if (imgA.getWidth() != imgB.getWidth() || imgA.getHeight() != imgB.getHeight()) {
+		    return false;
+		  }
+
+		  int width  = imgA.getWidth();
+		  int height = imgA.getHeight();
+
+		  // Loop over every pixel.
+		  for (int y = 0; y < height; y++) {
+		    for (int x = 0; x < width; x++) {
+		      // Compare the pixels for equality.
+		      if (imgA.getRGB(x, y) != imgB.getRGB(x, y)) {
+		        return false;
+		      }
+		    }
+		  }
+
+		  return true;
+		}
 }

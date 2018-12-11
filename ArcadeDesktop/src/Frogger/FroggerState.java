@@ -281,6 +281,7 @@ public class FroggerState extends Engine.State {
 	public static void setTitle(BufferedImage title) {
 		FroggerState.title = title;
 	}
+
 	
 	public static BufferedImage getControls() {
 		return controls;

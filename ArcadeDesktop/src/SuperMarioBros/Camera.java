@@ -10,13 +10,15 @@ public class Camera {
 	
 	public Camera(Player player){
 		this.player = player;
-		camX = (int)player.getX() - GamePanel.width / 2 / GamePanel.SCALE;
-		camY = (int)player.getY() - GamePanel.height / 2 / GamePanel.SCALE;
+		camX = 0;
+		camY = 40;
 	}
 	
 	public void update(){
-		camX = (int)player.getX() + player.getWidth() / 2 - GamePanel.width / 2 / GamePanel.SCALE;
-		camY = (int)player.getY() + player.getHeight() / 2 - GamePanel.height / 2 / GamePanel.SCALE;
+		
+		if(!((int)player.getX() + player.getWidth() / 2 - GamePanel.width / 2 / GamePanel.SCALE < camX))
+			camX = (int)player.getX() + player.getWidth() / 2 - GamePanel.width / 2 / GamePanel.SCALE;
+		
 	}
 	
 	public int getCamX(){

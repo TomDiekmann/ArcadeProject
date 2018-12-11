@@ -5,17 +5,19 @@ import java.awt.Image;
 
 import Engine.Spritesheet;
 import Engine.Game;
+import Engine.GamePanel;
 
 public class RunningMonster extends Entity{
 	
 	private boolean lastLeft;
 	private Type type;
 	private int fadeTick = 0;
+	private boolean activated;
 	
 	public enum Type{
-		GOOMBA(new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/GoombaWalking.png"), 2, 16, 16), 16, 16),
-		KOOPA_TROOPER(new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/KooperWalking.png"), 2, 16, 24), 16, 24);
-		
+		GOOMBA(new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/GoombaWalking.png"), 2, 16, 16), 16, 16, 1f),
+		KOOPA_TROOPER(new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/KoopaWalking.png"), 2, 16, 24), 16, 24, 1f),
+		KOOOPA_SHELL(new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/KoopaShell.png"), 2, 16, 14), 16, 14, 2f);
 		
 		public Spritesheet sprite;
 		public int[] states;
@@ -24,7 +26,7 @@ public class RunningMonster extends Entity{
 		public int height;
 		public float speed;
 		
-		private Type(Spritesheet spritesheet, int width, int height) {
+		private Type(Spritesheet spritesheet, int width, int height,float speed) {
 			sprite = spritesheet;
 			if(sprite.getSprite().getHeight()>height) {
 				int tmp[] = {0,1,0,1};
@@ -38,7 +40,7 @@ public class RunningMonster extends Entity{
 			frames = tmp;
 			this.width = width;
 			this.height = height;
-			speed = 1f;
+			this.speed = speed;
 		}
 	}
 	
@@ -48,6 +50,10 @@ public class RunningMonster extends Entity{
 		lastLeft = true;
 		left = true;
 		this.type = type;
+		if(type == Type.KOOOPA_SHELL) {
+			stopMoving = true;
+		}
+		stopMoving = true;
 	}
 	
 	public void update() {
@@ -65,10 +71,15 @@ public class RunningMonster extends Entity{
 			left = true;
 			lastLeft = true;
 		}
+		if(x <= 1) {
+			MarioWorldState.world.enemies.remove(this);
+		}
+		if(y > 180)
+			MarioWorldState.world.enemies.remove(this);
 	}
 	
 	public void render(Graphics2D g, int startX, int startY) {
-		if(fadeTick == 0) {
+		if(fadeTick == 0 ) {
 			g.drawImage(animation.getImage(),(int) x - startX,(int) y - startY, null);
 		}
 		else {
@@ -84,6 +95,35 @@ public class RunningMonster extends Entity{
 			fadeTick++;
 			stopMoving = true;
 		}
+		else if(type.equals(Type.KOOPA_TROOPER)) {
+			MarioWorldState.world.enemies.remove(this);
+			MarioWorldState.world.enemies.add(new RunningMonster(Type.KOOOPA_SHELL, x, y + 10));
+		}
+	}
+	
+	public boolean isDead() {
+		return fadeTick != 0;
+	}
+	
+	public boolean isStaticShell() {
+		return type == Type.KOOOPA_SHELL && stopMoving == true;
+	}
+	
+	public void startMoving(boolean left) {
+		stopMoving = false;
+		this.left = left;
+		right = !left;
+	}
+	
+	public void triggerMoving() {
+		if(type != Type.KOOOPA_SHELL && !activated) {
+			stopMoving = false;
+			activated = true;
+		}
+	}
+	
+	public boolean isShell() {
+		return type == Type.KOOOPA_SHELL;
 	}
 	
 }
