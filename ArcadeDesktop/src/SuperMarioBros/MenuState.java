@@ -8,13 +8,12 @@ import Engine.GameStateManager;
 import Engine.Spritesheet;
 import Engine.State;
 
+public class MenuState extends State {
 
-public class MenuState extends State{
-	 
-	
-	public static Spritesheet sprite = new Spritesheet(Engine.Game.imageLoader.load("images/SuperMarioBros/blocksColored.png"), 33, 16, 16);
+	public static Spritesheet sprite = new Spritesheet(
+			Engine.Game.imageLoader.load("images/SuperMarioBros/blocksColored.png"), 33, 16, 16);
 	private Material debug;
-	
+
 	public MenuState(GameStateManager gsm) {
 		super(gsm);
 		debug = Material.BROWN_BROKEN_GROUND;
@@ -23,7 +22,7 @@ public class MenuState extends State{
 	@Override
 	public void update() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -35,31 +34,31 @@ public class MenuState extends State{
 	@Override
 	public void keyPressed(KeyEvent e, int k) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e, int k) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

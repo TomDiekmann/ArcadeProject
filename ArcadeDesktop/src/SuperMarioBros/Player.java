@@ -30,7 +30,7 @@ public class Player extends Entity {
 	private boolean down;
 	private int dieAnimationCounter = 0;
 	private Thread dieSound;
-	
+
 	private int shellImuneTime = 0;
 
 	public Player(float x, float y, int width, int height, float speed) {
@@ -54,9 +54,7 @@ public class Player extends Entity {
 	@Override
 	public void update() {
 		super.update();
-		
-		System.out.println(y);
-		
+
 		if (destroyingBlock) {
 			destroyBlock();
 		}
@@ -88,23 +86,20 @@ public class Player extends Entity {
 						if (!dieSound.isAlive())
 							dieSound.start();
 					}
-				}
-				else {
-					if(x < tmp.getX() + 16 && x > tmp.getX()) {
+				} else {
+					if (x < tmp.getX() + 16 && x > tmp.getX()) {
 						tmp.startMoving(true);
 						shellImuneTime = 2;
-					}
-					else if(x +16 > tmp.getX()){
+					} else if (x + 16 > tmp.getX()) {
 						tmp.startMoving(false);
 						shellImuneTime = 2;
 					}
 				}
 			}
-			if(shellImuneTime > 0)
+			if (shellImuneTime > 0)
 				shellImuneTime--;
 
 		}
-
 
 //		//Check if items nearby
 //		for(int i = 0; i < Playstate.world.items.size(); i++) {
@@ -159,14 +154,13 @@ public class Player extends Entity {
 					(int) GamePanel.width / 2 / GamePanel.SCALE - width / 2 - 7,
 					(int) (GamePanel.height / 2 / GamePanel.SCALE - height / 2 + diffY), null);
 		}
-		
-		if(x <= MarioWorldState.camera.getCamX()) {
+
+		if (x <= MarioWorldState.camera.getCamX()) {
 			left = false;
 			stopMovingLeft = true;
-		}
-		else
+		} else
 			stopMovingLeft = false;
-			
+
 	}
 
 	// BLOCK DESTROYING
@@ -213,7 +207,7 @@ public class Player extends Entity {
 	public void keyPressed(KeyEvent e, int k) {
 		switch (k) {
 		case KeyEvent.VK_A:
-			if(!stopMovingLeft)
+			if (!stopMovingLeft)
 				left = true;
 			break;
 		case KeyEvent.VK_D:

@@ -35,7 +35,7 @@ public class SnakeGameState extends State {
 
 	private int ticks = 0;
 	private int posX = (WIDTH / TILE_SIZE) / 2, posY = 0, length = 3;
-	
+
 	private int gameOverTicks = 0;
 
 	public SnakeGameState(GameStateManager gsm) {
@@ -45,8 +45,7 @@ public class SnakeGameState extends State {
 		this.fruits = new ArrayList<SnakeFruit>();
 		running = true;
 	}
-	
-	
+
 	public void tick() {
 		if (this.snake.size() == 0)
 			this.snake.add(this.head = new SnakeBodyPart(posX, posY));
@@ -111,7 +110,6 @@ public class SnakeGameState extends State {
 			SnakeBodyPart bodyPart = this.snake.get(i);
 
 			if (i != this.snake.size() - 1 && posX == bodyPart.getPosX() && posY == bodyPart.getPosY()) {
-				System.out.println("Game Over");
 				running = false;
 			}
 		}
@@ -175,14 +173,14 @@ public class SnakeGameState extends State {
 			g.setColor(Color.WHITE);
 			g.setFont(new Font("Impact", Font.PLAIN, TILE_SIZE));
 			g.drawString("Length: " + this.length, TILE_SIZE / 2, TILE_SIZE + g.getFontMetrics().getDescent());
-		}
-		else {
+		} else {
 			g.setColor(Color.RED);
 			g.setFont(new Font("Arial Black", 1, 25));
-			g.drawString("Game Over", (GamePanel.width - g.getFontMetrics().stringWidth("Game Over")) / 2, (GamePanel.height - g.getFontMetrics().getHeight()) / 2);
+			g.drawString("Game Over", (GamePanel.width - g.getFontMetrics().stringWidth("Game Over")) / 2,
+					(GamePanel.height - g.getFontMetrics().getHeight()) / 2);
 			gameOverTicks++;
-			
-			if(gameOverTicks > 100) {
+
+			if (gameOverTicks > 100) {
 
 				gsm.setState(GameStateManager.MAINSTATE);
 			}

@@ -10,7 +10,7 @@ public class Bewegung {
 
 	public Bewegung() {
 
-		//spielerbewegung
+		// spielerbewegung
 		bew = new Timer();
 		bew.scheduleAtFixedRate(new TimerTask() {
 			public void run() {
@@ -36,7 +36,7 @@ public class Bewegung {
 			}
 		}, 0, 10);
 
-		//ballgeschwindigkeit
+		// ballgeschwindigkeit
 		bewb = new Timer();
 		bewb.scheduleAtFixedRate(new TimerTask() {
 
@@ -47,7 +47,7 @@ public class Bewegung {
 			}
 		}, 1500, 8);
 
-		//ballkollision
+		// ballkollision
 		bw = new Timer();
 		bw.scheduleAtFixedRate(new TimerTask() {
 

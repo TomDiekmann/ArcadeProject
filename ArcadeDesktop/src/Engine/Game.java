@@ -7,18 +7,19 @@ import javax.swing.JFrame;
 import SuperMarioBros.Material;
 
 public class Game extends JFrame {
-	
+
 	/**
 	 * 
 	 */
-	
+
 	private static final long serialVersionUID = 1L;
 
 	public static ImageLoader imageLoader = new ImageLoader();
 	public static GamePanel gamepanel;
+
 	public Game() {
 		super("Arcade Project");
-		
+
 		setLayout(new BorderLayout());
 		gamepanel = new GamePanel();
 		add(gamepanel, BorderLayout.CENTER);
@@ -28,10 +29,9 @@ public class Game extends JFrame {
 		setVisible(true);
 		setResizable(false);
 	}
-	
+
 	public static void main(String args[]) {
 		new Game();
 	}
-	
 
 }

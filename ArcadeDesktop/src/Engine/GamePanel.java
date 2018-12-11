@@ -1,4 +1,5 @@
 package Engine;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -19,27 +20,27 @@ import java.io.IOException;
 
 import javax.swing.JPanel;
 
-
-public class GamePanel extends JPanel implements ComponentListener, Runnable, KeyListener, MouseListener, MouseMotionListener  {
+public class GamePanel extends JPanel
+		implements ComponentListener, Runnable, KeyListener, MouseListener, MouseMotionListener {
 
 	private static final long serialVersionUID = 1L;
 	public static int SCALE = 1;
 	public static int width;
 	public static int height;
 	public static Mouse mouse;
-	
+
 	private static VolatileImage image;
 	public GameStateManager gsm;
 	private Thread thread;
 	private boolean running;
-	
+
 	private final int FPS = 60;
 	private double averageFPS;
-	
+
 	public GamePanel() {
 		super();
-		//width = 784;
-		//height = 441;
+		// width = 784;
+		// height = 441;
 		width = 640;
 		height = 360;
 		setOpaque(false);
@@ -50,7 +51,7 @@ public class GamePanel extends JPanel implements ComponentListener, Runnable, Ke
 		addKeyListener(this);
 		addMouseListener(this);
 		addMouseMotionListener(this);
-		
+
 		mouse = new Mouse(this);
 		gsm = new GameStateManager(GameStateManager.MAINSTATE);
 	}
@@ -62,48 +63,48 @@ public class GamePanel extends JPanel implements ComponentListener, Runnable, Ke
 		thread = new Thread(this);
 		thread.start();
 	}
-	
+
 	@Override
 	public void run() {
 		image = createVolatileImage(width / SCALE, height / SCALE);
-		
+
 		long startTime;
 		long URDTimeMillis;
 		long waitTime;
 		long totalTime = 0;
-		
+
 		int frameCount = 0;
 		int maxFrameCount = 30;
 		long targetTime = 1000 / FPS;
-		
-		while(running) {
+
+		while (running) {
 			startTime = System.nanoTime();
-			
+
 			update();
 			repaint();
-			
+
 			URDTimeMillis = (System.nanoTime() - startTime) / 1000000;
 			waitTime = targetTime - URDTimeMillis;
-			
+
 			try {
 				Thread.sleep(waitTime);
-			} catch(Exception e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+
 			totalTime += System.nanoTime() - startTime;
 			frameCount++;
-			if(frameCount == maxFrameCount) {
+			if (frameCount == maxFrameCount) {
 				averageFPS = 1000.0 / ((totalTime / frameCount) / 1000000);
 				frameCount = 0;
 				totalTime = 0;
 			}
 		}
 	}
-	
+
 	@Override
 	public void paintComponent(Graphics g) {
-		
+
 		Graphics2D g2d = image.createGraphics();
 		g2d.setBackground(new Color(146, 189, 221));
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -113,29 +114,29 @@ public class GamePanel extends JPanel implements ComponentListener, Runnable, Ke
 		g.drawString("FPS: " + averageFPS, 10, 10);
 		g2d.dispose();
 	}
-	
+
 	private void update() {
 		gsm.update();
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		
+
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		
+
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		gsm.mousePressed(e);	
+		gsm.mousePressed(e);
 	}
 
 	@Override
@@ -155,12 +156,12 @@ public class GamePanel extends JPanel implements ComponentListener, Runnable, Ke
 
 	@Override
 	public void keyTyped(KeyEvent arg0) {
-		
+
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-	
+
 	}
 
 	@Override
@@ -170,45 +171,42 @@ public class GamePanel extends JPanel implements ComponentListener, Runnable, Ke
 
 	@Override
 	public void componentHidden(ComponentEvent arg0) {
-		
+
 	}
 
 	@Override
 	public void componentMoved(ComponentEvent arg0) {
-	
+
 	}
 
 	@Override
 	public void componentResized(ComponentEvent e) {
-		if(e.getSource().equals(this)) {
+		if (e.getSource().equals(this)) {
 			width = getWidth();
 			height = getHeight();
-			System.out.println(width + " " + height);
 			image = createVolatileImage(width / SCALE, height / SCALE);
 		}
 	}
-	
+
 	@Override
 	public void componentShown(ComponentEvent arg0) {
 
 	}
-	
+
 	public void scaleChanged() {
 		image = createVolatileImage(width / SCALE, height / SCALE);
 	}
-	
+
 	public static BufferedImage getScaledImage(BufferedImage image, int width, int height) throws IOException {
-	    int imageWidth  = image.getWidth();
-	    int imageHeight = image.getHeight();
+		int imageWidth = image.getWidth();
+		int imageHeight = image.getHeight();
 
-	    double scaleX = (double)width/imageWidth;
-	    double scaleY = (double)height/imageHeight;
-	    AffineTransform scaleTransform = AffineTransform.getScaleInstance(scaleX, scaleY);
-	    AffineTransformOp bilinearScaleOp = new AffineTransformOp(scaleTransform, AffineTransformOp.TYPE_BILINEAR);
+		double scaleX = (double) width / imageWidth;
+		double scaleY = (double) height / imageHeight;
+		AffineTransform scaleTransform = AffineTransform.getScaleInstance(scaleX, scaleY);
+		AffineTransformOp bilinearScaleOp = new AffineTransformOp(scaleTransform, AffineTransformOp.TYPE_BILINEAR);
 
-	    return bilinearScaleOp.filter(
-	        image,
-	        new BufferedImage(width, height, image.getType()));
+		return bilinearScaleOp.filter(image, new BufferedImage(width, height, image.getType()));
 	}
-	
+
 }
