@@ -10,7 +10,7 @@ import snake.SnakeGameState;
 import SuperMarioBros.MenuState;
 import SuperMarioBros.MarioWorldState;
 import pong.PongState;
-import Tron.TronState
+import Tron.TronState;
 
 public class GameStateManager {
 
@@ -34,7 +34,7 @@ public class GameStateManager {
 		states[3] = new SnakeGameState(this);
 		states[4] = new PongState(this);
 		states[5] = new FroggerState(this);
-		states[6] = new TronState(this)
+		states[6] = new TronState(this);
 	}
 
 	public void update() {
