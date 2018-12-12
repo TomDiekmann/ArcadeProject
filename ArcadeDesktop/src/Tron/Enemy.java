@@ -1,7 +1,9 @@
 package Tron;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 public class Enemy {
@@ -33,7 +35,11 @@ public class Enemy {
 				this.moveLeftOrRight();
 
 			int[] dirFront = Direction.getValueFromDirection(this.direction);
-			boolean collisionFront = TronState.gameMap.get(this.posX + dirFront[0]) != null ? TronState.gameMap.get(this.posX + dirFront[0]).get(this.posY + dirFront[1]) != null ? TronState.gameMap.get(this.posX + dirFront[0]).get(this.posY + dirFront[1]) : true : true;
+			boolean collisionFront = TronState.gameMap.get(this.posX + dirFront[0]) != null
+					? TronState.gameMap.get(this.posX + dirFront[0]).get(this.posY + dirFront[1]) != null
+							? TronState.gameMap.get(this.posX + dirFront[0]).get(this.posY + dirFront[1])
+							: true
+					: true;
 
 			if (collisionFront)
 				this.moveLeftOrRight();
@@ -60,12 +66,14 @@ public class Enemy {
 			this.body.add(this.head);
 
 			// Snake outside game area
-			if (posX < 0 || posX >= TronState.WIDTH / TronState.TILE_SIZE || posY < 0 || posY >= TronState.HEIGHT / TronState.TILE_SIZE) {
+			if (posX < 0 || posX >= TronState.WIDTH / TronState.TILE_SIZE || posY < 0
+					|| posY >= TronState.HEIGHT / TronState.TILE_SIZE) {
 				active = false;
 				return;
 			}
 
-			if (TronState.gameMap.get(this.posX) != null && TronState.gameMap.get(this.posX).get(this.posY) != null && TronState.gameMap.get(this.posX).get(this.posY)) {
+			if (TronState.gameMap.get(this.posX) != null && TronState.gameMap.get(this.posX).get(this.posY) != null
+					&& TronState.gameMap.get(this.posX).get(this.posY)) {
 				active = false;
 				return;
 			}
@@ -109,23 +117,65 @@ public class Enemy {
 	public void setHead(BodyPart head) {
 		this.head = head;
 	}
-	
+
 	private void moveLeftOrRight() {
 		int[] dirLeft = Direction.getValueFromDirection(Direction.rotate270(this.direction));
 		int[] dirRight = Direction.getValueFromDirection(Direction.rotate90(this.direction));
 
-		boolean collisionLeft = TronState.gameMap.get(this.posX + dirLeft[0]) != null ? TronState.gameMap.get(this.posX + dirLeft[0]).get(this.posY + dirLeft[1]) != null ? TronState.gameMap.get(this.posX + dirLeft[0]).get(this.posY + dirLeft[1]) : true : true;
-		boolean collisionRight = TronState.gameMap.get(this.posX + dirRight[0]) != null ? TronState.gameMap.get(this.posX + dirRight[0]).get(this.posY + dirRight[1]) != null ? TronState.gameMap.get(this.posX + dirRight[0]).get(this.posY + dirRight[1]) : true : true;
+		boolean collisionLeft = TronState.gameMap.get(this.posX + dirLeft[0]) != null
+				? TronState.gameMap.get(this.posX + dirLeft[0]).get(this.posY + dirLeft[1]) != null
+						? TronState.gameMap.get(this.posX + dirLeft[0]).get(this.posY + dirLeft[1])
+						: true
+				: true;
+		boolean collisionRight = TronState.gameMap.get(this.posX + dirRight[0]) != null
+				? TronState.gameMap.get(this.posX + dirRight[0]).get(this.posY + dirRight[1]) != null
+						? TronState.gameMap.get(this.posX + dirRight[0]).get(this.posY + dirRight[1])
+						: true
+				: true;
 
 		if (collisionLeft && !collisionRight)
 			this.direction = Direction.rotate90(this.direction);
 		else if (!collisionLeft && collisionRight)
 			this.direction = Direction.rotate270(this.direction);
 		else if (!collisionLeft && !collisionRight) {
-			if (this.rand.nextInt(2) == 0)
-				this.direction = Direction.rotate90(this.direction);
-			else
+			HashMap<Integer, HashMap<Integer, Boolean>> map = new HashMap<Integer, HashMap<Integer, Boolean>>();
+
+			for (int i = 0; i < TronState.gameMap.size(); i++) {
+				map.put(i, new HashMap<Integer, Boolean>());
+
+				for (int j = 0; j < TronState.gameMap.get(i).size(); j++) {
+					map.get(i).put(j, TronState.gameMap.get(i).get(j));
+				}
+			}
+
+			map.get(this.posX).replace(this.posY, true);
+			int areaLeft = findLargestArea(map, this.posX + dirLeft[0], this.posY + dirLeft[1], 0);
+			int areaRight = findLargestArea(map, this.posX + dirRight[0], this.posY + dirRight[1], 0);
+
+			if (areaLeft > areaRight)
 				this.direction = Direction.rotate270(this.direction);
+			else if (areaRight > areaLeft)
+				this.direction = Direction.rotate90(this.direction);
+			else {
+				if (this.rand.nextInt(2) == 0)
+					this.direction = Direction.rotate90(this.direction);
+				else
+					this.direction = Direction.rotate270(this.direction);
+			}
 		}
+	}
+
+	private int findLargestArea(HashMap<Integer, HashMap<Integer, Boolean>> map, int prevX, int prevY, int size) {
+		if (map.get(prevX) == null || map.get(prevX).get(prevY) == null || map.get(prevX).get(prevY))
+			return 0;
+
+		map.get(prevX).replace(prevY, true);
+
+		size += findLargestArea(map, prevX + 1, prevY, 1);
+		size += findLargestArea(map, prevX - 1, prevY, 1);
+		size += findLargestArea(map, prevX, prevY + 1, 1);
+		size += findLargestArea(map, prevX, prevY - 1, 1);
+		
+		return size;
 	}
 }

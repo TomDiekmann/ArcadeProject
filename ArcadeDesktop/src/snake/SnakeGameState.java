@@ -213,7 +213,7 @@ public class SnakeGameState extends State {
 		} else {
 			g.setColor(new Color(15, 56, 15));
 			g.setFont(new Font("Impact", Font.PLAIN, TILE_SIZE * 3));
-			g.drawString("Game Over", (GamePanel.width - g.getFontMetrics().stringWidth("Game Over")) / 2, GamePanel.height / 2);
+			g.drawString("Game Over", (GamePanel.width - g.getFontMetrics().stringWidth("Game Over")) / 2, TILE_SIZE * 2 + (GamePanel.height - TILE_SIZE * 3) / 2 + g.getFontMetrics().getDescent());
 			gameOverTicks++;
 
 			if (gameOverTicks > 250) {
