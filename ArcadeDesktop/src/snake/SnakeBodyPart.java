@@ -12,9 +12,9 @@ public class SnakeBodyPart {
 	}
 
 	public void draw(Graphics graphics) {
-		graphics.setColor(Color.WHITE);
-		graphics.fillRect(this.posX * SnakeGameState.TILE_SIZE, this.posY * SnakeGameState.TILE_SIZE,
-				SnakeGameState.TILE_SIZE, SnakeGameState.TILE_SIZE);
+		graphics.setColor(new Color(48, 98, 48));
+		graphics.fillRoundRect(this.posX * SnakeGameState.TILE_SIZE, this.posY * SnakeGameState.TILE_SIZE,
+				SnakeGameState.TILE_SIZE, SnakeGameState.TILE_SIZE, 10, 10);
 	}
 
 	public int getPosX() {
