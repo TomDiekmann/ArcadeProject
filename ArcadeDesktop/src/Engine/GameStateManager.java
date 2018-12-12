@@ -10,6 +10,7 @@ import snake.SnakeGameState;
 import SuperMarioBros.MenuState;
 import SuperMarioBros.MarioWorldState;
 import pong.PongState;
+import Tron.TronState
 
 public class GameStateManager {
 
@@ -19,19 +20,21 @@ public class GameStateManager {
 	public static final int SNAKEGAMESTATE = 3;
 	public static final int PONGSTATE = 4;
 	public static final int FROGGERSTATE = 5;
+	public static final int TRONSTATE = 6;
 
 	private State[] states;
 	private int state;
 
 	public GameStateManager(int state) {
 		this.state = state;
-		states = new State[6];
+		states = new State[7];
 		states[0] = new MainState(this);
 		states[1] = new MenuState(this);
 		states[2] = new MarioWorldState(this, "files/SuperMarioBros/world1.txt");
 		states[3] = new SnakeGameState(this);
 		states[4] = new PongState(this);
 		states[5] = new FroggerState(this);
+		states[6] = new TronState(this)
 	}
 
 	public void update() {
