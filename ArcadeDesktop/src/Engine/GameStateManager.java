@@ -74,6 +74,8 @@ public class GameStateManager {
 		if (state == SNAKEGAMESTATE) {
 			states[SNAKEGAMESTATE] = new SnakeGameState(this);
 		}
+		if (state == TRONSTATE)
+			states[TRONSTATE] = new TronState(this);
 		this.state = state;
 	}
 	
