@@ -2,9 +2,12 @@ package SuperMarioBros;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
 
 import Engine.Game;
 import Engine.GamePanel;
@@ -21,32 +24,20 @@ public class MarioWorldState extends State {
 	public static Player player;
 	public static Camera camera;
 	public static boolean worldGenerated = false;
-
-	private final int menuButtonHeight = 25;
-	private final int menuButtonWidth = 100;
 	private Mouse mouse;
 	private boolean menuOpen = false;
-
-	private int lanButtonX;
-	private int lanButtonY;
-	private boolean lanOpen;
-
-	private int endButtonX;
-	private int endButtonY;
+	private int time;
+	private int timeTicks;
 
 	public MarioWorldState(GameStateManager gsm, String filepath) {
 		super(gsm);
-
-		lanButtonX = GamePanel.width / GamePanel.SCALE / 2 - 50;
-		lanButtonY = GamePanel.height / GamePanel.SCALE / 2 - 30;
-
-		endButtonX = GamePanel.width / GamePanel.SCALE / 2 - 50;
-		endButtonY = GamePanel.height / GamePanel.SCALE / 2 + 5;
 
 		world = new World(filepath);
 		player = new Player(64, 160, 8, 31, 2f);
 		camera = new Camera(player);
 		mouse = GamePanel.mouse;
+		time = 400;
+		timeTicks = 0;
 	}
 
 	@Override
@@ -59,38 +50,30 @@ public class MarioWorldState extends State {
 	public void render(Graphics2D g) {
 		g.clearRect(0, 0, GamePanel.width / GamePanel.SCALE, GamePanel.height / GamePanel.SCALE);
 
-		lanButtonX = GamePanel.width / GamePanel.SCALE / 2 - 50;
-		lanButtonY = GamePanel.height / GamePanel.SCALE / 2 - 30;
-
-		endButtonX = GamePanel.width / GamePanel.SCALE / 2 - 50;
-		endButtonY = GamePanel.height / GamePanel.SCALE / 2 + 5;
-
-		if (!menuOpen) {
-			world.render(g);
-			player.render(g);
+		world.render(g);
+		player.render(g);
+		
+		if(timeTicks == 50) {
+			timeTicks = 0;
+			time--;
 		}
-
-		if (menuOpen) {
-			g.setColor(Color.GRAY);
-			if (mouse.scaledMouseX > lanButtonX && mouse.scaledMouseX < lanButtonX + menuButtonWidth
-					&& mouse.scaledMouseY > lanButtonY && mouse.scaledMouseY < lanButtonY + menuButtonHeight)
-				g.setColor(Color.LIGHT_GRAY);
-			if (lanOpen)
-				g.setColor(Color.DARK_GRAY);
-			g.fill3DRect(lanButtonX, lanButtonY, menuButtonWidth, menuButtonHeight, true);
-
-			g.setColor(Color.GRAY);
-			if (mouse.scaledMouseX > endButtonX && mouse.scaledMouseX < endButtonX + menuButtonWidth
-					&& mouse.scaledMouseY > endButtonY && mouse.scaledMouseY < endButtonY + menuButtonHeight)
-				g.setColor(Color.LIGHT_GRAY);
-			g.fill3DRect(endButtonX, endButtonY, menuButtonWidth, menuButtonHeight, true);
-
-			g.setColor(Color.white);
-			g.setFont(new Font("Impact", Font.PLAIN, 15));
-			g.drawString("Open to LAN", lanButtonX + 16, lanButtonY + 18);
-			g.drawString("End Game", endButtonX + 20, endButtonY + 18);
+		timeTicks++;
+		
+		g.setFont(new Font("Arial Black", 10 ,10));
+		g.setColor(Color.WHITE);
+		g.drawString("MARIO", 20,15);
+		String points = String.valueOf(player.getPoints());
+		int pointsLength = points.length();
+		for(int i = 6; i >pointsLength; i--) {
+			points = "0"+points;
 		}
-
+		g.drawString(points, 20, 27);
+		g.drawString("TIME", GamePanel.width / GamePanel.SCALE - g.getFontMetrics().stringWidth("TIME")-20,15 );
+		g.drawString(String.valueOf(time), GamePanel.width / GamePanel.SCALE - g.getFontMetrics().stringWidth(String.valueOf(time))-20, 27);
+		
+		g.drawString("WORLD",GamePanel.width / GamePanel.SCALE / 2 + GamePanel.width / GamePanel.SCALE / 8, 15);
+		g.drawString("1-1", (GamePanel.width / GamePanel.SCALE / 2 + GamePanel.width / GamePanel.SCALE / 8) + (g.getFontMetrics().stringWidth("WORLD") - g.getFontMetrics().stringWidth("1-1")) / 2, 27);
+		
 	}
 
 	@Override
@@ -124,5 +107,11 @@ public class MarioWorldState extends State {
 	@Override
 	public void mouseMoved(MouseEvent e) {
 
+	}
+
+	@Override
+	public void stateEnd() {
+		// TODO Auto-generated method stub
+		world.stopMusic();
 	}
 }

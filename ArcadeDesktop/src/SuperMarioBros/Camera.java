@@ -16,7 +16,7 @@ public class Camera {
 
 	public void update() {
 
-		if (!((int) player.getX() + player.getWidth() / 2 - GamePanel.width / 2 / GamePanel.SCALE < camX))
+		if (!((int) player.getX() + player.getWidth() / 2 - GamePanel.width / 2 / GamePanel.SCALE < camX) && camX + (GamePanel.width / GamePanel.SCALE) < 3392 - 16)
 			camX = (int) player.getX() + player.getWidth() / 2 - GamePanel.width / 2 / GamePanel.SCALE;
 
 	}

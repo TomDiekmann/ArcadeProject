@@ -25,6 +25,7 @@ public class World {
 	private int blocksY;
 	public Block[][] blocks;
 	public List<RunningMonster> enemies = new ArrayList<RunningMonster>();
+	public List<PointsText> pointsTexts = new ArrayList<PointsText>();
 	private int[][] blockIDs;
 	public static final int BLOCKSIZE = 16;
 	public boolean soundPlayed;
@@ -66,9 +67,8 @@ public class World {
 		}
 
 		g.setColor(new Color(112, 140, 255));
-		g.fillRect(0, 0, Game.gamepanel.width, Game.gamepanel.height);
+		g.fillRect(0, 0, GamePanel.width, GamePanel.height);
 
-		Player player = MarioWorldState.player;
 		int startX = MarioWorldState.camera.getCamX();
 		int startY = MarioWorldState.camera.getCamY();
 		int endX = MarioWorldState.camera.getCamX() + GamePanel.width / GamePanel.SCALE + 16;
@@ -91,6 +91,16 @@ public class World {
 			if (enemy.getX() > startX && enemy.getX() < endX) {
 				enemy.render(g, startX, startY);
 				enemy.triggerMoving();
+			}
+		}
+		
+		int maxTexts = pointsTexts.size();
+		for(int i = 0; i < maxTexts; i++) {
+			pointsTexts.get(i).render(g);
+			if(pointsTexts.get(i).isDone()) {
+				pointsTexts.remove(pointsTexts.get(i));
+				i--;
+				maxTexts--;
 			}
 		}
 	}
@@ -137,7 +147,7 @@ public class World {
 	private void loadWorld2() {
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(new File("files/SuperMarioBros/world.txt")));
-			BufferedImage world = Game.imageLoader.load("images/SuperMarioBros/World1Test.png");
+			BufferedImage world = Game.imageLoader.load("images/SuperMarioBros/World1.png");
 			writer.write((world.getWidth() - 16) / 16 + "\n");
 			writer.write(((int) world.getHeight() / 16 + 1) + "\n");
 			blocks = new Block[world.getHeight() / 16][world.getWidth() / 16];
@@ -232,4 +242,5 @@ public class World {
 
 		return true;
 	}
+	
 }

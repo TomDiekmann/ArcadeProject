@@ -20,7 +20,8 @@ public class Player extends Entity {
 	private Spritesheet bigPlayer;
 	private Spritesheet smallPlayer;
 	private AudioFilePlayer soundPlayer = new AudioFilePlayer();
-
+	private int points;
+	private int lives;
 	private Thread jumpSound;
 	private boolean stopMovingLeft;
 
@@ -49,6 +50,8 @@ public class Player extends Entity {
 				soundPlayer.play("sounds/SuperMarioBros/highJump.wav");
 			}
 		};
+		points = 0;
+		lives = 3;
 	}
 
 	@Override
@@ -65,8 +68,10 @@ public class Player extends Entity {
 
 		RunningMonster tmp = MarioWorldState.world.enemyAt((int) x + width / 2, (int) y + height);
 		if (tmp != null && !tmp.isDead()) {
-			if (falling && (int) (y + height) - 4 <= (int) tmp.getY() && (int) (y + height) + 4 >= (int) tmp.getY()) {
+			if (falling && (int) (y + height) - 5 <= (int) tmp.getY() && (int) (y + height) + 5 >= (int) tmp.getY()) {
 				tmp.headHit();
+				points += 100;
+				MarioWorldState.world.pointsTexts.add(new PointsText("100",(int)tmp.getX() - MarioWorldState.camera.getCamX(),(int) tmp.getY() -MarioWorldState.camera.getCamY()));
 				falling = false;
 				jumping = true;
 				new Thread() {
@@ -255,5 +260,13 @@ public class Player extends Entity {
 	public void mouseReleased(MouseEvent e) {
 		destroyingBlock = false;
 
+	}
+	
+	public int getLives() {
+		return lives;
+	}
+	
+	public int getPoints() {
+		return points;
 	}
 }

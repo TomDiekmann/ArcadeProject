@@ -253,4 +253,10 @@ public class SnakeGameState extends State {
 	@Override
 	public void mouseMoved(MouseEvent e) {
 	}
+
+	@Override
+	public void stateEnd() {
+		// TODO Auto-generated method stub
+		
+	}
 }

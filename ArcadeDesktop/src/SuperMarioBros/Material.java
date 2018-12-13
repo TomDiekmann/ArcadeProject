@@ -10,7 +10,8 @@ public enum Material {
 	HILL_UP(272, true), HILL_TOP(273, true), HILL_DOWN(274, true), HILL_BASE1(305, true), HILL_BASE2(306, true),
 	HILL_BASE3(307, true), BUSH_UP(308, true), BUSH_TOP(309, true), BUSH_DOWN(310, true), CLOUD_TOP_LEFT(660, true),
 	CLOUD_TOP_MID(661, true), CLOUD_TOP_RIGHT(662, true), CLOUD_DOWN_LEFT(693, true), CLOUD_DOWN_MID(694, true),
-	CLOUD_DOWN_RIGHT(695, true);
+	CLOUD_DOWN_RIGHT(695, true),  CASTLE_TOP_BLUE(11, true), CASTLE_LEFT_BRICKS(12,true), CASTLE_BRICKS(13,true), CASTLE_RIGHT_BRICKS(14,true),
+	CASTLE_TOP_BROWN(44,true),CASTLE_DOOR_TOP(45,true), BLACK(46, true), POLE_TOP(280,true), POLE(313,true);
 
 	private int id;
 	private boolean walkable;

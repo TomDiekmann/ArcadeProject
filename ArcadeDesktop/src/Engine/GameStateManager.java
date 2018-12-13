@@ -46,6 +46,12 @@ public class GameStateManager {
 	}
 
 	public void keyPressed(KeyEvent e, int k) {
+		if(k == KeyEvent.VK_ESCAPE) {
+			states[state].stateEnd();
+			GamePanel.SCALE = 1;
+			Game.gamepanel.scaleChanged();
+			state = MAINSTATE;
+		}
 		states[state].keyPressed(e, k);
 	}
 
@@ -71,11 +77,15 @@ public class GameStateManager {
 			Game.gamepanel.scaleChanged();
 			states[MARIOWORLD] = new MarioWorldState(this, "files/SuperMarioBros/world1.txt");
 		}
-		if (state == SNAKEGAMESTATE) {
+		else if (state == SNAKEGAMESTATE) {
 			states[SNAKEGAMESTATE] = new SnakeGameState(this);
 		}
-		if (state == TRONSTATE)
+		else if (state == TRONSTATE)
 			states[TRONSTATE] = new TronState(this);
+		else if(state == PONGSTATE)
+			states[PONGSTATE] = new PongState(this);
+		else if(state == FROGGERSTATE)
+			states[FROGGERSTATE] = new FroggerState(this);
 		this.state = state;
 	}
 	

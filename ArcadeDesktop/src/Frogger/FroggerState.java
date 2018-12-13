@@ -288,4 +288,9 @@ public class FroggerState extends Engine.State {
 	public static void setPointtable(BufferedImage pointtable) {
 		FroggerState.pointtable = pointtable;
 	}
+
+	@Override
+	public void stateEnd() {
+		musicPlayer.stop();
+	}
 }

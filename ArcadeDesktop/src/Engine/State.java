@@ -15,6 +15,8 @@ public abstract class State {
 	public abstract void update();
 
 	public abstract void render(Graphics2D g);
+	
+	public abstract void stateEnd();
 
 	public abstract void keyPressed(KeyEvent e, int k);
 
