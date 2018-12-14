@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
+import Engine.Animation;
 import Engine.AudioFilePlayer;
 import Engine.Game;
 import Engine.GamePanel;
@@ -34,6 +35,15 @@ public class Player extends Entity {
 	private int dieAnimationCounter = 0;
 	private Thread dieSound;
 
+	private Thread poleSound;
+	private Animation climpAnimation;
+	public boolean climpAnimationStarted;
+	
+	public boolean endWorld;
+	
+	private int shellImuneTime = 0;
+
+
 	public Player(float x, float y, int width, int height, float speed) {
 		super(new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/BigWalking.png"), 2, 16, 32), x, y, width,
 				height, speed, states, frames);
@@ -52,6 +62,14 @@ public class Player extends Entity {
 				soundPlayer.play("sounds/SuperMarioBros/highJump.wav");
 			}
 		};
+		poleSound = new Thread() {
+			public void run() {
+				soundPlayer.play("sounds/SuperMarioBros/flagpole.wav");
+			}
+		};
+		points = 0;
+		lives = 3;
+
 	}
 
 	@Override
@@ -171,7 +189,7 @@ public class Player extends Entity {
 
 	@Override
 	public void render(Graphics2D g) {
-		if (!died) {
+		if (!died && !climpAnimationStarted) {
 			if (dieAnimationCounter != 0) {
 				if (dieAnimationCounter % 10 == 0) {
 					if (playerIsSmall) {
@@ -189,9 +207,10 @@ public class Player extends Entity {
 				}
 				dieAnimationCounter--;
 			}
-			g.drawImage(animation.getImage(), GamePanel.width / 2 / GamePanel.SCALE - width / 2 - 7,
-					GamePanel.height / 2 / GamePanel.SCALE - height / 2, null);
-		} else {
+			g.drawImage(animation.getImage(), (int) (x - MarioWorldState.camera.getCamX()),
+					(int) (y - MarioWorldState.camera.getCamY()), null);
+		} else if(died){
+
 			float drawY;
 			if (!down) {
 				drawY = y + diffY;
@@ -211,6 +230,62 @@ public class Player extends Entity {
 			g.drawImage(Game.imageLoader.load("images/SuperMarioBros/died.png"),
 					(int) GamePanel.width / 2 / GamePanel.SCALE - width / 2 - 7,
 					(int) (GamePanel.height / 2 / GamePanel.SCALE - height / 2 + diffY), null);
+		}
+
+		if (x <= MarioWorldState.camera.getCamX()) {
+			left = false;
+			stopMovingLeft = true;
+		} else
+			stopMovingLeft = false;
+		
+		if(MarioWorldState.world.getBlock((int)x,(int) y).getMaterial() == Material.POLE && !climpAnimationStarted) {
+			if(!playerIsSmall)
+				climpAnimation = new Animation(new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/climpBig.png"),2,16,32), 150L, 0, 2);
+			else
+				climpAnimation = new Animation(new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/climpSmall.png"),2,16,16), 150L, 0, 2);
+			climpAnimationStarted = true; 
+			stopMoving = true;
+		}
+		
+		if(climpAnimationStarted && !endWorld) {
+			MarioWorldState.stopTimeCounting();
+			if((MarioWorldState.world.getBlock((int)x,(int) y + 17).getMaterial() == Material.POLE && playerIsSmall) || (MarioWorldState.world.getBlock((int)x,(int) y + 33).getMaterial() == Material.POLE && !playerIsSmall)) {
+				climpAnimation.update();
+				y++;
+				MarioWorldState.world.stopMusic();
+				if(!poleSound.isAlive()) {
+					poleSound.start();
+				}
+				g.drawImage(climpAnimation.getImage(),(int) x - MarioWorldState.camera.getCamX(),(int) y - MarioWorldState.camera.getCamY(), null);
+			}
+			else {
+				g.drawImage(animation.getImage(), (int) (x - MarioWorldState.camera.getCamX()),
+						(int) (y - MarioWorldState.camera.getCamY()), null);
+				soundPlayer = new AudioFilePlayer();
+				if(!right) {
+					new Thread() {
+						public void run() {
+							soundPlayer.play("sounds/SuperMarioBros/stageClear.wav");
+						}
+					}.start();
+				}
+				stopMoving = false; 
+				right = true;
+				if(MarioWorldState.world.getBlock((int)x,(int) y).getMaterial() == Material.BLACK || MarioWorldState.world.getBlock((int)x,(int) y).getMaterial() == Material.CASTLE_LEFT_BRICKS || MarioWorldState.world.getBlock((int)x,(int) y).getMaterial()  == Material.CASTLE_BRICKS) {
+					right = false;
+					endWorld = true;
+				}
+			}
+		}
+		
+		if(endWorld) {
+			if(MarioWorldState.time > 0) {
+				MarioWorldState.time--;
+				points += 50;
+			}
+			else {
+				Game.gamepanel.gsm.setState(GameStateManager.MAINSTATE);
+			}
 		}
 	}
 

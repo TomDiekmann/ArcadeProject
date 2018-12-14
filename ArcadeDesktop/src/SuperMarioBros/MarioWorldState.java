@@ -24,9 +24,9 @@ public class MarioWorldState extends State {
 	public static Player player;
 	public static Camera camera;
 	public static boolean worldGenerated = false;
-	private Mouse mouse;
+	private static boolean stopTime;
 	private boolean menuOpen = false;
-	private int time;
+	public static int time;
 	private int timeTicks;
 
 	public MarioWorldState(GameStateManager gsm, String filepath) {
@@ -35,7 +35,6 @@ public class MarioWorldState extends State {
 		world = new World(filepath);
 		player = new Player(64, 160, 8, 31, 2f);
 		camera = new Camera(player);
-		mouse = GamePanel.mouse;
 		time = 400;
 		timeTicks = 0;
 	}
@@ -57,7 +56,8 @@ public class MarioWorldState extends State {
 			timeTicks = 0;
 			time--;
 		}
-		timeTicks++;
+		if(!stopTime)
+			timeTicks++;
 		
 		g.setFont(new Font("Arial Black", 10 ,10));
 		g.setColor(Color.WHITE);
@@ -113,5 +113,9 @@ public class MarioWorldState extends State {
 	public void stateEnd() {
 		// TODO Auto-generated method stub
 		world.stopMusic();
+	}
+	
+	public static void stopTimeCounting() {
+		stopTime = true;
 	}
 }
