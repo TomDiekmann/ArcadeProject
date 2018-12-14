@@ -86,6 +86,11 @@ public class GameStateManager {
 			states[PONGSTATE] = new PongState(this);
 		else if(state == FROGGERSTATE)
 			states[FROGGERSTATE] = new FroggerState(this);
+		else if(state == MAINSTATE) {
+			GamePanel.SCALE = 1;
+			Game.gamepanel.scaleChanged();
+		}
+			
 		this.state = state;
 	}
 	
