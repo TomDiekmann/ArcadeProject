@@ -18,13 +18,15 @@ public class Player extends Entity {
 	private static int[] states = { 0, 1, 2, 3 };
 	private static int[] frames = { 1, 1, 2, 2 };
 	private boolean playerIsSmall;
+	private boolean playerIsFireMario;
+	private boolean invincible;
+	private int invicibilityTime;
 	private Spritesheet bigPlayer;
 	private Spritesheet smallPlayer;
+	private Spritesheet firePlayer;
 	private AudioFilePlayer soundPlayer = new AudioFilePlayer();
-	private int points;
-	private int lives;
+
 	private Thread jumpSound;
-	private boolean stopMovingLeft;
 
 	// Die animation
 	public boolean died;
@@ -32,7 +34,7 @@ public class Player extends Entity {
 	private boolean down;
 	private int dieAnimationCounter = 0;
 	private Thread dieSound;
-	
+
 	private Thread poleSound;
 	private Animation climpAnimation;
 	public boolean climpAnimationStarted;
@@ -41,12 +43,15 @@ public class Player extends Entity {
 	
 	private int shellImuneTime = 0;
 
+
 	public Player(float x, float y, int width, int height, float speed) {
 		super(new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/BigWalking.png"), 2, 16, 32), x, y, width,
 				height, speed, states, frames);
 		bigPlayer = new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/BigWalking.png"), 2, 16, 32);
 		smallPlayer = new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/SmallWalking.png"), 2, 16, 16);
+		firePlayer = new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/FireWalking.png"), 2, 16, 32);
 		playerIsSmall = false;
+		invincible = false;
 		dieSound = new Thread() {
 			public void run() {
 				soundPlayer.play("sounds/SuperMarioBros/MarioDies.wav");
@@ -64,12 +69,15 @@ public class Player extends Entity {
 		};
 		points = 0;
 		lives = 3;
+
 	}
 
 	@Override
 	public void update() {
 		super.update();
-
+		
+		//System.out.println(y);
+		
 		if (destroyingBlock) {
 			destroyBlock();
 		}
@@ -80,10 +88,8 @@ public class Player extends Entity {
 
 		RunningMonster tmp = MarioWorldState.world.enemyAt((int) x + width / 2, (int) y + height);
 		if (tmp != null && !tmp.isDead()) {
-			if (falling && (int) (y + height) - 5 <= (int) tmp.getY() && (int) (y + height) + 5 >= (int) tmp.getY()) {
+			if (falling && (int) (y + height) - 4 <= (int) tmp.getY() && (int) (y + height) + 4 >= (int) tmp.getY()) {
 				tmp.headHit();
-				points += 100;
-				MarioWorldState.world.pointsTexts.add(new PointsText("100",(int)tmp.getX() - MarioWorldState.camera.getCamX(),(int) tmp.getY() -MarioWorldState.camera.getCamY()));
 				falling = false;
 				jumping = true;
 				new Thread() {
@@ -92,7 +98,11 @@ public class Player extends Entity {
 					}
 				}.start();
 			} else {
-				if (!tmp.isStaticShell() && (!tmp.isShell() || shellImuneTime == 0)) {
+				if(invincible) {
+					//TO-DO implement mehtod defated in claas Running Monster
+					tmp.defeated();
+				}
+				if (!tmp.isStaticShell()) {
 					if (!playerIsSmall && dieAnimationCounter == 0) {
 						dieAnimationCounter = 110;
 						stopMoving = true;
@@ -100,39 +110,81 @@ public class Player extends Entity {
 						died = true;
 						stopMoving = true;
 						MarioWorldState.world.stopMusic();
-						if (!dieSound.isAlive()){
+						if (!dieSound.isAlive())
 							dieSound.start();
-						}
-					}
-				} else {
-					if (x < tmp.getX() + 16 && x > tmp.getX()) {
-						tmp.startMoving(true);
-						shellImuneTime = 2;
-					} else if (x + 16 > tmp.getX()) {
-						tmp.startMoving(false);
-						shellImuneTime = 2;
 					}
 				}
+				else {
+					if(x > tmp.getCenterX()) {
+						tmp.startMoving(true);
+					}
+					else
+						tmp.startMoving(false);
+				}
 			}
-			if (shellImuneTime > 0)
-				shellImuneTime--;
+		}
+
+			
+		Item nextItem = MarioWorldState.world.itemAt((int) x + width / 2, (int) y + height);
+		if(nextItem != null) {
+			//System.out.println("item gefunden");
+			switch(nextItem.getType()) {
+			case Mushroom:
+				if(playerIsSmall) {					
+					height = 32;
+					changeSprite(bigPlayer);
+					if(playerIsSmall) {
+						y -= 16;
+					}
+					new Thread() {
+						public void run() {
+							soundPlayer.play("sounds/SuperMarioBros/MarioGetsStronger.wav");
+						}
+					}.start();
+					playerIsSmall = false;
+				}
+				break;
+			case FireFlower:
+				if(!playerIsFireMario) {
+					playerIsFireMario = true;
+					changeSprite(firePlayer);
+					height = 32;
+					if(playerIsSmall) {
+						y -= 16;
+					}
+					new Thread() {
+						public void run() {
+							soundPlayer.play("sounds/SuperMarioBros/MarioGetsStronger.wav");
+						}
+					}.start();
+				}
+				break;
+			case Up_Mushroom:
+				//TO-DO implement live-Counter
+				new Thread() {
+					public void run() {
+						soundPlayer.play("sounds/SuperMarioBros/1-UpSoundtrack.wav");
+					}
+				}.start();
+				break;
+			case Star:
+				invincible = true;
+				invicibilityTime = 1000;		
+				MarioWorldState.world.playStarSoundtrack();
+			}
+			MarioWorldState.world.items.remove(nextItem);
 
 		}
 		
-		if(y>185 && !died) {
-			MarioWorldState.world.stopMusic();
-			Game.gamepanel.gsm.setState(GameStateManager.MARIOWORLD);
+		if(invincible) {
+			invicibilityTime--;
+			//System.out.println(invicibilityTime);
+			if(invicibilityTime == 0) {
+				invincible = false;
+				invicibilityTime = 0;
+				MarioWorldState.world.stopStarSoundtrack();
+			}
 		}
-
-//		//Check if items nearby
-//		for(int i = 0; i < Playstate.world.items.size(); i++) {
-//			if(Playstate.world.items.get(i).getX() > (x  - Game.ITEM_SIZE - 8) && Playstate.world.items.get(i).getX() < (x +8)) {
-//				if(Playstate.world.items.get(i).getY() > (y - 16) && Playstate.world.items.get(i).getY() < (y + height / 2 + 16)) {
-//					Playstate.inventory.addItem(Playstate.world.items.get(i));
-//					Playstate.world.items.remove(i);
-//				}
-//			}
-//		}
 	}
 
 	@Override
@@ -158,6 +210,7 @@ public class Player extends Entity {
 			g.drawImage(animation.getImage(), (int) (x - MarioWorldState.camera.getCamX()),
 					(int) (y - MarioWorldState.camera.getCamY()), null);
 		} else if(died){
+
 			float drawY;
 			if (!down) {
 				drawY = y + diffY;
@@ -173,6 +226,7 @@ public class Player extends Entity {
 					Game.gamepanel.gsm.setState(GameStateManager.MARIOWORLD);
 				}
 			}
+			System.out.println(drawY);
 			g.drawImage(Game.imageLoader.load("images/SuperMarioBros/died.png"),
 					(int) GamePanel.width / 2 / GamePanel.SCALE - width / 2 - 7,
 					(int) (GamePanel.height / 2 / GamePanel.SCALE - height / 2 + diffY), null);
@@ -233,15 +287,14 @@ public class Player extends Entity {
 				Game.gamepanel.gsm.setState(GameStateManager.MAINSTATE);
 			}
 		}
-		
 	}
 
 	// BLOCK DESTROYING
 	private void destroyBlock() {
 		if (isMouseOnScreen()) {
 			if (isBlockInRadius(new Point(GamePanel.mouse.mouseConvertedX, GamePanel.mouse.mouseConvertedY), 2)) {
-				MarioWorldState.world.getBlock(GamePanel.mouse.mouseConvertedX, GamePanel.mouse.mouseConvertedY)
-						.destroyBlock();
+				System.out.println("dada");
+				MarioWorldState.world.getBlock(GamePanel.mouse.mouseConvertedX, GamePanel.mouse.mouseConvertedY).destroyBlock();
 			}
 		}
 	}
@@ -280,8 +333,7 @@ public class Player extends Entity {
 	public void keyPressed(KeyEvent e, int k) {
 		switch (k) {
 		case KeyEvent.VK_A:
-			if (!stopMovingLeft)
-				left = true;
+			left = true;
 			break;
 		case KeyEvent.VK_D:
 			right = true;
@@ -322,13 +374,5 @@ public class Player extends Entity {
 	public void mouseReleased(MouseEvent e) {
 		destroyingBlock = false;
 
-	}
-	
-	public int getLives() {
-		return lives;
-	}
-	
-	public int getPoints() {
-		return points;
 	}
 }
