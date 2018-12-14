@@ -284,6 +284,13 @@ public class Player extends Entity {
 			if(MarioWorldState.time > 0) {
 				MarioWorldState.time--;
 				points += 50;
+				if(points % 500 == 0) {
+				new Thread() {
+					public void run() {
+						soundPlayer.play("sounds/SuperMarioBros/Beep.wav");
+					}
+				}.start();
+				}
 			}
 			else {
 				Game.gamepanel.gsm.setState(GameStateManager.MAINSTATE);

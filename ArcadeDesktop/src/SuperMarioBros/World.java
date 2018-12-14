@@ -55,7 +55,7 @@ public class World {
 		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 2810, 176));
 		enemies.add(new RunningMonster(RunningMonster.Type.KOOPA_TROOPER, 1714, 168));
 		soundPlayed = false;
-		items.add(new Item(Item.Type.Star, 152, 192));
+		items.add(new Item(Item.Type.FireFlower, 152, 192));
 		musicThread = new Thread() {
 			public void run() {
 				musicPlayer.play("sounds/SuperMarioBros/01-main-theme-overworld.wav");
