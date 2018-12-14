@@ -62,7 +62,7 @@ public class World {
 	}
 
 	public void render(Graphics2D g) {
-		if (!musicThread.isAlive() && !MarioWorldState.player.died && Game.gamepanel.gsm.getActiveState() == GameStateManager.MARIOWORLD) {
+		if (!musicThread.isAlive() && !MarioWorldState.player.died && Game.gamepanel.gsm.getActiveState() == GameStateManager.MARIOWORLD && !MarioWorldState.player.climpAnimationStarted) {
 			musicThread.start();
 		}
 

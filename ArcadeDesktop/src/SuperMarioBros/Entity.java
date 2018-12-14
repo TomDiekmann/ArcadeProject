@@ -19,7 +19,7 @@ public abstract class Entity extends GameObject {
 	protected float dx;
 	protected float dy;
 	protected float speed;
-
+	
 	protected boolean right;
 	protected boolean left;
 	protected boolean falling;
