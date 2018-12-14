@@ -18,8 +18,12 @@ public class Player extends Entity {
 	private static int[] states = { 0, 1, 2, 3 };
 	private static int[] frames = { 1, 1, 2, 2 };
 	private boolean playerIsSmall;
+	private boolean playerIsFireMario;
+	private boolean invincible;
+	private int invicibilityTime;
 	private Spritesheet bigPlayer;
 	private Spritesheet smallPlayer;
+	private Spritesheet firePlayer;
 	private AudioFilePlayer soundPlayer = new AudioFilePlayer();
 	private int points;
 	private int lives;
@@ -46,6 +50,7 @@ public class Player extends Entity {
 				height, speed, states, frames);
 		bigPlayer = new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/BigWalking.png"), 2, 16, 32);
 		smallPlayer = new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/SmallWalking.png"), 2, 16, 16);
+		firePlayer = new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/FireWalking.png"), 2, 16, 32);
 		playerIsSmall = false;
 		dieSound = new Thread() {
 			public void run() {
@@ -124,15 +129,66 @@ public class Player extends Entity {
 			Game.gamepanel.gsm.setState(GameStateManager.MARIOWORLD);
 		}
 
-//		//Check if items nearby
-//		for(int i = 0; i < Playstate.world.items.size(); i++) {
-//			if(Playstate.world.items.get(i).getX() > (x  - Game.ITEM_SIZE - 8) && Playstate.world.items.get(i).getX() < (x +8)) {
-//				if(Playstate.world.items.get(i).getY() > (y - 16) && Playstate.world.items.get(i).getY() < (y + height / 2 + 16)) {
-//					Playstate.inventory.addItem(Playstate.world.items.get(i));
-//					Playstate.world.items.remove(i);
-//				}
-//			}
-//		}
+		Item nextItem = MarioWorldState.world.itemAt((int) x + width / 2, (int) y + height);
+		if(nextItem != null) {
+			//System.out.println("item gefunden");
+			switch(nextItem.getType()) {
+			case Mushroom:
+				if(playerIsSmall) {					
+					height = 32;
+					changeSprite(bigPlayer);
+					if(playerIsSmall) {
+						y -= 16;
+					}
+					new Thread() {
+						public void run() {
+							soundPlayer.play("sounds/SuperMarioBros/MarioGetsStronger.wav");
+						}
+					}.start();
+					playerIsSmall = false;
+				}
+				break;
+			case FireFlower:
+				if(!playerIsFireMario) {
+					playerIsFireMario = true;
+					changeSprite(firePlayer);
+					height = 32;
+					if(playerIsSmall) {
+						y -= 16;
+					}
+					new Thread() {
+						public void run() {
+							soundPlayer.play("sounds/SuperMarioBros/MarioGetsStronger.wav");
+						}
+					}.start();
+				}
+				break;
+			case Up_Mushroom:
+				//TO-DO implement live-Counter
+				new Thread() {
+					public void run() {
+						soundPlayer.play("sounds/SuperMarioBros/1-UpSoundtrack.wav");
+					}
+				}.start();
+				break;
+			case Star:
+				invincible = true;
+				invicibilityTime = 1000;		
+				MarioWorldState.world.playStarSoundtrack();
+			}
+			MarioWorldState.world.items.remove(nextItem);
+
+		}
+		
+		if(invincible) {
+			invicibilityTime--;
+			//System.out.println(invicibilityTime);
+			if(invicibilityTime == 0) {
+				invincible = false;
+				invicibilityTime = 0;
+				MarioWorldState.world.stopStarSoundtrack();
+			}
+		}
 	}
 
 	@Override

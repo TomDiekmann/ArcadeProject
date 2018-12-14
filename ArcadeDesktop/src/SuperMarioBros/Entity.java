@@ -81,59 +81,73 @@ public abstract class Entity extends GameObject {
 		World world = MarioWorldState.world;
 		float tox = x + dx;
 		float toy = y + dy;
-
+		
 		calculateCorners(tox, y - 1);
-		if (dx < 0) {
-			if (topLeft || bottomLeft || midLeft) {
+		if(dx < 0) {
+			if(topLeft || bottomLeft || midLeft) {
 				dx = 0;
 				saveCollision = true;
 			}
 		}
-
-		if (dx > 0) {
-			if (topRight || bottomRight || midRight) {
+		
+		if(dx > 0) {
+			if(topRight || bottomRight || midRight) {
 				dx = 0;
 				saveCollision = true;
 			}
 		}
-
-		calculateCorners(x, toy);
-		if (topLeft || topRight) {
+		
+		calculateCornersWithoutMidTile(x, toy);
+		if(topLeft || topRight) {
 			dy = 0;
 			falling = true;
-			int playerrow = MarioWorldState.world.getRowTile((int) toy);
+			int playerrow = MarioWorldState.world.getRowTile((int)toy);
 			y = (playerrow + 1) * World.BLOCKSIZE;
 		}
-
-		if (bottomLeft || bottomRight && falling) {
+		
+		if(bottomLeft || bottomRight && falling) {
 			falling = false;
-			int playerRow = world.getRowTile((int) toy + height);
+			int playerRow = world.getRowTile((int)toy + height);
 			y = (playerRow * World.BLOCKSIZE - height);
 			dy = 0;
-		}
-
-		if (!bottomLeft && !bottomRight) {
-			if (!jumping) {
-				hasFallen = true;
-				falling = true;
-			} else
-				falling = false;
+		} 
+		
+		if(!bottomLeft && !bottomRight) {
+				if(!jumping) {
+					hasFallen = true;
+					falling = true;
+				}
+				else falling = false;
 		}
 	}
-
+	
+	
 	private void calculateCorners(float x, float y) {
 		World world = MarioWorldState.world;
-		int leftTile = world.getColTile((int) x);
-		int rightTile = world.getColTile((int) x + width - 1);
-		int topTile = world.getRowTile((int) y);
-		int bottomTile = world.getRowTile((int) y + height);
-		int midTile = world.getRowTile((int) y + height / 2);
+		int leftTile = world.getColTile((int)x);
+		int rightTile = world.getColTile((int)x + width - 1);
+		int topTile = world.getRowTile((int)y);
+		int bottomTile = world.getRowTile((int)y + height);
+		int midTile = world.getRowTile((int)y + height / 2);
 		topLeft = !world.getBlocks()[topTile][leftTile].getMaterial().isWalkable();
 		bottomLeft = !world.getBlocks()[bottomTile][leftTile].getMaterial().isWalkable();
 		topRight = !world.getBlocks()[topTile][rightTile].getMaterial().isWalkable();
 		bottomRight = !world.getBlocks()[bottomTile][rightTile].getMaterial().isWalkable();
 		midLeft = !world.getBlocks()[midTile][leftTile].getMaterial().isWalkable();
 		midRight = !world.getBlocks()[midTile][rightTile].getMaterial().isWalkable();
+	}
+	
+	private void calculateCornersWithoutMidTile(float x, float y) {
+		World world = MarioWorldState.world;
+		int leftTile = world.getColTile((int)x);
+		int rightTile = world.getColTile((int)x + width - 1);
+		int topTile = world.getRowTile((int)y);
+		int bottomTile = world.getRowTile((int)y + height);
+		int midTile = world.getRowTile((int)y + height / 2);
+		topLeft = !world.getBlocks()[topTile][leftTile].getMaterial().isWalkable();
+		bottomLeft = !world.getBlocks()[bottomTile][leftTile].getMaterial().isWalkable();
+		topRight = !world.getBlocks()[topTile][rightTile].getMaterial().isWalkable();
+		bottomRight = !world.getBlocks()[bottomTile][rightTile].getMaterial().isWalkable();
 	}
 
 	private void calculateMovement() {

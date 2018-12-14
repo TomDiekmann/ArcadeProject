@@ -26,6 +26,7 @@ public class World {
 	public Block[][] blocks;
 	public List<RunningMonster> enemies = new ArrayList<RunningMonster>();
 	public List<PointsText> pointsTexts = new ArrayList<PointsText>();
+	public List<Item> items = new ArrayList<Item>();
 	private int[][] blockIDs;
 	public static final int BLOCKSIZE = 16;
 	public boolean soundPlayed;
@@ -54,6 +55,7 @@ public class World {
 		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 2810, 176));
 		enemies.add(new RunningMonster(RunningMonster.Type.KOOPA_TROOPER, 1714, 168));
 		soundPlayed = false;
+		items.add(new Item(Item.Type.Star, 152, 192));
 		musicThread = new Thread() {
 			public void run() {
 				musicPlayer.play("sounds/SuperMarioBros/01-main-theme-overworld.wav");
@@ -101,6 +103,14 @@ public class World {
 				pointsTexts.remove(pointsTexts.get(i));
 				i--;
 				maxTexts--;
+			}
+		}
+		
+		for(int i = 0; i < items.size();i++) {
+			Item item = items.get(i);
+			item.update();
+			if(item.getX() > startX && item.getX() < endX) {
+				item.render(g, startX, startY);
 			}
 		}
 	}
@@ -241,6 +251,38 @@ public class World {
 		}
 
 		return true;
+	}
+	
+	public void playStarSoundtrack() {
+		musicThread.stop();
+		musicThread =  new Thread() {
+			public void run() {
+				 musicPlayer.play("sounds/SuperMarioBros/StarTheme.wav");
+			}
+		}; 
+		musicThread.start();
+	}
+	
+	@SuppressWarnings("deprecation")
+	public void stopStarSoundtrack() {
+		musicThread.stop();
+		musicThread =  new Thread() {
+			public void run() {
+				 musicPlayer.play("sounds/SuperMarioBros/01-main-theme-overworld.wav");
+			}
+		}; 
+		musicThread.start();
+	}
+	
+	public Item itemAt(int x, int y) {
+		for(int i = 0; i < items.size(); i++) {
+			if(items.get(i).getX() <= x && items.get(i).getX() + items.get(i).getWidth()  >= x) {
+				if(items.get(i).getY() <= y && items.get(i).getY() + items.get(i).getHeight()  >= y) {
+					return items.get(i);				
+				}
+			}
+		}
+		return null;
 	}
 	
 }
