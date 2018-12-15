@@ -43,6 +43,13 @@ public class MarioWorldState extends State {
 	public void update() {
 		camera.update();
 		player.update();
+		
+		if(timeTicks == 50) {
+			timeTicks = 0;
+			time--;
+		}
+		if(!stopTime)
+			timeTicks++;
 	}
 
 	@Override
@@ -51,13 +58,6 @@ public class MarioWorldState extends State {
 
 		world.render(g);
 		player.render(g);
-		
-		if(timeTicks == 50) {
-			timeTicks = 0;
-			time--;
-		}
-		if(!stopTime)
-			timeTicks++;
 		
 		g.setFont(new Font("Arial Black", 10 ,10));
 		g.setColor(Color.WHITE);
