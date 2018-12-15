@@ -109,8 +109,6 @@ public class GamePanel extends JPanel
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		gsm.render(g2d);
 		g.drawImage(image, 0, 0, width, height, null);
-		g.setColor(Color.white);
-		g.drawString("FPS: " + averageFPS, 10, 10);
 		g2d.dispose();
 	}
 

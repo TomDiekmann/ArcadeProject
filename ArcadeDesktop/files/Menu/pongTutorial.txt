@@ -1,0 +1,3 @@
+Steuerung:
+Pfeiltasten: Rechter Balken
+W/S: Linker Balken

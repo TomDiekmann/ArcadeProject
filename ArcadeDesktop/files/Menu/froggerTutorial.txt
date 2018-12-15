@@ -1,0 +1,5 @@
+Steuerung:
+W: Nach vorne springen
+A: Nach links springen
+S: Nach hinten springen
+D: Nach rechts springen

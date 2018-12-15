@@ -1,0 +1,5 @@
+Steuerung:
+W: Nach oben fahren
+A: Nach links fahren
+S: Nach unten fahren
+D: Nach rechts fahren

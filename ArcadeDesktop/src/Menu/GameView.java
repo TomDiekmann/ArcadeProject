@@ -1,8 +1,11 @@
 package Menu;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import Engine.GamePanel;
 
@@ -10,21 +13,41 @@ public class GameView {
 	private String name;
 	private int state;
 	private boolean selected;
+	private BufferedImage gameCover;
+	private BufferedImage gameScreen;
+	private ArrayList<String> tutorial;
 
-	public GameView(String name, int state) {
+	public GameView(String name, int state, BufferedImage gameCover, BufferedImage gameScreen, ArrayList<String> tutorial) {
 		this.name = name;
 		this.state = state;
 		selected = false;
+		this.gameCover = gameCover;
+		this.gameScreen = gameScreen;
+		this.tutorial = tutorial;
 	}
 
-	public void render(Graphics2D g, int midY) {
-		g.setColor(Color.black);
-		if (selected)
-			g.setColor(Color.RED);
-		g.setFont(new Font("Arial Black", 1, 20));
-		int x = (GamePanel.width - g.getFontMetrics().stringWidth(name)) / 2;
-		int y = midY - g.getFontMetrics().getHeight() / 2;
-		g.drawString(name, x, y);
+	public void render(Graphics2D g, int x) {
+		int y = GamePanel.height -100;
+		g.drawImage(gameCover, x, 230,null);
+		if(selected) {
+			g.setColor(Color.red);
+			g.setStroke(new BasicStroke(2));
+			g.drawRect(x-2, 228, gameCover.getWidth()+4, gameCover.getHeight()+4);
+			g.drawImage(gameScreen, 10, 10, null);
+			g.setColor(Color.white);
+			g.drawRect(10, 10, gameScreen.getWidth(), gameScreen.getHeight());
+			g.setFont(new Font("Arial Black",1,25));
+			g.drawString(name, 20 + gameScreen.getWidth(), 30);
+//			g.setColor(new Color(56,55,162));
+//			g.fillRect(gameScreen.getWidth() + 20, 40, GamePanel.width - (gameScreen.getWidth() + 20) - 10, 170);
+			g.setFont(new Font("Arial Black",1,15));
+			int textY = 50;
+			for(int i = 0; i < tutorial.size(); i++) {
+				g.drawString(tutorial.get(i), 20+gameScreen.getWidth(), textY);
+				textY += 15;
+			}
+		}
+		
 	}
 
 	public String getName() {
@@ -37,5 +60,9 @@ public class GameView {
 
 	public void setSelected(boolean selected) {
 		this.selected = selected;
+	}
+	
+	public BufferedImage getCover() {
+		return gameCover;
 	}
 }

@@ -1,0 +1,5 @@
+Steuerung:
+A: Nach links laufen
+D: Nach rechts laufen
+Leertaste: Springen
+ 
