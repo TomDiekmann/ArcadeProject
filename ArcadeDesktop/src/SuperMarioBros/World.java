@@ -27,6 +27,7 @@ public class World {
 	public List<RunningMonster> enemies = new ArrayList<RunningMonster>();
 	public List<PointsText> pointsTexts = new ArrayList<PointsText>();
 	public List<Item> items = new ArrayList<Item>();
+	public List<FireBall> fireBalls = new ArrayList<FireBall>();
 	private int[][] blockIDs;
 	public static final int BLOCKSIZE = 16;
 	public boolean soundPlayed;
@@ -54,6 +55,7 @@ public class World {
 		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 2775, 176));
 		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 2810, 176));
 		enemies.add(new RunningMonster(RunningMonster.Type.KOOPA_TROOPER, 1714, 168));
+		this.getBlock(256, 128).setItemContent(Item.Type.FireFlower);
 		soundPlayed = false;
 		musicThread = new Thread() {
 			public void run() {
@@ -284,4 +286,10 @@ public class World {
 		return null;
 	}
 	
+	public void giveFireBallKoordinaten() {
+		for(int i = 0; i < fireBalls.size(); i++) {
+			//System.out.println(fireBalls.get(i).getX());
+			//System.out.println(fireBalls.get(i).getY());
+		}
+	}
 }

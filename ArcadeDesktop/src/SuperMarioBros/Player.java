@@ -74,7 +74,8 @@ public class Player extends Entity {
 	@Override
 	public void update() {
 		super.update();
-
+		//System.out.println(topLeft);
+		//System.out.println(topRight);
 		if (destroyingBlock) {
 			destroyBlock();
 		}
@@ -126,7 +127,7 @@ public class Player extends Entity {
 		
 		if(y>185 && !died) {
 			MarioWorldState.world.stopMusic();
-			MarioWorldState.deadScreen = true;
+			Game.gamepanel.gsm.setState(GameStateManager.MARIOWORLD);
 		}
 
 		Item nextItem = MarioWorldState.world.itemAt((int) x + width / 2, (int) y + height);
@@ -189,6 +190,18 @@ public class Player extends Entity {
 				MarioWorldState.world.stopStarSoundtrack();
 			}
 		}
+		
+		Block blockOverMario = null;
+		if(topLeft) {
+			blockOverMario = MarioWorldState.world.getBlock((int) this.x, (int) this.y - width);
+
+		} else if(topRight) {
+			blockOverMario = MarioWorldState.world.getBlock((int) this.x + 16, (int) this.y - width);
+		}
+		if(blockOverMario != null) {
+			blockOverMario.destroyBlock();
+		}
+
 	}
 
 	@Override
@@ -226,7 +239,7 @@ public class Player extends Entity {
 				diffY += 2;
 				if (drawY > Game.gamepanel.getHeight()) {
 					dieSound.interrupt();
-					MarioWorldState.deadScreen = true;
+					Game.gamepanel.gsm.setState(GameStateManager.MARIOWORLD);
 				}
 			}
 			g.drawImage(Game.imageLoader.load("images/SuperMarioBros/died.png"),
@@ -361,6 +374,11 @@ public class Player extends Entity {
 				jumping = true;
 			break;
 		}
+		case KeyEvent.VK_S:
+			if(playerIsFireMario && MarioWorldState.world.fireBalls.size() < 2) {
+				System.out.println("asdfsadfas");
+				MarioWorldState.world.fireBalls.add(new FireBall(this.x + 12, this.y + 16, this.right, this.left));
+			}
 		}
 	}
 
@@ -389,10 +407,6 @@ public class Player extends Entity {
 	
 	public int getLives() {
 		return lives;
-	}
-	
-	public void reduceLives() {
-		lives--;
 	}
 	
 	public int getPoints() {

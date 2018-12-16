@@ -24,7 +24,6 @@ public class MenuState extends State {
 	public MenuState(GameStateManager gsm) {
 		super(gsm);
 		titleImage = Game.imageLoader.load("images/SuperMarioBros/titleLogo.png");
-		gsm.marioLives = 3;
 	}
 
 	@Override
@@ -36,9 +35,8 @@ public class MenuState extends State {
 	@Override
 	public void render(Graphics2D g) {
 		// TODO Auto-generated method stub
-		MarioWorldState state = (MarioWorldState) Game.gamepanel.gsm.getState(GameStateManager.MARIOWORLD);
-		state.render(g);
-		g.drawImage(titleImage, (GamePanel.width / 2 - titleImage.getWidth()) / 2, 7, null);
+		Game.gamepanel.gsm.getState(GameStateManager.MARIOWORLD).render(g);
+		g.drawImage(titleImage, (GamePanel.width / 2 - titleImage.getWidth()) / 2, 10, null);
 		try {
 			g.setFont(Font.createFont(Font.TRUETYPE_FONT, new File("files/SuperMarioBros/SMB.ttf")).deriveFont(15f));
 			g.setColor(Color.WHITE);
