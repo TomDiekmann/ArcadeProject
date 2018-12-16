@@ -28,6 +28,7 @@ public class Game extends JFrame {
 		setLocationRelativeTo(null);
 		setVisible(true);
 		setResizable(false);
+		setIconImage(imageLoader.load("images/Menu/AGC_small.png"));
 	}
 
 	public static void main(String args[]) {

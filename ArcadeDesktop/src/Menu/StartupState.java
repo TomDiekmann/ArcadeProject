@@ -13,7 +13,7 @@ import Engine.GameStateManager;
 import Engine.State;
 
 public class StartupState extends State{
-	BufferedImage logo = Game.imageLoader.load("images/logo.png");
+	BufferedImage logo = Game.imageLoader.load("images/Menu/AGC_Logo.png");
 	private float alpha = 0;
 	private float diff = 0.005f;
 
@@ -33,7 +33,7 @@ public class StartupState extends State{
 		g.setColor(Color.white);
 		g.fillRect(0, 0, GamePanel.width, GamePanel.height);
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
-		g.drawImage(logo, 20, 20, null);
+		g.drawImage(logo, GamePanel.width / 2 - logo.getWidth() / 2, GamePanel.height / 2 - logo.getHeight() / 2, null);
 		
 		alpha += diff;
 		if (alpha >= 1) {
