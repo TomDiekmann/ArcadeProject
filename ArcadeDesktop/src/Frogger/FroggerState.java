@@ -227,15 +227,39 @@ public class FroggerState extends Engine.State {
       titleTicks--;
     } else {
       g.drawImage(getBackground(), GamePanel.width / 2 - getBackground().getWidth() / 2, 0, null);
-      frog.render(g);
+      
+      boolean hasContact = false;
+      float movingLogTurtleSpeed = 0f;
       for (int i = moving.size() - 1; i >= 0; i--) {
         moving.get(i).render(g);
         if(moving.get(i).hasCollision((int)frog.getFrogX()+10, (int)frog.getFrogY()+10) && moving.get(i).type.car) {
         	Game.gamepanel.gsm.setState(GameStateManager.FROGGERSTATE);
         	stateEnd();
+        	frog.setDirection(Direction.UP);
+          	frog.setFrogX(GamePanel.width/2-10);
+          	frog.setFrogY(GamePanel.height-55);
         	break;
         }
+        if(frog.getFrogY() <= 175 && moving.get(i).hasCollision((int)frog.getFrogX()+10, (int)frog.getFrogY() +10) && !moving.get(i).type.car && moving.get(i).hasCollision((int)frog.getFrogX()+10, (int)frog.getFrogY() +10)) {
+      	  	hasContact = true;
+      	  	movingLogTurtleSpeed = moving.get(i).type.speed;
+      	  	if(!moving.get(i).type.fromleft) {
+      	  		movingLogTurtleSpeed *= -1;
+      	  	}
+        }
       }
+      if(frog.getFrogY() > 175) {
+    	  hasContact = true;
+      }
+      if(hasContact == false) {
+    	  Game.gamepanel.gsm.setState(GameStateManager.FROGGERSTATE);
+      	stateEnd();
+      	frog.setDirection(Direction.UP);
+      	frog.setFrogX(GamePanel.width/2-10);
+      	frog.setFrogY(GamePanel.height-55);
+      }
+      frog.setFrogX(frog.getFrogX()+movingLogTurtleSpeed);
+      frog.render(g);
       g.drawImage(getControls(), 0, 0, null);
       g.drawImage(getPointtable(), GamePanel.width / 2 + getBackground().getWidth() / 2, 0, null);
     }

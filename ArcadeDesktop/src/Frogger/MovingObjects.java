@@ -39,7 +39,7 @@ public class MovingObjects {
   }
   
   public boolean hasCollision(int collisionX, int collisionY) {
-	  if(collisionX > currentX && collisionX < currentX + type.image.getWidth() && collisionY > type.startY && collisionY < type.startY + type.image.getWidth()) {
+	  if(collisionX >= currentX && collisionX <= currentX + type.image.getWidth() && collisionY >= type.startY && collisionY <= type.startY + type.image.getHeight()) {
 		  return true;
 	  }
 	  else {
