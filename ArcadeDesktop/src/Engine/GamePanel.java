@@ -35,8 +35,6 @@ public class GamePanel extends JPanel
 	private boolean running;
 
 	private final int FPS = 60;
-	private double averageFPS;
-
 	public GamePanel() {
 		super();
 		// width = 784;
@@ -53,7 +51,7 @@ public class GamePanel extends JPanel
 		addMouseMotionListener(this);
 
 		mouse = new Mouse(this);
-		gsm = new GameStateManager(GameStateManager.MAINSTATE);
+		gsm = new GameStateManager(GameStateManager.STARTUPSTATE);
 	}
 
 	@Override
@@ -94,7 +92,6 @@ public class GamePanel extends JPanel
 			totalTime += System.nanoTime() - startTime;
 			frameCount++;
 			if (frameCount == maxFrameCount) {
-				averageFPS = 1000.0 / ((totalTime / frameCount) / 1000000);
 				frameCount = 0;
 				totalTime = 0;
 			}

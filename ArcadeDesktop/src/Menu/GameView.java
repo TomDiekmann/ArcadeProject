@@ -38,8 +38,6 @@ public class GameView {
 			g.drawRect(10, 10, gameScreen.getWidth(), gameScreen.getHeight());
 			g.setFont(new Font("Arial Black",1,25));
 			g.drawString(name, 20 + gameScreen.getWidth(), 30);
-//			g.setColor(new Color(56,55,162));
-//			g.fillRect(gameScreen.getWidth() + 20, 40, GamePanel.width - (gameScreen.getWidth() + 20) - 10, 170);
 			g.setFont(new Font("Arial Black",1,15));
 			int textY = 50;
 			for(int i = 0; i < tutorial.size(); i++) {

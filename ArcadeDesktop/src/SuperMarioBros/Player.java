@@ -126,7 +126,7 @@ public class Player extends Entity {
 		
 		if(y>185 && !died) {
 			MarioWorldState.world.stopMusic();
-			Game.gamepanel.gsm.setState(GameStateManager.MARIOWORLD);
+			MarioWorldState.deadScreen = true;
 		}
 
 		Item nextItem = MarioWorldState.world.itemAt((int) x + width / 2, (int) y + height);
@@ -226,7 +226,7 @@ public class Player extends Entity {
 				diffY += 2;
 				if (drawY > Game.gamepanel.getHeight()) {
 					dieSound.interrupt();
-					Game.gamepanel.gsm.setState(GameStateManager.MARIOWORLD);
+					MarioWorldState.deadScreen = true;
 				}
 			}
 			g.drawImage(Game.imageLoader.load("images/SuperMarioBros/died.png"),
@@ -389,6 +389,10 @@ public class Player extends Entity {
 	
 	public int getLives() {
 		return lives;
+	}
+	
+	public void reduceLives() {
+		lives--;
 	}
 	
 	public int getPoints() {

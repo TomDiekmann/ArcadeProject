@@ -28,6 +28,9 @@ public class MarioWorldState extends State {
 	private boolean menuOpen = false;
 	public static int time;
 	private int timeTicks;
+	
+	public static boolean deadScreen;
+	private int deadScreenTicks = 0;
 
 	public MarioWorldState(GameStateManager gsm, String filepath) {
 		super(gsm);
@@ -43,21 +46,38 @@ public class MarioWorldState extends State {
 	public void update() {
 		camera.update();
 		player.update();
+		
+		if(timeTicks == 50) {
+			timeTicks = 0;
+			time--;
+		}
+		if(!stopTime && !deadScreen)
+			timeTicks++;
 	}
 
 	@Override
 	public void render(Graphics2D g) {
 		g.clearRect(0, 0, GamePanel.width / GamePanel.SCALE, GamePanel.height / GamePanel.SCALE);
 
-		world.render(g);
-		player.render(g);
-		
-		if(timeTicks == 50) {
-			timeTicks = 0;
-			time--;
+		if(!deadScreen) {
+			world.render(g);
+			player.render(g);
 		}
-		if(!stopTime)
-			timeTicks++;
+		else {
+			g.setColor(Color.BLACK);
+			g.fillRect(0, 0, GamePanel.width/ GamePanel.SCALE, GamePanel.height/GamePanel.SCALE);
+			g.drawImage(Game.imageLoader.load("images/SuperMarioBros/SmallWalking.png").getSubimage(0, 16, 16, 16), (GamePanel.width / 2 - 75 - 16) / GamePanel.SCALE, (GamePanel.height / 2 - 16) / GamePanel.SCALE, null);
+			g.setColor(Color.white);
+			g.drawString(String.valueOf(gsm.marioLives),(GamePanel.width / 2 + 75) / GamePanel.SCALE , GamePanel.height / 2 / GamePanel.SCALE + g.getFontMetrics().getHeight() / 2 / GamePanel.SCALE);
+			g.drawLine(GamePanel.width / 2 / GamePanel.SCALE - 5, GamePanel.height / 2 / GamePanel.SCALE - 5, GamePanel.width / 2 / GamePanel.SCALE + 5, GamePanel.height / 2 / GamePanel.SCALE + 5);
+			g.drawLine(GamePanel.width / 2 / GamePanel.SCALE - 5, GamePanel.height / 2 / GamePanel.SCALE + 5, GamePanel.width / 2 / GamePanel.SCALE + 5, GamePanel.height / 2 / GamePanel.SCALE - 5);
+			deadScreenTicks++;
+			if(deadScreenTicks > 150) {
+				Game.gamepanel.gsm.setState(GameStateManager.MARIOWORLD);
+				deadScreen = false;
+				gsm.marioLives--;
+			}
+		}
 		
 		g.setFont(new Font("Arial Black", 10 ,10));
 		g.setColor(Color.WHITE);

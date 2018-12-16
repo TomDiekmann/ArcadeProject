@@ -49,10 +49,10 @@ public class MainState extends State {
 		g.setColor(Color.lightGray);
 		g.fillRect(0, 225, GamePanel.width, 110);
 		g.setColor(Color.WHITE);
-		g.fill3DRect(0, 220, GamePanel.width, 5, true);
-		g.fill3DRect(0, 335, GamePanel.width, 5, true);
+		g.fill3DRect(-5, 220, GamePanel.width + 10, 5, true);
+		g.fill3DRect(-5, 335, GamePanel.width + 10, 5, true);
 		g.setColor(Color.DARK_GRAY);
-		g.fillRect(0, 340, GamePanel.width, 20);
+		g.fillRect(0, 340, GamePanel.width, 50);
 		
 		int x = GamePanel.width / 2 -  COVER_WIDTH / 2;
 		int game = selectedGame;

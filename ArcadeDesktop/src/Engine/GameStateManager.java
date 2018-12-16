@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 
 import Frogger.FroggerState;
 import Menu.MainState;
+import Menu.StartupState;
 import snake.SnakeGameState;
 import SuperMarioBros.MenuState;
 import SuperMarioBros.MarioWorldState;
@@ -21,13 +22,16 @@ public class GameStateManager {
 	public static final int PONGSTATE = 4;
 	public static final int FROGGERSTATE = 5;
 	public static final int TRONSTATE = 6;
+	public static final int STARTUPSTATE = 7;
 
 	private State[] states;
 	private int state;
+	
+	public int marioLives;
 
 	public GameStateManager(int state) {
 		this.state = state;
-		states = new State[7];
+		states = new State[8];
 		states[0] = new MainState(this);
 		states[1] = new MenuState(this);
 		states[2] = new MarioWorldState(this, "files/SuperMarioBros/world1.txt");
@@ -35,6 +39,7 @@ public class GameStateManager {
 		states[4] = new PongState(this);
 		states[5] = new FroggerState(this);
 		states[6] = new TronState(this);
+		states[7] = new StartupState(this);
 	}
 
 	public void update() {
