@@ -24,6 +24,8 @@ public class GameStateManager {
 
 	private State[] states;
 	private int state;
+	
+	public int marioLives;
 
 	public GameStateManager(int state) {
 		this.state = state;

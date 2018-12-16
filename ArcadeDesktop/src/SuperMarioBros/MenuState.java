@@ -24,6 +24,7 @@ public class MenuState extends State {
 	public MenuState(GameStateManager gsm) {
 		super(gsm);
 		titleImage = Game.imageLoader.load("images/SuperMarioBros/titleLogo.png");
+		gsm.marioLives = 3;
 	}
 
 	@Override
