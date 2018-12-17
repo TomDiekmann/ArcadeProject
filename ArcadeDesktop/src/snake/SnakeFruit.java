@@ -5,12 +5,13 @@ import java.awt.Graphics;
 import java.util.Random;
 
 public class SnakeFruit {
-	private int posX, posY;
+	private int posX, posY, tileSize;
 	private FruitType type = FruitType.SMALL;
 
-	public SnakeFruit(int posX, int posY) {
+	public SnakeFruit(int posX, int posY, int tileSize) {
 		this.posX = posX;
 		this.posY = posY;
+		this.tileSize = tileSize;
 
 		Random rand = new Random();
 		int randInt = rand.nextInt(100);
@@ -27,18 +28,18 @@ public class SnakeFruit {
 
 		switch (this.type) {
 		case SMALL:
-			graphics.fillRect(this.posX * SnakeGameState.TILE_SIZE + SnakeGameState.TILE_SIZE / 2 - 3, this.posY * SnakeGameState.TILE_SIZE, 6, SnakeGameState.TILE_SIZE);
-			graphics.fillRect(this.posX * SnakeGameState.TILE_SIZE, this.posY * SnakeGameState.TILE_SIZE + SnakeGameState.TILE_SIZE / 2 - 3, SnakeGameState.TILE_SIZE, 6);
+			graphics.fillRect(this.posX + this.tileSize / 2 - 3, this.posY, 6, this.tileSize);
+			graphics.fillRect(this.posX, this.posY + this.tileSize / 2 - 3, this.tileSize, 6);
 			break;
 
 		case MEDIUM:
-			graphics.fillRoundRect(this.posX * SnakeGameState.TILE_SIZE, this.posY * SnakeGameState.TILE_SIZE, SnakeGameState.TILE_SIZE, SnakeGameState.TILE_SIZE, 10, 10);
+			graphics.fillRoundRect(this.posX, this.posY, this.tileSize, this.tileSize, 10, 10);
 			graphics.setColor(new Color(139, 172, 15));
-			graphics.fillRoundRect(this.posX * SnakeGameState.TILE_SIZE + 4, this.posY * SnakeGameState.TILE_SIZE + 4, SnakeGameState.TILE_SIZE - 8, SnakeGameState.TILE_SIZE - 8, 10, 10);
+			graphics.fillRoundRect(this.posX + 4, this.posY + 4, this.tileSize - 8, this.tileSize - 8, 10, 10);
 			break;
 
 		case LARGE:
-			graphics.fillRoundRect(this.posX * SnakeGameState.TILE_SIZE, this.posY * SnakeGameState.TILE_SIZE, SnakeGameState.TILE_SIZE, SnakeGameState.TILE_SIZE, 10, 10);
+			graphics.fillRoundRect(this.posX, this.posY, this.tileSize, this.tileSize, 10, 10);
 			break;
 		}
 	}
