@@ -54,6 +54,7 @@ public class World {
 		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 2775, 176));
 		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 2810, 176));
 		enemies.add(new RunningMonster(RunningMonster.Type.KOOPA_TROOPER, 1714, 168));
+		this.getBlock(256, 128).setItemContent(Item.Type.FireFlower);
 		soundPlayed = false;
 		musicThread = new Thread() {
 			public void run() {
