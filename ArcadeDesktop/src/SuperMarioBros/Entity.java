@@ -129,9 +129,9 @@ public abstract class Entity extends GameObject {
 		int topTile = world.getRowTile((int)y);
 		int bottomTile = world.getRowTile((int)y + height);
 		int midTile = world.getRowTile((int)y + height / 2);
-		topLeft = !world.getBlocks()[topTile][leftTile].getMaterial().isWalkable();
+		topLeft = (topTile < 0 || !world.getBlocks()[topTile][leftTile].getMaterial().isWalkable());
 		bottomLeft = !world.getBlocks()[bottomTile][leftTile].getMaterial().isWalkable();
-		topRight = !world.getBlocks()[topTile][rightTile].getMaterial().isWalkable();
+		topRight = (topTile < 0 || !world.getBlocks()[topTile][rightTile].getMaterial().isWalkable());
 		bottomRight = !world.getBlocks()[bottomTile][rightTile].getMaterial().isWalkable();
 		midLeft = !world.getBlocks()[midTile][leftTile].getMaterial().isWalkable();
 		midRight = !world.getBlocks()[midTile][rightTile].getMaterial().isWalkable();
@@ -143,9 +143,10 @@ public abstract class Entity extends GameObject {
 		int rightTile = world.getColTile((int)x + width - 1);
 		int topTile = world.getRowTile((int)y);
 		int bottomTile = world.getRowTile((int)y + height);
-		topLeft = !world.getBlocks()[topTile][leftTile].getMaterial().isWalkable();
+		int midTile = world.getRowTile((int)y + height / 2);
+		topLeft = (topTile < 0 || !world.getBlocks()[topTile][leftTile].getMaterial().isWalkable());
 		bottomLeft = !world.getBlocks()[bottomTile][leftTile].getMaterial().isWalkable();
-		topRight = !world.getBlocks()[topTile][rightTile].getMaterial().isWalkable();
+		topRight = (topTile < 0 || !world.getBlocks()[topTile][rightTile].getMaterial().isWalkable());
 		bottomRight = !world.getBlocks()[bottomTile][rightTile].getMaterial().isWalkable();
 	}
 
