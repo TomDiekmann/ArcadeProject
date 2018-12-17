@@ -5,6 +5,12 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -13,127 +19,273 @@ import Engine.GameStateManager;
 import Engine.State;
 
 public class SnakeGameState extends State {
-	public static final int WIDTH = 640, HEIGHT = 360, TILE_SIZE = 20;
+	// WINDOW VARIABLES
+	public final int WINDOW_WIDTH = 640, WINDOW_HEIGHT = 360;
 
-	private boolean running;
+	public final int TILE_SIZE = 20;
+	public final int GAMEAREA_WIDTH = this.WINDOW_WIDTH - (this.TILE_SIZE * 2), GAMEAREA_HEIGHT = this.WINDOW_HEIGHT - (this.TILE_SIZE * 3);
+	public final int GAMEAREA_LEFT = this.TILE_SIZE, GAMEAREA_RIGHT = this.WINDOW_WIDTH - this.TILE_SIZE;
+	public final int GAMEAREA_TOP = this.TILE_SIZE * 2, GAMEAREA_BOTTOM = this.WINDOW_HEIGHT - this.TILE_SIZE;
 
-	private int score = 0;
-
+	// GAME VARIABLE
+	private boolean RUNNING;
+	private int gameTicks = 0;
+	private int gameoverTicks = 0;
 	private Random random;
-	private Direction direction = Direction.DOWN;
-	private Direction nextDirection = direction;
+	private int score = 0;
+	public static int HIGHSCORE = loadHighscore();
+	private boolean redraw = false;
 
-	private SnakeBodyPart head;
-	private ArrayList<SnakeBodyPart> snake;
+	// SNAKE VARIABLES
+	private SnakeBodyPart snakeHead;
+	private ArrayList<SnakeBodyPart> snakeBody;
 
+	private int snakeX = this.GAMEAREA_LEFT + ((this.GAMEAREA_WIDTH / this.TILE_SIZE) / 2) * this.TILE_SIZE, snakeY = this.GAMEAREA_TOP;
+
+	private int snakeLength = 3;
+	private final int snakeMaxLength = (this.GAMEAREA_WIDTH / this.TILE_SIZE) * (this.GAMEAREA_HEIGHT / this.TILE_SIZE);
+
+	private Direction snakeDirection = Direction.DOWN;
+	private Direction snakeDirectionNext = snakeDirection;
+
+	// FRUIT VARIABLES
 	private SnakeFruit fruit;
 	private ArrayList<SnakeFruit> fruits;
 
-	private int ticks = 0;
-	private int posX = (WIDTH / TILE_SIZE) / 2, posY = 3, length = 3;
-	private final int maxLength = (WIDTH / TILE_SIZE - 2) * (HEIGHT / TILE_SIZE - 4);
-
-	private int gameOverTicks = 0;
-
-	public SnakeGameState(GameStateManager gsm) {
-		super(gsm);
+	public SnakeGameState(GameStateManager gameStateManager) {
+		super(gameStateManager);
 		this.random = new Random();
-		this.snake = new ArrayList<SnakeBodyPart>();
+
+		this.snakeBody = new ArrayList<SnakeBodyPart>();
 		this.fruits = new ArrayList<SnakeFruit>();
-		running = true;
+
+		this.RUNNING = true;
 	}
 
+	// UPDATE THE GAME
 	public void tick() {
-		if (this.snake.size() == 0)
-			this.snake.add(this.head = new SnakeBodyPart(posX, posY));
+		// Add initial Body Part/Head
+		if (this.snakeBody.size() == 0) {
+			this.snakeHead = new SnakeBodyPart(this.snakeX, this.snakeY, this.TILE_SIZE);
+			this.snakeBody.add(this.snakeHead);
+		}
 
-		this.ticks++;
+		// Increase Ticks
+		this.gameTicks++;
 
-		// Move snake
-		if (this.ticks > 10 / 2) {
-			if (this.direction != Direction.getOpposite(this.nextDirection)) {
-				direction = nextDirection;
-			}
+		// Update snake
+		if (this.gameTicks > 5) {
+			// Reset Ticks
+			this.gameTicks = 0;
 
-			switch (this.direction) {
+			// Update snake Direction
+			if (this.snakeDirection != Direction.getOpposite(this.snakeDirectionNext))
+				this.snakeDirection = this.snakeDirectionNext;
+
+			switch (this.snakeDirection) {
 			case RIGHT:
-				this.posX++;
+				this.snakeX += this.TILE_SIZE;
 				break;
 
 			case LEFT:
-				this.posX--;
+				this.snakeX -= this.TILE_SIZE;
 				break;
 
 			case UP:
-				this.posY--;
+				this.snakeY -= this.TILE_SIZE;
 				break;
 
 			case DOWN:
-				this.posY++;
+				this.snakeY += this.TILE_SIZE;
 				break;
 			}
 
-			this.ticks = 0;
-			this.head = new SnakeBodyPart(this.posX, this.posY);
-			this.snake.add(this.head);
+			// Add new Head
+			this.snakeHead = new SnakeBodyPart(this.snakeX, this.snakeY, this.TILE_SIZE);
+			this.snakeBody.add(this.snakeHead);
 
-			if (this.snake.size() > this.length)
-				this.snake.remove(0);
+			// Remove Tail
+			if (this.snakeBody.size() > this.snakeLength)
+				this.snakeBody.remove(0);
 
-			// No fruit in game area
+			// Add new Fruit after a Fruit has been collected
 			if (this.fruits.size() == 0) {
 				int fruitPosX, fruitPosY;
 
-				// Search for fruit position
+				// Search for available Fruit Position
 				do {
-					fruitPosX = random.nextInt(WIDTH / TILE_SIZE);
-					fruitPosY = random.nextInt(HEIGHT / TILE_SIZE);
-				} while (checkCollisionFruit(fruitPosX, fruitPosY) || fruitPosX < 1 || fruitPosX >= WIDTH / TILE_SIZE - 1 || fruitPosY < 2 || fruitPosY >= HEIGHT / TILE_SIZE - 1);
+					fruitPosX = this.GAMEAREA_LEFT + this.random.nextInt(this.GAMEAREA_WIDTH / this.TILE_SIZE) * this.TILE_SIZE;
+					fruitPosY = this.GAMEAREA_TOP + this.random.nextInt(this.GAMEAREA_HEIGHT / this.TILE_SIZE) * this.TILE_SIZE;
+				} while (checkCollisionFruit(fruitPosX, fruitPosY) || fruitPosX < this.GAMEAREA_LEFT || fruitPosX >= this.GAMEAREA_RIGHT || fruitPosY < this.GAMEAREA_TOP || fruitPosY >= this.GAMEAREA_BOTTOM);
 
-				this.fruit = new SnakeFruit(fruitPosX, fruitPosY);
-				fruits.add(this.fruit);
+				this.fruit = new SnakeFruit(fruitPosX, fruitPosY, this.TILE_SIZE);
+				this.fruits.add(this.fruit);
 			}
 
-			// Snake colliding with fruit
+			// Snake-Fruit Collision
 			for (int i = 0; i < this.fruits.size(); i++) {
-				SnakeFruit appleCurrent = this.fruits.get(i);
+				SnakeFruit fruitCurrent = this.fruits.get(i);
 
-				if (posX == appleCurrent.getPosX() && posY == appleCurrent.getPosY()) {
-					if (this.length < this.maxLength)
-						this.length++;
+				if (this.snakeX == fruitCurrent.getPosX() && this.snakeY == fruitCurrent.getPosY()) {
+					if (this.snakeLength < this.snakeMaxLength)
+						this.snakeLength++;
+
 					this.score += this.fruits.get(0).getScore();
 					this.fruits.remove(0);
 					break;
 				}
 			}
 
-			// Snake colliding with itself
-			for (int i = 0; i < this.snake.size(); i++) {
-				SnakeBodyPart bodyPart = this.snake.get(i);
+			// Snake-Body Party Collision
+			for (int i = 0; i < this.snakeBody.size(); i++) {
+				SnakeBodyPart bodyPart = this.snakeBody.get(i);
 
-				if (i != this.snake.size() - 1 && posX == bodyPart.getPosX() && posY == bodyPart.getPosY()) {
-					running = false;
-				}
+				if (i != this.snakeBody.size() - 1 && this.snakeX == bodyPart.getPosX() && this.snakeY == bodyPart.getPosY())
+					this.RUNNING = false;
 			}
 
-			// Snake outside game area
-			if (posX < 1 || posX >= WIDTH / TILE_SIZE - 1 || posY < 2 || posY >= HEIGHT / TILE_SIZE - 1) {
-				System.out.println("Game Over");
-				running = false;
-			}
+			// Snake outside Game Area
+			if (this.snakeX < this.GAMEAREA_LEFT || this.snakeX >= this.GAMEAREA_RIGHT || this.snakeY < this.GAMEAREA_TOP || this.snakeY >= this.GAMEAREA_BOTTOM)
+				this.RUNNING = false;
 		}
+
+		if (!this.RUNNING)
+			this.redraw = true;
 	}
 
+	// Fruit Collision
 	private boolean checkCollisionFruit(int x, int y) {
 		boolean collides = false;
 
-		for (int i = 0; i < this.snake.size(); i++) {
-			SnakeBodyPart bodyPart = this.snake.get(i);
+		for (int i = 0; i < this.snakeBody.size(); i++) {
+			SnakeBodyPart bodyPart = this.snakeBody.get(i);
 
 			if (bodyPart.getPosX() == x && bodyPart.getPosY() == y)
 				collides = true;
 		}
 		return collides;
+	}
+
+	@Override
+	public void update() {
+		if (this.RUNNING)
+			this.tick();
+	}
+
+	@Override
+	public void render(Graphics2D graphics) {
+		if (this.RUNNING || this.redraw) {
+			// Clear Window
+			graphics.clearRect(0, 0, this.WINDOW_WIDTH, this.WINDOW_HEIGHT);
+
+			// Draw Window Background
+			graphics.setColor(new Color(155, 188, 15));
+			graphics.fillRect(0, 0, this.WINDOW_WIDTH, this.WINDOW_HEIGHT);
+
+			// Draw Game Area Background
+			graphics.setColor(new Color(139, 172, 15));
+			graphics.fillRect(this.GAMEAREA_LEFT, this.GAMEAREA_TOP, this.GAMEAREA_WIDTH, this.GAMEAREA_HEIGHT);
+
+			// Draw Game Area Edges
+			int outerEdgeWidth = 5;
+			int innerEdgeWidth = 3;
+			int edgeGap = 1;
+			int edgeWidthTotal = outerEdgeWidth + innerEdgeWidth + edgeGap;
+
+			// Outer Edge
+			graphics.setColor(new Color(15, 56, 15));
+			graphics.fillRect(this.GAMEAREA_LEFT - edgeWidthTotal, this.GAMEAREA_TOP - edgeWidthTotal, outerEdgeWidth, this.GAMEAREA_HEIGHT + edgeWidthTotal * 2);
+			graphics.fillRect(this.GAMEAREA_RIGHT + outerEdgeWidth - 1, this.GAMEAREA_TOP - edgeWidthTotal, outerEdgeWidth, this.GAMEAREA_HEIGHT + edgeWidthTotal * 2);
+			graphics.fillRect(this.GAMEAREA_LEFT - edgeWidthTotal, this.GAMEAREA_TOP - edgeWidthTotal, this.GAMEAREA_WIDTH + edgeWidthTotal * 2, outerEdgeWidth);
+			graphics.fillRect(this.GAMEAREA_LEFT - edgeWidthTotal, this.GAMEAREA_BOTTOM + outerEdgeWidth - 1, this.GAMEAREA_WIDTH + edgeWidthTotal * 2, outerEdgeWidth);
+
+			// Inner Edge
+			graphics.setColor(new Color(48, 98, 48));
+			graphics.fillRect(this.GAMEAREA_LEFT - innerEdgeWidth, this.GAMEAREA_TOP - innerEdgeWidth, innerEdgeWidth, this.GAMEAREA_HEIGHT + innerEdgeWidth * 2);
+			graphics.fillRect(this.GAMEAREA_RIGHT, this.GAMEAREA_TOP - innerEdgeWidth, innerEdgeWidth, this.GAMEAREA_HEIGHT + innerEdgeWidth * 2);
+			graphics.fillRect(this.GAMEAREA_LEFT - innerEdgeWidth, this.GAMEAREA_TOP - innerEdgeWidth, this.GAMEAREA_WIDTH + innerEdgeWidth * 2, innerEdgeWidth);
+			graphics.fillRect(this.GAMEAREA_LEFT - innerEdgeWidth, this.GAMEAREA_BOTTOM, this.GAMEAREA_WIDTH + innerEdgeWidth * 2, innerEdgeWidth);
+
+			// Draw the Snake
+			for (int i = 0; i < this.snakeBody.size(); i++)
+				this.snakeBody.get(i).draw(graphics);
+
+			// Draw the Fruits
+			for (int i = 0; i < this.fruits.size(); i++)
+				this.fruits.get(i).draw(graphics);
+
+			// Draw Score
+			graphics.setColor(new Color(15, 56, 15));
+			graphics.setFont(new Font("Impact", Font.PLAIN, this.TILE_SIZE));
+			graphics.drawString("Score: " + this.score + "   Highscore: " + HIGHSCORE, this.TILE_SIZE / 2, this.TILE_SIZE + graphics.getFontMetrics().getDescent());
+
+			// Draw Points
+			// 1 Point
+			graphics.fillRect(this.WINDOW_WIDTH / 2 + this.TILE_SIZE * 2 + this.TILE_SIZE / 2 - 3, this.TILE_SIZE / 2 - 3, 6, this.TILE_SIZE);
+			graphics.fillRect(this.WINDOW_WIDTH / 2 + this.TILE_SIZE * 2, this.TILE_SIZE / 2 + this.TILE_SIZE / 2 - 6, this.TILE_SIZE, 6);
+			graphics.drawString(" : 1p", this.WINDOW_WIDTH / 2 + this.TILE_SIZE * 3, this.TILE_SIZE + graphics.getFontMetrics().getDescent());
+
+			// 10 Points
+			graphics.fillRoundRect(this.WINDOW_WIDTH / 2 + this.TILE_SIZE * 7, this.TILE_SIZE / 2 - 3, this.TILE_SIZE, this.TILE_SIZE, 10, 10);
+			graphics.setColor(new Color(155, 188, 15));
+			graphics.fillRoundRect(this.WINDOW_WIDTH / 2 + this.TILE_SIZE * 7 + 4, this.TILE_SIZE / 2 - 3 + 4, this.TILE_SIZE - 8, this.TILE_SIZE - 8, 10, 10);
+			graphics.setColor(new Color(15, 56, 15));
+			graphics.drawString(" : 10p", this.WINDOW_WIDTH / 2 + this.TILE_SIZE * 8, this.TILE_SIZE + graphics.getFontMetrics().getDescent());
+
+			graphics.fillRoundRect(this.WINDOW_WIDTH / 2 + this.TILE_SIZE * 12, this.TILE_SIZE / 2 - 3, this.TILE_SIZE, this.TILE_SIZE, 10, 10);
+			graphics.drawString(" : 50p", this.WINDOW_WIDTH / 2 + this.TILE_SIZE * 13, this.TILE_SIZE + graphics.getFontMetrics().getDescent());
+
+			if (this.redraw)
+				this.redraw = false;
+		} else {
+			// Draw Game Over Screen
+			graphics.setColor(new Color(15, 56, 15));
+			graphics.setFont(new Font("Impact", Font.PLAIN, TILE_SIZE * 3));
+			graphics.drawString("Game Over", (GamePanel.width - graphics.getFontMetrics().stringWidth("Game Over")) / 2, TILE_SIZE * 2 + (GamePanel.height - TILE_SIZE * 3) / 2 + graphics.getFontMetrics().getDescent());
+			this.gameoverTicks++;
+
+			// Return to main menu
+			if (this.gameoverTicks > 250) {
+				if (this.score > HIGHSCORE)
+					this.updateHighscore(this.score);
+				this.gsm.setState(GameStateManager.MAINSTATE);
+			}
+		}
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e, int k) {
+		int key = e.getKeyCode();
+
+		// Keyboard Input
+		if (key == KeyEvent.VK_W && this.snakeDirectionNext != Direction.DOWN)
+			this.snakeDirectionNext = Direction.UP;
+		else if (key == KeyEvent.VK_A && this.snakeDirectionNext != Direction.RIGHT)
+			this.snakeDirectionNext = Direction.LEFT;
+		else if (key == KeyEvent.VK_S && this.snakeDirectionNext != Direction.UP)
+			this.snakeDirectionNext = Direction.DOWN;
+		else if (key == KeyEvent.VK_D && this.snakeDirectionNext != Direction.LEFT)
+			this.snakeDirectionNext = Direction.RIGHT;
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e, int k) {
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+	}
+
+	@Override
+	public void stateEnd() {
 	}
 
 	private enum Direction {
@@ -155,108 +307,30 @@ public class SnakeGameState extends State {
 		}
 	}
 
-	@Override
-	public void update() {
-		
-	}
-
-	@Override
-	public void render(Graphics2D g) {
-		if (running) {
-			tick();
-			g.clearRect(0, 0, WIDTH, HEIGHT);
-
-			g.setColor(new Color(155, 188, 15));
-			g.fillRect(0, 0, WIDTH, HEIGHT);
-
-			// Game Area
-			g.setColor(new Color(139, 172, 15));
-			g.fillRect(TILE_SIZE, TILE_SIZE * 2, WIDTH - TILE_SIZE * 2, HEIGHT - TILE_SIZE * 3);
-
-			// Edges
-			int edgeWidth = 5;
-			g.setColor(new Color(15, 56, 15));
-			// Left Edge
-			g.fillRect(TILE_SIZE - edgeWidth - 4, TILE_SIZE * 2 - edgeWidth - 4, edgeWidth, HEIGHT - TILE_SIZE * 3 + edgeWidth * 2 + 8);
-
-			// Right Edge
-			g.fillRect(WIDTH - TILE_SIZE + 4, TILE_SIZE * 2 - edgeWidth - 4, edgeWidth, HEIGHT - TILE_SIZE * 3 + edgeWidth * 2 + 8);
-
-			// Top Edge
-			g.fillRect(TILE_SIZE - 4, TILE_SIZE * 2 - edgeWidth - 4, WIDTH - TILE_SIZE - edgeWidth * 4 + 8, edgeWidth);
-
-			// Bottom Edge
-			g.fillRect(TILE_SIZE - 4, HEIGHT - TILE_SIZE + 4, WIDTH - TILE_SIZE - edgeWidth * 4 + 8, edgeWidth);
-
-			int innerEdgeWidth = 3;
-			g.setColor(new Color(48, 98, 48));
-			g.fillRect(TILE_SIZE - 3, TILE_SIZE * 2 - 3, innerEdgeWidth, HEIGHT - TILE_SIZE * innerEdgeWidth + 6);
-
-			g.fillRect(WIDTH - TILE_SIZE - innerEdgeWidth + 3, TILE_SIZE * 2 - 3, innerEdgeWidth, HEIGHT - TILE_SIZE * innerEdgeWidth + 6);
-
-			g.fillRect(TILE_SIZE - 3, TILE_SIZE * 2 - 3, WIDTH - TILE_SIZE * 2 + 6, innerEdgeWidth);
-
-			g.fillRect(TILE_SIZE - 3, HEIGHT - TILE_SIZE - innerEdgeWidth + 3, WIDTH - TILE_SIZE * 2 + 6, innerEdgeWidth);
-
-			// Draw the snake
-			for (int i = 0; i < this.snake.size(); i++)
-				this.snake.get(i).draw(g);
-
-			// Draw the fruits
-			for (int i = 0; i < this.fruits.size(); i++)
-				this.fruits.get(i).draw(g);
-
-			// Draw score/length
-			g.setColor(new Color(15, 56, 15));
-			g.setFont(new Font("Impact", Font.PLAIN, TILE_SIZE));
-			g.drawString("Score: " + this.score, TILE_SIZE / 2, TILE_SIZE + g.getFontMetrics().getDescent());
-		} else {
-			g.setColor(new Color(15, 56, 15));
-			g.setFont(new Font("Impact", Font.PLAIN, TILE_SIZE * 3));
-			g.drawString("Game Over", (GamePanel.width - g.getFontMetrics().stringWidth("Game Over")) / 2, TILE_SIZE * 2 + (GamePanel.height - TILE_SIZE * 3) / 2 + g.getFontMetrics().getDescent());
-			gameOverTicks++;
-
-			if (gameOverTicks > 250) {
-				gsm.setState(GameStateManager.MAINSTATE);
-			}
+	public static int loadHighscore() {
+		BufferedReader reader;
+		int highscore = 0;
+		try {
+			reader = new BufferedReader(new FileReader(new File("files/Snake/Highscore.txt")));
+			highscore = Integer.parseInt(reader.readLine());
+			reader.close();
+		} catch (NumberFormatException | IOException e) {
+			e.printStackTrace();
 		}
+
+		return highscore;
 	}
 
-	@Override
-	public void keyPressed(KeyEvent e, int k) {
-		int key = e.getKeyCode();
+	public void updateHighscore(int newScore) {
+		BufferedWriter writer;
+		try {
+			writer = new BufferedWriter(new FileWriter(new File("files/Snake/Highscore.txt")));
+			writer.write("" + newScore);
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-		if (key == KeyEvent.VK_W && this.nextDirection != Direction.DOWN)
-			this.nextDirection = Direction.UP;
-		else if (key == KeyEvent.VK_A && this.nextDirection != Direction.RIGHT)
-			this.nextDirection = Direction.LEFT;
-		else if (key == KeyEvent.VK_S && this.nextDirection != Direction.UP)
-			this.nextDirection = Direction.DOWN;
-		else if (key == KeyEvent.VK_D && this.nextDirection != Direction.LEFT)
-			this.nextDirection = Direction.RIGHT;
-		else if (key == KeyEvent.VK_ENTER)
-			running = true;
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e, int k) {
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-	}
-
-	@Override
-	public void stateEnd() {
-		// TODO Auto-generated method stub
-		
+		HIGHSCORE = newScore;
 	}
 }
