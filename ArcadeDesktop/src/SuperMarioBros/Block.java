@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 
 import Engine.Animation;
+import Engine.AudioFilePlayer;
 import Engine.GamePanel;
 
 public class Block extends GameObject {
@@ -13,18 +14,30 @@ public class Block extends GameObject {
 
 	private Material material;
 	private Animation animation;
+	private AudioFilePlayer soundPlayer = new AudioFilePlayer();
 
 	// BLOCK DESTROYING
 	private long destroyStartTime;
 	private boolean destroying;
+	private boolean isDestructible;
 
 	private boolean marker;
+	
+	private Item itemContent;
 
 	public Block(Material material, float x, float y, int width, int height) {
 		super(x, y, width, height);
 		this.material = material;
 //		animation = new Animation(destroy, dt);
 		marker = false;
+		switch(material.getID()) {
+		case 24:
+		case 25:
+		case 26:
+			isDestructible = true;
+		default:
+			isDestructible = false;
+		}
 	}
 
 	public void update() {
@@ -68,17 +81,22 @@ public class Block extends GameObject {
 
 	}
 
-	// INIT BLOCK DESTROYING
+
 	public void destroyBlock() {
-//		if(!destroying && material != Material.AIR) {
-//			if(material.getBreakLevel() != null && material.getBreakLevel().getLevel() > Playstate.inventory.getSelectedItem().getType().getBreakLevel().getLevel()) destroyDuration = (long) (material.getDestroyDuration() * 3.33);
-//			else destroyDuration = material.getDestroyDuration();
-//			if(material.getBreakType() == Playstate.inventory.getSelectedItem().getType().getBreakType())destroyDuration *= Playstate.inventory.getSelectedItem().getType().getBreakLevel().getBreakMultiplicator();
-//			destroying = true;
-//			destroyStartTime = System.currentTimeMillis();
-//			animation.setDelay((long) (destroyDuration / destroy.getCols()));
-//			animation.start(0, destroy.getCols());
-//		}
+		switch(material.getID()) {
+		case 24:
+		case 25:
+		case 26:
+			this.material = Material.BROWN_ITEM_OUT;
+			if(itemContent != null) {
+				MarioWorldState.world.items.add(itemContent);
+				new Thread() {
+					public void run() {
+						soundPlayer.play("sounds/SuperMarioBros/ItemBlockItemOut.wav");
+					}
+				}.start();
+			}
+		}
 	}
 
 	public Material getMaterial() {
@@ -96,5 +114,11 @@ public class Block extends GameObject {
 	public boolean isMarked() {
 		return marker;
 	}
-
+	public boolean isDestructible() {
+		return isDestructible;
+	}
+	
+	public void setItemContent(Item.Type type) {
+		itemContent = new Item(type, this.x, this.y);
+	}
 }
