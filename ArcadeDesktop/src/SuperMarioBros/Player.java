@@ -189,6 +189,17 @@ public class Player extends Entity {
 				MarioWorldState.world.stopStarSoundtrack();
 			}
 		}
+		
+		Block blockOverMario = null;
+		if(topLeft) {
+			blockOverMario = MarioWorldState.world.getBlock((int) this.x, (int) this.y - width);
+
+		} else if(topRight) {
+			blockOverMario = MarioWorldState.world.getBlock((int) this.x + 16, (int) this.y - width);
+		}
+		if(blockOverMario != null) {
+			blockOverMario.destroyBlock();
+		}
 	}
 
 	@Override
