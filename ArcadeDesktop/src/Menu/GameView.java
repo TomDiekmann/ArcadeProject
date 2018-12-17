@@ -44,6 +44,9 @@ public class GameView {
 				g.drawString(tutorial.get(i), 20+gameScreen.getWidth(), textY);
 				textY += 15;
 			}
+			
+			if (state == GameStateManager.SNAKEGAMESTATE)
+				g.drawString("Highscore: " + SnakeGameState.HIGHSCORE, 20+gameScreen.getWidth(), textY + 15);
 		}
 		
 	}
