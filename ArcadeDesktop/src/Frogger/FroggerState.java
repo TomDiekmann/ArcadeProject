@@ -46,6 +46,9 @@ public class FroggerState extends Engine.State {
   private int turtle5Counter2;
 
   private int titleTicks;
+  
+  private boolean[] zielteiche = new boolean[5];
+  private int belegteTeiche = 0;
 
   public FroggerState(GameStateManager gsm) {
     super(gsm);
@@ -162,7 +165,7 @@ public class FroggerState extends Engine.State {
     if (log1Counter == 0) {
       moving.add(new MovingObjects(Type.Log1));
       if (log1Counter2 == 0) {
-        log1Counter = 100;
+        log1Counter = 210;
         log1Counter2 = 2;
       } else {
         log1Counter = 28;
@@ -263,6 +266,11 @@ public class FroggerState extends Engine.State {
       g.drawImage(getControls(), 0, 0, null);
       g.drawImage(getPointtable(), GamePanel.width / 2 + getBackground().getWidth() / 2, 0, null);
     }
+    for(int i = 0; i < zielteiche.length; i++) {
+    	if(zielteiche[i] == true) {
+    		g.drawImage(Game.imageLoader.load("images/Frogger/win_0.png"), GamePanel.width / 2 - getBackground().getWidth() / 2 + (i*67) + 11, 45, null);
+    	}
+    }
   }
 
   @Override
@@ -273,7 +281,48 @@ public class FroggerState extends Engine.State {
       frog.setDirection(Direction.UP);
       if(!(frog.getFrogY() - 22 < 62)) {
     	  frog.setFrogY(frog.getFrogY() - 22);
-      }	  
+      }
+      else if(frog.getFrogX() >= GamePanel.width / 2 - getBackground().getWidth() / 2 + 10 && frog.getFrogX() <= GamePanel.width / 2 - getBackground().getWidth() / 2 + 15 && zielteiche[0] == false) {
+    	  zielteiche[0] = true;
+    	  belegteTeiche++;
+    	  frog.setDirection(Direction.UP);
+    	  frog.setFrogX(GamePanel.width/2-10);
+    	  frog.setFrogY(GamePanel.height-55);
+      }
+      else if(frog.getFrogX() >= GamePanel.width / 2 - getBackground().getWidth() / 2 + 78 && frog.getFrogX() <= GamePanel.width / 2 - getBackground().getWidth() / 2 + 83 && zielteiche[1] == false) {
+    	  zielteiche[1] = true;
+    	  belegteTeiche++;
+    	  frog.setDirection(Direction.UP);
+    	  frog.setFrogX(GamePanel.width/2-10);
+    	  frog.setFrogY(GamePanel.height-55);
+      }
+      else if(frog.getFrogX() >= GamePanel.width / 2 - getBackground().getWidth() / 2 + 145 && frog.getFrogX() <= GamePanel.width / 2 - getBackground().getWidth() / 2 + 150 && zielteiche[2] == false) {
+    	  zielteiche[2] = true;
+    	  belegteTeiche++;
+    	  frog.setDirection(Direction.UP);
+    	  frog.setFrogX(GamePanel.width/2-10);
+    	  frog.setFrogY(GamePanel.height-55);
+      }
+      else if(frog.getFrogX() >= GamePanel.width / 2 - getBackground().getWidth() / 2 + 213 && frog.getFrogX() <= GamePanel.width / 2 - getBackground().getWidth() / 2 + 218 && zielteiche[3] == false) {
+    	  zielteiche[3] = true;
+    	  belegteTeiche++;
+    	  frog.setDirection(Direction.UP);
+    	  frog.setFrogX(GamePanel.width/2-10);
+    	  frog.setFrogY(GamePanel.height-55);
+      }
+      else if(frog.getFrogX() >= GamePanel.width / 2 - getBackground().getWidth() / 2 + 280 && frog.getFrogX() <= GamePanel.width / 2 - getBackground().getWidth() / 2 + 285 && zielteiche[4] == false) {
+    	  zielteiche[4] = true;
+    	  belegteTeiche++;
+    	  frog.setDirection(Direction.UP);
+    	  frog.setFrogX(GamePanel.width/2-10);
+    	  frog.setFrogY(GamePanel.height-55);
+      }
+      if(belegteTeiche == 5) {
+    	  belegteTeiche = 0;
+    	  for(int i = 0; i < 5; i++) {
+    		  zielteiche[i] = false;
+    	  }
+      }
     }
     else if(key == KeyEvent.VK_DOWN) {
       frog.setDirection(Direction.DOWN);

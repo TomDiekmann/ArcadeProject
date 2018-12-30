@@ -48,7 +48,7 @@ public class MovingObjects {
   }
 
   public enum Type {
-    Log1(Game.imageLoader.load("images/Frogger/log_0.png"), true, 73, 1.25f, false),
+    Log1(Game.imageLoader.load("images/Frogger/log_0.png"), true, 73, 0.7f, false),
     Turtle2(Game.imageLoader.load("images/Frogger/turtle_1.png"), false, 93, 0.7f, false),
     Log3(Game.imageLoader.load("images/Frogger/log_0.png"), true, 118, 0.8f, false),
     Log4(Game.imageLoader.load("images/Frogger/log_0.png"), true, 138, 0.6f, false),
