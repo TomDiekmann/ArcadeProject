@@ -208,7 +208,7 @@ public class FroggerState extends Engine.State {
     // Log spawning
     if (log3Counter == 0) {
       moving.add(new MovingObjects(Type.Log3));
-      log3Counter = 260;
+      log3Counter = 225;
     }
     log3Counter--;
 
