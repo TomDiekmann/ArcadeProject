@@ -1,10 +1,17 @@
 package Frogger;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import Engine.AudioFilePlayer;
@@ -46,9 +53,17 @@ public class FroggerState extends Engine.State {
   private int turtle5Counter2;
 
   private int titleTicks;
+  private int timeTicks;
   
   private boolean[] zielteiche = new boolean[5];
   private int belegteTeiche = 0;
+  
+  private int farthestLane = 0;
+  private int actualLane = 0;
+  
+  private int score = 0;
+  private int highscore = 0;
+  private int timeRectWidth = 0;
 
   public FroggerState(GameStateManager gsm) {
     super(gsm);
@@ -79,6 +94,9 @@ public class FroggerState extends Engine.State {
     turtle5Counter2 = 0;
 
     titleTicks = 150;
+    timeTicks = 50;
+    
+    highscore = loadHighscore();
 
     musicThread = new Thread() {
       public void run() {
@@ -241,6 +259,12 @@ public class FroggerState extends Engine.State {
         	frog.setDirection(Direction.UP);
           	frog.setFrogX(GamePanel.width/2-10);
           	frog.setFrogY(GamePanel.height-55);
+          	if(score > loadHighscore()) {
+          		updateHighscore(score);
+          	}
+          	score = 0;
+          	actualLane = 0;
+          	farthestLane = 0;
         	break;
         }
         if(frog.getFrogY() <= 175 && moving.get(i).hasCollision((int)frog.getFrogX()+10, (int)frog.getFrogY() +10) && !moving.get(i).type.car && moving.get(i).hasCollision((int)frog.getFrogX()+10, (int)frog.getFrogY() +10)) {
@@ -255,16 +279,53 @@ public class FroggerState extends Engine.State {
     	  hasContact = true;
       }
       if(hasContact == false) {
-    	  Game.gamepanel.gsm.setState(GameStateManager.FROGGERSTATE);
+    	Game.gamepanel.gsm.setState(GameStateManager.FROGGERSTATE);
       	stateEnd();
       	frog.setDirection(Direction.UP);
       	frog.setFrogX(GamePanel.width/2-10);
       	frog.setFrogY(GamePanel.height-55);
+      	if(score > loadHighscore()) {
+      		updateHighscore(score);
+      	}
+      	score = 0;
+      	actualLane = 0;
+      	farthestLane = 0;
       }
       frog.setFrogX(frog.getFrogX()+movingLogTurtleSpeed);
       frog.render(g);
       g.drawImage(getControls(), 0, 0, null);
       g.drawImage(getPointtable(), GamePanel.width / 2 + getBackground().getWidth() / 2, 0, null);
+      g.setColor(Color.yellow);
+      Font font = new Font("ArcadeClassic", Font.PLAIN, 20);
+      g.setFont(font);
+      g.drawString("Score   " + this.score, GamePanel.width / 2 + 70, 11);
+      g.setColor(Color.red);
+      g.drawString("" + loadHighscore(), GamePanel.width / 2 - getBackground().getWidth() / 2 + 114, 22);
+      g.setColor(Color.black);
+      if(timeTicks != 0) {
+    	  timeTicks--;
+      }
+      else {
+    	  timeTicks = 50;
+    	  if(timeRectWidth != 170) {
+    		  timeRectWidth++;
+    	  }
+    	  else {
+    		  	timeRectWidth = 0;
+    		  	Game.gamepanel.gsm.setState(GameStateManager.FROGGERSTATE);
+          		stateEnd();
+          		frog.setDirection(Direction.UP);
+            	frog.setFrogX(GamePanel.width/2-10);
+            	frog.setFrogY(GamePanel.height-55);
+            	if(score > loadHighscore()) {
+              		updateHighscore(score);
+              	}
+            	score = 0;  
+            	actualLane = 0;
+              	farthestLane = 0;
+    	  }
+      }
+      g.fillRect(GamePanel.width / 2 - getBackground().getWidth() / 2 + 100, 347, timeRectWidth, 13);
     }
     for(int i = 0; i < zielteiche.length; i++) {
     	if(zielteiche[i] == true) {
@@ -281,44 +342,58 @@ public class FroggerState extends Engine.State {
       frog.setDirection(Direction.UP);
       if(!(frog.getFrogY() - 22 < 62)) {
     	  frog.setFrogY(frog.getFrogY() - 22);
+    	  if(actualLane+1 > farthestLane) {
+    		  score += 10;
+    		  actualLane++;
+    		  farthestLane++;
+    	  }
+    	  else {
+    		  actualLane++;
+    	  }
       }
-      else if(frog.getFrogX() >= GamePanel.width / 2 - getBackground().getWidth() / 2 + 10 && frog.getFrogX() <= GamePanel.width / 2 - getBackground().getWidth() / 2 + 15 && zielteiche[0] == false) {
+      else if(frog.getFrogX() >= GamePanel.width / 2 - getBackground().getWidth() / 2 + 5 && frog.getFrogX() <= GamePanel.width / 2 - getBackground().getWidth() / 2 + 20 && zielteiche[0] == false) {
     	  zielteiche[0] = true;
     	  belegteTeiche++;
+    	  score += 60;
     	  frog.setDirection(Direction.UP);
     	  frog.setFrogX(GamePanel.width/2-10);
     	  frog.setFrogY(GamePanel.height-55);
       }
-      else if(frog.getFrogX() >= GamePanel.width / 2 - getBackground().getWidth() / 2 + 78 && frog.getFrogX() <= GamePanel.width / 2 - getBackground().getWidth() / 2 + 83 && zielteiche[1] == false) {
+      else if(frog.getFrogX() >= GamePanel.width / 2 - getBackground().getWidth() / 2 + 73 && frog.getFrogX() <= GamePanel.width / 2 - getBackground().getWidth() / 2 + 88 && zielteiche[1] == false) {
     	  zielteiche[1] = true;
     	  belegteTeiche++;
+    	  score += 60;
     	  frog.setDirection(Direction.UP);
     	  frog.setFrogX(GamePanel.width/2-10);
     	  frog.setFrogY(GamePanel.height-55);
       }
-      else if(frog.getFrogX() >= GamePanel.width / 2 - getBackground().getWidth() / 2 + 145 && frog.getFrogX() <= GamePanel.width / 2 - getBackground().getWidth() / 2 + 150 && zielteiche[2] == false) {
+      else if(frog.getFrogX() >= GamePanel.width / 2 - getBackground().getWidth() / 2 + 140 && frog.getFrogX() <= GamePanel.width / 2 - getBackground().getWidth() / 2 + 155 && zielteiche[2] == false) {
     	  zielteiche[2] = true;
     	  belegteTeiche++;
+    	  score += 60;
     	  frog.setDirection(Direction.UP);
     	  frog.setFrogX(GamePanel.width/2-10);
     	  frog.setFrogY(GamePanel.height-55);
       }
-      else if(frog.getFrogX() >= GamePanel.width / 2 - getBackground().getWidth() / 2 + 213 && frog.getFrogX() <= GamePanel.width / 2 - getBackground().getWidth() / 2 + 218 && zielteiche[3] == false) {
+      else if(frog.getFrogX() >= GamePanel.width / 2 - getBackground().getWidth() / 2 + 208 && frog.getFrogX() <= GamePanel.width / 2 - getBackground().getWidth() / 2 + 223 && zielteiche[3] == false) {
     	  zielteiche[3] = true;
     	  belegteTeiche++;
+    	  score += 60;
     	  frog.setDirection(Direction.UP);
     	  frog.setFrogX(GamePanel.width/2-10);
     	  frog.setFrogY(GamePanel.height-55);
       }
-      else if(frog.getFrogX() >= GamePanel.width / 2 - getBackground().getWidth() / 2 + 280 && frog.getFrogX() <= GamePanel.width / 2 - getBackground().getWidth() / 2 + 285 && zielteiche[4] == false) {
+      else if(frog.getFrogX() >= GamePanel.width / 2 - getBackground().getWidth() / 2 + 275 && frog.getFrogX() <= GamePanel.width / 2 - getBackground().getWidth() / 2 + 290 && zielteiche[4] == false) {
     	  zielteiche[4] = true;
     	  belegteTeiche++;
+    	  score += 60;
     	  frog.setDirection(Direction.UP);
     	  frog.setFrogX(GamePanel.width/2-10);
     	  frog.setFrogY(GamePanel.height-55);
       }
       if(belegteTeiche == 5) {
     	  belegteTeiche = 0;
+    	  score += 1000;
     	  for(int i = 0; i < 5; i++) {
     		  zielteiche[i] = false;
     	  }
@@ -328,6 +403,7 @@ public class FroggerState extends Engine.State {
       frog.setDirection(Direction.DOWN);
       if(!(frog.getFrogY() + 22 > 330)) {
     	  frog.setFrogY(frog.getFrogY() + 22);
+    	  actualLane--;
       }	  
     }
     else if(key == KeyEvent.VK_RIGHT) {
@@ -401,4 +477,31 @@ public class FroggerState extends Engine.State {
   public void stateEnd() {
     musicPlayer.stop();
   }
+  
+  public static int loadHighscore() {
+		BufferedReader reader;
+		int highscore = 0;
+		try {
+			reader = new BufferedReader(new FileReader(new File("files/Frogger/highscore.txt")));
+			highscore = Integer.parseInt(reader.readLine());
+			reader.close();
+		} catch (NumberFormatException | IOException e) {
+			e.printStackTrace();
+		}
+
+		return highscore;
+	}
+
+	public void updateHighscore(int newScore) {
+		BufferedWriter writer;
+		try {
+			writer = new BufferedWriter(new FileWriter(new File("files/Frogger/highscore.txt")));
+			writer.write("" + newScore);
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		highscore = newScore;
+	}
 }
