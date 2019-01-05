@@ -338,86 +338,88 @@ public class FroggerState extends Engine.State {
   public void keyPressed(KeyEvent e, int k) {
     int key = e.getKeyCode();
     
-    if(key == KeyEvent.VK_UP) {
-      frog.setDirection(Direction.UP);
-      if(!(frog.getFrogY() - 22 < 62)) {
-    	  frog.setFrogY(frog.getFrogY() - 22);
-    	  if(actualLane+1 > farthestLane) {
-    		  score += 10;
-    		  actualLane++;
-    		  farthestLane++;
-    	  }
-    	  else {
-    		  actualLane++;
-    	  }
-      }
-      else if(frog.getFrogX() >= GamePanel.width / 2 - getBackground().getWidth() / 2 + 5 && frog.getFrogX() <= GamePanel.width / 2 - getBackground().getWidth() / 2 + 20 && zielteiche[0] == false) {
-    	  zielteiche[0] = true;
-    	  belegteTeiche++;
-    	  score += 60;
-    	  frog.setDirection(Direction.UP);
-    	  frog.setFrogX(GamePanel.width/2-10);
-    	  frog.setFrogY(GamePanel.height-55);
-      }
-      else if(frog.getFrogX() >= GamePanel.width / 2 - getBackground().getWidth() / 2 + 73 && frog.getFrogX() <= GamePanel.width / 2 - getBackground().getWidth() / 2 + 88 && zielteiche[1] == false) {
-    	  zielteiche[1] = true;
-    	  belegteTeiche++;
-    	  score += 60;
-    	  frog.setDirection(Direction.UP);
-    	  frog.setFrogX(GamePanel.width/2-10);
-    	  frog.setFrogY(GamePanel.height-55);
-      }
-      else if(frog.getFrogX() >= GamePanel.width / 2 - getBackground().getWidth() / 2 + 140 && frog.getFrogX() <= GamePanel.width / 2 - getBackground().getWidth() / 2 + 155 && zielteiche[2] == false) {
-    	  zielteiche[2] = true;
-    	  belegteTeiche++;
-    	  score += 60;
-    	  frog.setDirection(Direction.UP);
-    	  frog.setFrogX(GamePanel.width/2-10);
-    	  frog.setFrogY(GamePanel.height-55);
-      }
-      else if(frog.getFrogX() >= GamePanel.width / 2 - getBackground().getWidth() / 2 + 208 && frog.getFrogX() <= GamePanel.width / 2 - getBackground().getWidth() / 2 + 223 && zielteiche[3] == false) {
-    	  zielteiche[3] = true;
-    	  belegteTeiche++;
-    	  score += 60;
-    	  frog.setDirection(Direction.UP);
-    	  frog.setFrogX(GamePanel.width/2-10);
-    	  frog.setFrogY(GamePanel.height-55);
-      }
-      else if(frog.getFrogX() >= GamePanel.width / 2 - getBackground().getWidth() / 2 + 275 && frog.getFrogX() <= GamePanel.width / 2 - getBackground().getWidth() / 2 + 290 && zielteiche[4] == false) {
-    	  zielteiche[4] = true;
-    	  belegteTeiche++;
-    	  score += 60;
-    	  frog.setDirection(Direction.UP);
-    	  frog.setFrogX(GamePanel.width/2-10);
-    	  frog.setFrogY(GamePanel.height-55);
-      }
-      if(belegteTeiche == 5) {
-    	  belegteTeiche = 0;
-    	  score += 1000;
-    	  for(int i = 0; i < 5; i++) {
-    		  zielteiche[i] = false;
-    	  }
-      }
-    }
-    else if(key == KeyEvent.VK_DOWN) {
-      frog.setDirection(Direction.DOWN);
-      if(!(frog.getFrogY() + 22 > 330)) {
-    	  frog.setFrogY(frog.getFrogY() + 22);
-    	  actualLane--;
-      }	  
-    }
-    else if(key == KeyEvent.VK_RIGHT) {
-      frog.setDirection(Direction.RIGHT);
-      
-      if(!(frog.getFrogX() + 22 >= GamePanel.width / 2 + getBackground().getWidth() / 2 - 20)) {
-    	  frog.setFrogX(frog.getFrogX() + 22);
-      }	  
-    }
-    else if(key == KeyEvent.VK_LEFT) {
-      frog.setDirection(Direction.LEFT);
-      if(!(frog.getFrogX() - 22 <= GamePanel.width / 2 - getBackground().getWidth() / 2)) {
-    	  frog.setFrogX(frog.getFrogX() - 22);
-      }
+    if(titleTicks == 0) {
+    	if(key == KeyEvent.VK_UP) {
+    	      frog.setDirection(Direction.UP);
+    	      if(!(frog.getFrogY() - 22 < 62)) {
+    	    	  frog.setFrogY(frog.getFrogY() - 22);
+    	    	  if(actualLane+1 > farthestLane) {
+    	    		  score += 10;
+    	    		  actualLane++;
+    	    		  farthestLane++;
+    	    	  }
+    	    	  else {
+    	    		  actualLane++;
+    	    	  }
+    	      }
+    	      else if(frog.getFrogX() >= GamePanel.width / 2 - getBackground().getWidth() / 2 + 5 && frog.getFrogX() <= GamePanel.width / 2 - getBackground().getWidth() / 2 + 20 && zielteiche[0] == false) {
+    	    	  zielteiche[0] = true;
+    	    	  belegteTeiche++;
+    	    	  score += 60;
+    	    	  frog.setDirection(Direction.UP);
+    	    	  frog.setFrogX(GamePanel.width/2-10);
+    	    	  frog.setFrogY(GamePanel.height-55);
+    	      }
+    	      else if(frog.getFrogX() >= GamePanel.width / 2 - getBackground().getWidth() / 2 + 73 && frog.getFrogX() <= GamePanel.width / 2 - getBackground().getWidth() / 2 + 88 && zielteiche[1] == false) {
+    	    	  zielteiche[1] = true;
+    	    	  belegteTeiche++;
+    	    	  score += 60;
+    	    	  frog.setDirection(Direction.UP);
+    	    	  frog.setFrogX(GamePanel.width/2-10);
+    	    	  frog.setFrogY(GamePanel.height-55);
+    	      }
+    	      else if(frog.getFrogX() >= GamePanel.width / 2 - getBackground().getWidth() / 2 + 140 && frog.getFrogX() <= GamePanel.width / 2 - getBackground().getWidth() / 2 + 155 && zielteiche[2] == false) {
+    	    	  zielteiche[2] = true;
+    	    	  belegteTeiche++;
+    	    	  score += 60;
+    	    	  frog.setDirection(Direction.UP);
+    	    	  frog.setFrogX(GamePanel.width/2-10);
+    	    	  frog.setFrogY(GamePanel.height-55);
+    	      }
+    	      else if(frog.getFrogX() >= GamePanel.width / 2 - getBackground().getWidth() / 2 + 208 && frog.getFrogX() <= GamePanel.width / 2 - getBackground().getWidth() / 2 + 223 && zielteiche[3] == false) {
+    	    	  zielteiche[3] = true;
+    	    	  belegteTeiche++;
+    	    	  score += 60;
+    	    	  frog.setDirection(Direction.UP);
+    	    	  frog.setFrogX(GamePanel.width/2-10);
+    	    	  frog.setFrogY(GamePanel.height-55);
+    	      }
+    	      else if(frog.getFrogX() >= GamePanel.width / 2 - getBackground().getWidth() / 2 + 275 && frog.getFrogX() <= GamePanel.width / 2 - getBackground().getWidth() / 2 + 290 && zielteiche[4] == false) {
+    	    	  zielteiche[4] = true;
+    	    	  belegteTeiche++;
+    	    	  score += 60;
+    	    	  frog.setDirection(Direction.UP);
+    	    	  frog.setFrogX(GamePanel.width/2-10);
+    	    	  frog.setFrogY(GamePanel.height-55);
+    	      }
+    	      if(belegteTeiche == 5) {
+    	    	  belegteTeiche = 0;
+    	    	  score += 1000;
+    	    	  for(int i = 0; i < 5; i++) {
+    	    		  zielteiche[i] = false;
+    	    	  }
+    	      }
+    	    }
+    	    else if(key == KeyEvent.VK_DOWN) {
+    	      frog.setDirection(Direction.DOWN);
+    	      if(!(frog.getFrogY() + 22 > 330)) {
+    	    	  frog.setFrogY(frog.getFrogY() + 22);
+    	    	  actualLane--;
+    	      }	  
+    	    }
+    	    else if(key == KeyEvent.VK_RIGHT) {
+    	      frog.setDirection(Direction.RIGHT);
+    	      
+    	      if(!(frog.getFrogX() + 22 >= GamePanel.width / 2 + getBackground().getWidth() / 2 - 20)) {
+    	    	  frog.setFrogX(frog.getFrogX() + 22);
+    	      }	  
+    	    }
+    	    else if(key == KeyEvent.VK_LEFT) {
+    	      frog.setDirection(Direction.LEFT);
+    	      if(!(frog.getFrogX() - 22 <= GamePanel.width / 2 - getBackground().getWidth() / 2)) {
+    	    	  frog.setFrogX(frog.getFrogX() - 22);
+    	      }
+    	    }
     }
   }
 
