@@ -8,6 +8,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import Engine.GamePanel;
+import Engine.GameStateManager;
+import snake.SnakeGameState;
 
 public class GameView {
 	private String name;

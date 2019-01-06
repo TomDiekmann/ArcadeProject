@@ -25,6 +25,7 @@ public class World {
 	private int blocksY;
 	public Block[][] blocks;
 	public List<RunningMonster> enemies = new ArrayList<RunningMonster>();
+	public List<RunningMonster> shells = new ArrayList<RunningMonster>();
 	public List<PointsText> pointsTexts = new ArrayList<PointsText>();
 	public List<Item> items = new ArrayList<Item>();
 	private int[][] blockIDs;
@@ -93,6 +94,23 @@ public class World {
 			if (enemy.getX() > startX && enemy.getX() < endX) {
 				enemy.render(g, startX, startY);
 				enemy.triggerMoving();
+			}
+		}
+		
+		for (int i = 0; i < shells.size(); i++) {
+			RunningMonster enemy = shells.get(i);
+			enemy.update();
+			if (enemy.getX() > startX && enemy.getX() < endX) {
+				enemy.render(g, startX, startY);
+				enemy.triggerMoving();
+			}
+			for (int x = 0; x < enemies.size(); x++) {
+				RunningMonster target = enemies.get(x);
+				if(enemy.getX()  + enemy.width >= target.getX() && enemy.getX() <= target.getX() + target.width) {
+					target.headHit();
+					
+					System.out.println("Test");
+				}
 			}
 		}
 		

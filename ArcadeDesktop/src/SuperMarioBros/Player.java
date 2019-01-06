@@ -112,9 +112,13 @@ public class Player extends Entity {
 				} else {
 					if (x < tmp.getX() + 16 && x > tmp.getX()) {
 						tmp.startMoving(true);
+						MarioWorldState.world.enemies.remove(tmp);
+						MarioWorldState.world.shells.add(tmp);
 						shellImuneTime = 2;
 					} else if (x + 16 > tmp.getX()) {
 						tmp.startMoving(false);
+						MarioWorldState.world.enemies.remove(tmp);
+						MarioWorldState.world.shells.add(tmp);
 						shellImuneTime = 2;
 					}
 				}

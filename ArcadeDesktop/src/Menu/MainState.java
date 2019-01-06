@@ -13,6 +13,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import Engine.AudioFilePlayer;
 import Engine.Game;
 import Engine.GamePanel;
 import Engine.GameStateManager;
@@ -24,6 +25,7 @@ public class MainState extends State {
 	private ArrayList<GameView> games = new ArrayList<GameView>();
 	private int selectedGame;
 	private final int COVER_WIDTH = 73;
+	private Engine.AudioFilePlayer soundPlayer = new AudioFilePlayer();
 	
 
 	public MainState(GameStateManager gsm) {
@@ -80,6 +82,11 @@ public class MainState extends State {
 		switch (k) {
 		case KeyEvent.VK_ENTER:
 			Game.gamepanel.gsm.setState(games.get(selectedGame).getState());
+			new Thread() {
+				public void run() {
+					soundPlayer.play("sounds/Menu/menuStart.wav");
+				}
+			}.start();
 			break;
 		case KeyEvent.VK_LEFT:
 			games.get(selectedGame).setSelected(false);
@@ -88,6 +95,11 @@ public class MainState extends State {
 			else
 				selectedGame--;
 			games.get(selectedGame).setSelected(true);
+			new Thread() {
+				public void run() {
+					soundPlayer.play("sounds/Menu/menuScroll.wav");
+				}
+			}.start();
 			break;
 		case KeyEvent.VK_RIGHT:
 			games.get(selectedGame).setSelected(false);
@@ -96,6 +108,11 @@ public class MainState extends State {
 			else
 				selectedGame++;
 			games.get(selectedGame).setSelected(true);
+			new Thread() {
+				public void run() {
+					soundPlayer.play("sounds/Menu/menuScroll.wav");
+				}
+			}.start();
 			break;
 		}
 	}
