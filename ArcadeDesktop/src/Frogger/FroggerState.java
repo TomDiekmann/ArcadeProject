@@ -51,6 +51,11 @@ public class FroggerState extends Engine.State {
   private int log4Counter2;
   private int turtle5Counter;
   private int turtle5Counter2;
+  
+  private boolean w = false;
+  private boolean a = false;
+  private boolean s = false;
+  private boolean d = false;
 
   private int titleTicks;
   private int timeTicks;
@@ -69,7 +74,7 @@ public class FroggerState extends Engine.State {
     super(gsm);
     setBackground(Game.imageLoader.load("images/Frogger/background.png"));
     setTitle(Game.imageLoader.load("images/Frogger/title.png"));
-    setControls(Game.imageLoader.load("images/Frogger/frogger_controls.png"));
+    setControls(Game.imageLoader.load("images/Frogger/controlsWASD.png"));
     setPointtable(Game.imageLoader.load("images/Frogger/frogger_pointtable.png"));
     frog = new Frog(GamePanel.width/2-10, GamePanel.height-55);
 
@@ -338,9 +343,10 @@ public class FroggerState extends Engine.State {
   public void keyPressed(KeyEvent e, int k) {
     int key = e.getKeyCode();
     
-    if(titleTicks == 0) {
-    	if(key == KeyEvent.VK_UP) {
+    if(titleTicks == 0 && w == false && a == false && s == false && d == false) {
+    	if(key == KeyEvent.VK_W) {
     	      frog.setDirection(Direction.UP);
+    	      w = true;
     	      if(!(frog.getFrogY() - 22 < 62)) {
     	    	  frog.setFrogY(frog.getFrogY() - 22);
     	    	  if(actualLane+1 > farthestLane) {
@@ -400,22 +406,24 @@ public class FroggerState extends Engine.State {
     	    	  }
     	      }
     	    }
-    	    else if(key == KeyEvent.VK_DOWN) {
+    	    else if(key == KeyEvent.VK_S) {
     	      frog.setDirection(Direction.DOWN);
+    	      s = true;
     	      if(!(frog.getFrogY() + 22 > 330)) {
     	    	  frog.setFrogY(frog.getFrogY() + 22);
     	    	  actualLane--;
     	      }	  
     	    }
-    	    else if(key == KeyEvent.VK_RIGHT) {
+    	    else if(key == KeyEvent.VK_D) {
     	      frog.setDirection(Direction.RIGHT);
-    	      
+    	      d = true;
     	      if(!(frog.getFrogX() + 22 >= GamePanel.width / 2 + getBackground().getWidth() / 2 - 20)) {
     	    	  frog.setFrogX(frog.getFrogX() + 22);
     	      }	  
     	    }
-    	    else if(key == KeyEvent.VK_LEFT) {
+    	    else if(key == KeyEvent.VK_A) {
     	      frog.setDirection(Direction.LEFT);
+    	      a = true;
     	      if(!(frog.getFrogX() - 22 <= GamePanel.width / 2 - getBackground().getWidth() / 2)) {
     	    	  frog.setFrogX(frog.getFrogX() - 22);
     	      }
@@ -425,7 +433,11 @@ public class FroggerState extends Engine.State {
 
   @Override
   public void keyReleased(KeyEvent e, int k) {
-
+	  int key = e.getKeyCode();
+	  if(key == KeyEvent.VK_W) {w = false;}
+	  else if(key == KeyEvent.VK_S) {s = false;}
+	  else if(key == KeyEvent.VK_D) {d = false;}
+	  else if(key == KeyEvent.VK_A) {a = false;}
   }
 
   @Override
