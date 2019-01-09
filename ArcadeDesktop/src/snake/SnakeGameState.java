@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
+import Engine.AudioFilePlayer;
 import Engine.GamePanel;
 import Engine.GameStateManager;
 import Engine.State;
@@ -35,6 +36,7 @@ public class SnakeGameState extends State {
 	private int score = 0;
 	public static int HIGHSCORE = loadHighscore();
 	private boolean redraw = false;
+	private AudioFilePlayer soundPlayer = new AudioFilePlayer();
 
 	// SNAKE VARIABLES
 	private SnakeBodyPart snakeHead;
@@ -132,6 +134,11 @@ public class SnakeGameState extends State {
 
 					this.score += this.fruits.get(0).getScore();
 					this.fruits.remove(0);
+					new Thread() {
+						public void run() {
+							soundPlayer.play("sounds/Snake/snakeCollect.wav");
+						}
+					}.start();
 					break;
 				}
 			}
