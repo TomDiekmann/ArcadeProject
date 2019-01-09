@@ -112,9 +112,13 @@ public class Player extends Entity {
 				} else {
 					if (x < tmp.getX() + 16 && x > tmp.getX()) {
 						tmp.startMoving(true);
+						MarioWorldState.world.enemies.remove(tmp);
+						MarioWorldState.world.shells.add(tmp);
 						shellImuneTime = 2;
 					} else if (x + 16 > tmp.getX()) {
 						tmp.startMoving(false);
+						MarioWorldState.world.enemies.remove(tmp);
+						MarioWorldState.world.shells.add(tmp);
 						shellImuneTime = 2;
 					}
 				}
@@ -188,6 +192,17 @@ public class Player extends Entity {
 				invicibilityTime = 0;
 				MarioWorldState.world.stopStarSoundtrack();
 			}
+		}
+		
+		Block blockOverMario = null;
+		if(topLeft) {
+			blockOverMario = MarioWorldState.world.getBlock((int) this.x, (int) this.y - width);
+
+		} else if(topRight) {
+			blockOverMario = MarioWorldState.world.getBlock((int) this.x + 16, (int) this.y - width);
+		}
+		if(blockOverMario != null) {
+			blockOverMario.destroyBlock();
 		}
 	}
 

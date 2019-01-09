@@ -66,8 +66,6 @@ public class Item extends Entity {
 				MarioWorldState.world.items.remove(this);
 			}
 		}
-		//System.out.println(midRight);
-		//System.out.println(midLeft);
 		if(midRight && !midLeft) {
 			left = true;
 			right = false;

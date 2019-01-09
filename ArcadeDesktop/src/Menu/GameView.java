@@ -8,6 +8,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import Engine.GamePanel;
+import Engine.GameStateManager;
+import snake.SnakeGameState;
 
 public class GameView {
 	private String name;
@@ -44,6 +46,9 @@ public class GameView {
 				g.drawString(tutorial.get(i), 20+gameScreen.getWidth(), textY);
 				textY += 15;
 			}
+			
+			if (state == GameStateManager.SNAKEGAMESTATE)
+				g.drawString("Highscore: " + SnakeGameState.HIGHSCORE, 20+gameScreen.getWidth(), textY + 15);
 		}
 		
 	}
