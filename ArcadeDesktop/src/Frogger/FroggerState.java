@@ -2,6 +2,7 @@ package Frogger;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -27,6 +28,8 @@ public class FroggerState extends Engine.State {
   public static BufferedImage controls;
   public static BufferedImage pointtable;
   public static ArrayList<MovingObjects> moving;
+  
+  public static Font froggerfont;
   
   public Frog frog;
 
@@ -77,6 +80,15 @@ public class FroggerState extends Engine.State {
     setControls(Game.imageLoader.load("images/Frogger/controlsWASD.png"));
     setPointtable(Game.imageLoader.load("images/Frogger/frogger_pointtable.png"));
     frog = new Frog(GamePanel.width/2-10, GamePanel.height-55);
+    try {
+		froggerfont = Font.createFont(Font.TRUETYPE_FONT, new File("files/Frogger/ARCADECLASSIC.TTF")).deriveFont(20f);
+	} catch (FontFormatException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 
     moving = new ArrayList<MovingObjects>();
     truckCounter = 0;
@@ -301,11 +313,10 @@ public class FroggerState extends Engine.State {
       g.drawImage(getControls(), 0, 0, null);
       g.drawImage(getPointtable(), GamePanel.width / 2 + getBackground().getWidth() / 2, 0, null);
       g.setColor(Color.yellow);
-      Font font = new Font("ArcadeClassic", Font.PLAIN, 20);
-      g.setFont(font);
-      g.drawString("Score   " + this.score, GamePanel.width / 2 + 70, 13);
+      g.setFont(froggerfont);
+      g.drawString("Score   " + this.score, GamePanel.width / 2 + 70, 11);
       g.setColor(Color.red);
-      g.drawString("" + loadHighscore(), GamePanel.width / 2 - getBackground().getWidth() / 2 + 114, 24);
+      g.drawString("" + loadHighscore(), GamePanel.width / 2 - getBackground().getWidth() / 2 + 114, 22);
       g.setColor(Color.black);
       if(timeTicks != 0) {
     	  timeTicks--;
