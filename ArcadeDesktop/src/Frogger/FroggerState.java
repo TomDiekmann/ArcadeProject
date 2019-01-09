@@ -303,9 +303,9 @@ public class FroggerState extends Engine.State {
       g.setColor(Color.yellow);
       Font font = new Font("ArcadeClassic", Font.PLAIN, 20);
       g.setFont(font);
-      g.drawString("Score   " + this.score, GamePanel.width / 2 + 70, 11);
+      g.drawString("Score   " + this.score, GamePanel.width / 2 + 70, 13);
       g.setColor(Color.red);
-      g.drawString("" + loadHighscore(), GamePanel.width / 2 - getBackground().getWidth() / 2 + 114, 22);
+      g.drawString("" + loadHighscore(), GamePanel.width / 2 - getBackground().getWidth() / 2 + 114, 24);
       g.setColor(Color.black);
       if(timeTicks != 0) {
     	  timeTicks--;
