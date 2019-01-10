@@ -9,8 +9,6 @@ import Engine.GamePanel;
 
 public class Block extends GameObject {
 
-	// public static Spritesheet destroy = new
-	// Spritesheet(Game.imageLoader.load("img/destroy.png"), 10, 16, 16);
 
 	private Material material;
 	private Animation animation;
@@ -20,6 +18,8 @@ public class Block extends GameObject {
 	private long destroyStartTime;
 	private boolean destroying;
 	private boolean isDestructible;
+	
+	private String worldConnection;
 
 	private boolean marker;
 	
@@ -28,7 +28,6 @@ public class Block extends GameObject {
 	public Block(Material material, float x, float y, int width, int height) {
 		super(x, y, width, height);
 		this.material = material;
-//		animation = new Animation(destroy, dt);
 		marker = false;
 		switch(material.getID()) {
 		case 24:
@@ -120,5 +119,9 @@ public class Block extends GameObject {
 	
 	public void setItemContent(Item.Type type) {
 		itemContent = new Item(type, this.x, this.y);
+	}
+	
+	public void setWorldConnection(String worldConnection) {
+		this.worldConnection = worldConnection;
 	}
 }

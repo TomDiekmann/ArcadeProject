@@ -64,6 +64,9 @@ public class MarioWorldState extends State {
 			player.render(g);
 		}
 		else {
+			if(gsm.marioLives == -1) {
+				gsm.setState(GameStateManager.MAINSTATE);
+			}
 			g.setColor(Color.BLACK);
 			g.fillRect(0, 0, GamePanel.width/ GamePanel.SCALE, GamePanel.height/GamePanel.SCALE);
 			g.drawImage(Game.imageLoader.load("images/SuperMarioBros/SmallWalking.png").getSubimage(0, 16, 16, 16), (GamePanel.width / 2 - 75 - 16) / GamePanel.SCALE, (GamePanel.height / 2 - 16) / GamePanel.SCALE, null);

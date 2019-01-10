@@ -71,11 +71,14 @@ public class RunningMonster extends Entity {
 			left = true;
 			lastLeft = true;
 		}
-		if (x <= 1) {
+		if (x + width <= MarioWorldState.camera.getCamX()) {
 			MarioWorldState.world.enemies.remove(this);
+			MarioWorldState.world.shells.remove(this);
 		}
-		if (y > 180)
+		if (y > 180) {
 			MarioWorldState.world.enemies.remove(this);
+			MarioWorldState.world.shells.remove(this);
+		}
 	}
 
 	public void render(Graphics2D g, int startX, int startY) {

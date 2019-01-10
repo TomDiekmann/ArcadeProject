@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 import Engine.Animation;
 import Engine.AudioFilePlayer;
@@ -40,6 +41,10 @@ public class Player extends Entity {
 	private Thread poleSound;
 	private Animation climpAnimation;
 	public boolean climpAnimationStarted;
+	private BufferedImage flag = Game.imageLoader.load("images/SuperMarioBros/marioFlag.png");
+	private boolean flagMoving = false;
+	private int flagEndX;
+	private int flagEndY;
 	
 	public boolean endWorld;
 	
@@ -260,6 +265,7 @@ public class Player extends Entity {
 				climpAnimation = new Animation(new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/climpBig.png"),2,16,32), 150L, 0, 2);
 			else
 				climpAnimation = new Animation(new Spritesheet(Game.imageLoader.load("images/SuperMarioBros/climpSmall.png"),2,16,16), 150L, 0, 2);
+			
 			climpAnimationStarted = true; 
 			stopMoving = true;
 		}
@@ -274,10 +280,14 @@ public class Player extends Entity {
 					poleSound.start();
 				}
 				g.drawImage(climpAnimation.getImage(),(int) x - MarioWorldState.camera.getCamX(),(int) y - MarioWorldState.camera.getCamY(), null);
+				g.drawImage(flag, (int) (MarioWorldState.world.getBlock((int)x,(int) y).getX() - 8 - MarioWorldState.camera.getCamX()), (int) (y - MarioWorldState.camera.getCamY()), null);
+				flagEndX =  (int) MarioWorldState.world.getBlock((int)x,(int) y).getX() - 8;
+				flagEndY = (int) y;
 			}
 			else {
 				g.drawImage(animation.getImage(), (int) (x - MarioWorldState.camera.getCamX()),
 						(int) (y - MarioWorldState.camera.getCamY()), null);
+				g.drawImage(flag, flagEndX - MarioWorldState.camera.getCamX() , flagEndY - MarioWorldState.camera.getCamY(), null);
 				soundPlayer = new AudioFilePlayer();
 				if(!right) {
 					new Thread() {
@@ -306,6 +316,7 @@ public class Player extends Entity {
 					}
 				}.start();
 				}
+				g.drawImage(flag, flagEndX - MarioWorldState.camera.getCamX() , flagEndY - MarioWorldState.camera.getCamY(), null);
 			}
 			else {
 				Game.gamepanel.gsm.setState(GameStateManager.MAINSTATE);
