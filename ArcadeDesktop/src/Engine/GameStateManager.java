@@ -36,7 +36,6 @@ public class GameStateManager {
 		states[1] = new MenuState(this);
 		states[2] = new MarioWorldState(this, "files/SuperMarioBros/world1.txt");
 		states[3] = new SnakeGameState(this);
-		states[4] = new PongState(this);
 		states[5] = new FroggerState(this);
 		states[6] = new TronState(this);
 		states[7] = new StartupState(this);
@@ -77,6 +76,7 @@ public class GameStateManager {
 	}
 
 	public void setState(int state) {
+	
 		if (state == MARIOMENU || state == MARIOWORLD) {
 			GamePanel.SCALE = 2;
 			Game.gamepanel.scaleChanged();
@@ -94,6 +94,8 @@ public class GameStateManager {
 		else if(state == MAINSTATE) {
 			GamePanel.SCALE = 1;
 			Game.gamepanel.scaleChanged();
+			if(state == PONGSTATE)
+				states[state].stateEnd();
 		}
 			
 		this.state = state;

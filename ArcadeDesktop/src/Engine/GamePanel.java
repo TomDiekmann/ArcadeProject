@@ -37,8 +37,6 @@ public class GamePanel extends JPanel
 	private final int FPS = 60;
 	public GamePanel() {
 		super();
-		// width = 784;
-		// height = 441;
 		width = 640;
 		height = 360;
 		setOpaque(false);
