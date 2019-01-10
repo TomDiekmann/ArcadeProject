@@ -27,6 +27,7 @@ public class World {
 	public List<RunningMonster> enemies = new ArrayList<RunningMonster>();
 	public List<PointsText> pointsTexts = new ArrayList<PointsText>();
 	public List<Item> items = new ArrayList<Item>();
+	public List<Coin> coins = new ArrayList<Coin>();
 	public List<FireBall> fireBalls = new ArrayList<FireBall>();
 	private int[][] blockIDs;
 	public static final int BLOCKSIZE = 16;
@@ -55,7 +56,8 @@ public class World {
 		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 2775, 176));
 		enemies.add(new RunningMonster(RunningMonster.Type.GOOMBA, 2810, 176));
 		enemies.add(new RunningMonster(RunningMonster.Type.KOOPA_TROOPER, 1714, 168));
-		this.getBlock(256, 128).setItemContent(Item.Type.FireFlower);
+		this.getBlock(256, 128).enableItemContent();
+		coins.add(new Coin(256, 112));
 		soundPlayed = false;
 		musicThread = new Thread() {
 			public void run() {
@@ -112,6 +114,22 @@ public class World {
 			item.update();
 			if(item.getX() > startX && item.getX() < endX) {
 				item.render(g, startX, startY);
+			}
+		}
+		
+		for(int i = 0; i < fireBalls.size(); i++) {
+			FireBall fireBall = fireBalls.get(i);
+			fireBall.update();
+			if(fireBall.getX() > startX && fireBall.getX() < endX) {
+				fireBall.render(g, startX, startY);
+			}
+		}
+		
+		for(int i = 0; i < coins.size(); i++) {
+			Coin coin = coins.get(i);
+			coin.update();
+			if(coin.getX() > startX && coin.getX() < endX) {
+				coin.render(g, startX, startY);
 			}
 		}
 	}
@@ -286,10 +304,15 @@ public class World {
 		return null;
 	}
 	
-	public void giveFireBallKoordinaten() {
-		for(int i = 0; i < fireBalls.size(); i++) {
-			//System.out.println(fireBalls.get(i).getX());
-			//System.out.println(fireBalls.get(i).getY());
+	public Coin coinAt(int x, int y) {
+		for(int i = 0; i < coins.size(); i++) {
+			if(coins.get(i).getX() <= x && coins.get(i).getX() + coins.get(i).getWidth()  >= x) {
+				if(coins.get(i).getY() <= y && coins.get(i).getY() + coins.get(i).getHeight()  >= y) {
+					return coins.get(i);				
+				}
+			}
 		}
+		return null;
 	}
+	
 }
