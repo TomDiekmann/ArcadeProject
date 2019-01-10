@@ -1,6 +1,8 @@
 package snake;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -24,17 +26,20 @@ public class SnakeGameState extends State {
 	public final int WINDOW_WIDTH = 640, WINDOW_HEIGHT = 360;
 
 	public final int TILE_SIZE = 20;
-	public final int GAMEAREA_WIDTH = this.WINDOW_WIDTH - (this.TILE_SIZE * 2), GAMEAREA_HEIGHT = this.WINDOW_HEIGHT - (this.TILE_SIZE * 3);
+	public final int GAMEAREA_WIDTH = this.WINDOW_WIDTH - (this.TILE_SIZE * 2), GAMEAREA_HEIGHT = this.WINDOW_HEIGHT - (this.TILE_SIZE * 4);
 	public final int GAMEAREA_LEFT = this.TILE_SIZE, GAMEAREA_RIGHT = this.WINDOW_WIDTH - this.TILE_SIZE;
-	public final int GAMEAREA_TOP = this.TILE_SIZE * 2, GAMEAREA_BOTTOM = this.WINDOW_HEIGHT - this.TILE_SIZE;
+	public final int GAMEAREA_TOP = this.TILE_SIZE * 2, GAMEAREA_BOTTOM = GAMEAREA_TOP + GAMEAREA_HEIGHT;
 
 	// GAME VARIABLE
 	private boolean RUNNING;
+	private boolean PAUSED = false;
 	private int gameTicks = 0;
 	private int gameoverTicks = 0;
 	private Random random;
 	private int score = 0;
 	public static int HIGHSCORE = loadHighscore();
+	private boolean newHighscore = false;
+	private int highscoreTicks = 0;
 	private boolean redraw = false;
 	private AudioFilePlayer soundPlayer = new AudioFilePlayer();
 
@@ -133,6 +138,8 @@ public class SnakeGameState extends State {
 						this.snakeLength++;
 
 					this.score += this.fruits.get(0).getScore();
+					if (this.score > this.HIGHSCORE)
+						newHighscore = true;
 					this.fruits.remove(0);
 					new Thread() {
 						public void run() {
@@ -175,7 +182,7 @@ public class SnakeGameState extends State {
 
 	@Override
 	public void update() {
-		if (this.RUNNING)
+		if (this.RUNNING && !this.PAUSED)
 			this.tick();
 	}
 
@@ -224,7 +231,7 @@ public class SnakeGameState extends State {
 			// Draw Score
 			graphics.setColor(new Color(15, 56, 15));
 			graphics.setFont(new Font("Impact", Font.PLAIN, this.TILE_SIZE));
-			graphics.drawString("Score: " + this.score + "   Highscore: " + HIGHSCORE, this.TILE_SIZE / 2, this.TILE_SIZE + graphics.getFontMetrics().getDescent());
+			graphics.drawString("Score: " + this.score + "   Highscore: " + (HIGHSCORE > this.score ? this.HIGHSCORE : this.score), this.TILE_SIZE / 2, this.TILE_SIZE + graphics.getFontMetrics().getDescent());
 
 			// Draw Points
 			// 1 Point
@@ -239,8 +246,28 @@ public class SnakeGameState extends State {
 			graphics.setColor(new Color(15, 56, 15));
 			graphics.drawString(" : 10p", this.WINDOW_WIDTH / 2 + this.TILE_SIZE * 8, this.TILE_SIZE + graphics.getFontMetrics().getDescent());
 
+			// 50 Points
 			graphics.fillRoundRect(this.WINDOW_WIDTH / 2 + this.TILE_SIZE * 12, this.TILE_SIZE / 2 - 3, this.TILE_SIZE, this.TILE_SIZE, 10, 10);
 			graphics.drawString(" : 50p", this.WINDOW_WIDTH / 2 + this.TILE_SIZE * 13, this.TILE_SIZE + graphics.getFontMetrics().getDescent());
+
+			// Controls
+			graphics.setColor(new Color(15, 56, 15));
+			graphics.drawString("WASD:   Movement                E:   Pause", this.TILE_SIZE / 2, this.GAMEAREA_BOTTOM + (int) (this.TILE_SIZE * 1.5) + graphics.getFontMetrics().getDescent());
+			
+			// Draw Pause Screen
+			if (this.PAUSED) {
+				graphics.setColor(new Color(15, 56, 15));
+				graphics.setFont(new Font("Impact", Font.PLAIN, TILE_SIZE * 3));
+				graphics.drawString("Paused", (GamePanel.width - graphics.getFontMetrics().stringWidth("Paused")) / 2, TILE_SIZE * 2 + (GamePanel.height - TILE_SIZE * 3) / 2 + graphics.getFontMetrics().getDescent());
+			} else if (this.RUNNING && newHighscore && highscoreTicks < 150) {
+				Composite originalComposite = graphics.getComposite();
+				graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5F));
+				graphics.setColor(new Color(15, 56, 15));
+				graphics.setFont(new Font("Impact", Font.PLAIN, TILE_SIZE * 3));
+				graphics.drawString("New Highscore!", (GamePanel.width - graphics.getFontMetrics().stringWidth("New Highscore!")) / 2, TILE_SIZE * 2 + (GamePanel.height - TILE_SIZE * 3) / 2 + graphics.getFontMetrics().getDescent());
+				graphics.setComposite(originalComposite);
+				this.highscoreTicks++;
+			}
 
 			if (this.redraw)
 				this.redraw = false;
@@ -264,15 +291,21 @@ public class SnakeGameState extends State {
 	public void keyPressed(KeyEvent e, int k) {
 		int key = e.getKeyCode();
 
+		// Pause Game
+		if (key == KeyEvent.VK_E)
+			this.PAUSED = !this.PAUSED;
+
 		// Keyboard Input
-		if (key == KeyEvent.VK_W && this.snakeDirectionNext != Direction.DOWN)
-			this.snakeDirectionNext = Direction.UP;
-		else if (key == KeyEvent.VK_A && this.snakeDirectionNext != Direction.RIGHT)
-			this.snakeDirectionNext = Direction.LEFT;
-		else if (key == KeyEvent.VK_S && this.snakeDirectionNext != Direction.UP)
-			this.snakeDirectionNext = Direction.DOWN;
-		else if (key == KeyEvent.VK_D && this.snakeDirectionNext != Direction.LEFT)
-			this.snakeDirectionNext = Direction.RIGHT;
+		if (!this.PAUSED) {
+			if (key == KeyEvent.VK_W && this.snakeDirectionNext != Direction.DOWN)
+				this.snakeDirectionNext = Direction.UP;
+			else if (key == KeyEvent.VK_A && this.snakeDirectionNext != Direction.RIGHT)
+				this.snakeDirectionNext = Direction.LEFT;
+			else if (key == KeyEvent.VK_S && this.snakeDirectionNext != Direction.UP)
+				this.snakeDirectionNext = Direction.DOWN;
+			else if (key == KeyEvent.VK_D && this.snakeDirectionNext != Direction.LEFT)
+				this.snakeDirectionNext = Direction.RIGHT;
+		}
 	}
 
 	@Override
