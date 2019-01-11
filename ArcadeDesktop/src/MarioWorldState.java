@@ -28,6 +28,9 @@ public class MarioWorldState extends State {
 	private boolean menuOpen = false;
 	public static int time;
 	private int timeTicks;
+	
+	public static boolean deadScreen;
+	private int deadScreenTicks = 0;
 
 	public MarioWorldState(GameStateManager gsm, String filepath) {
 		super(gsm);
@@ -43,6 +46,13 @@ public class MarioWorldState extends State {
 	public void update() {
 		camera.update();
 		player.update();
+		
+		if(timeTicks == 50) {
+			timeTicks = 0;
+			time--;
+		}
+		if(!stopTime && !deadScreen)
+			timeTicks++;
 	}
 
 	@Override
@@ -54,9 +64,6 @@ public class MarioWorldState extends State {
 			player.render(g);
 		}
 		else {
-			if(gsm.marioLives == -1) {
-				gsm.setState(GameStateManager.MAINSTATE);
-			}
 			g.setColor(Color.BLACK);
 			g.fillRect(0, 0, GamePanel.width/ GamePanel.SCALE, GamePanel.height/GamePanel.SCALE);
 			g.drawImage(Game.imageLoader.load("images/SuperMarioBros/SmallWalking.png").getSubimage(0, 16, 16, 16), (GamePanel.width / 2 - 75 - 16) / GamePanel.SCALE, (GamePanel.height / 2 - 16) / GamePanel.SCALE, null);
@@ -71,13 +78,12 @@ public class MarioWorldState extends State {
 				gsm.marioLives--;
 			}
 		}
-		if(!stopTime)
-			timeTicks++;
 		
 		g.setFont(new Font("Arial Black", 10 ,10));
 		g.setColor(Color.WHITE);
 		g.drawString("MARIO", 20,15);
 		String points = String.valueOf(player.getPoints());
+		String coins = String.valueOf(player.getCoins());
 		int pointsLength = points.length();
 		for(int i = 6; i >pointsLength; i--) {
 			points = "0"+points;
@@ -89,6 +95,8 @@ public class MarioWorldState extends State {
 		g.drawString("WORLD",GamePanel.width / GamePanel.SCALE / 2 + GamePanel.width / GamePanel.SCALE / 8, 15);
 		g.drawString("1-1", (GamePanel.width / GamePanel.SCALE / 2 + GamePanel.width / GamePanel.SCALE / 8) + (g.getFontMetrics().stringWidth("WORLD") - g.getFontMetrics().stringWidth("1-1")) / 2, 27);
 		
+		g.drawString("COINS", 100 ,15);
+		g.drawString(String.valueOf(coins), 100, 27);
 	}
 
 	@Override
@@ -106,7 +114,7 @@ public class MarioWorldState extends State {
 	public void keyReleased(KeyEvent e, int k) {
 		player.keyReleased(e, k);
 	}
-
+	
 	@Override
 	public void mousePressed(MouseEvent e) {
 		player.mousePressed(e);

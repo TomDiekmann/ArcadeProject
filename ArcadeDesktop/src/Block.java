@@ -9,33 +9,27 @@ import Engine.GamePanel;
 
 public class Block extends GameObject {
 
+	// public static Spritesheet destroy = new
+	// Spritesheet(Game.imageLoader.load("img/destroy.png"), 10, 16, 16);
 
 	private Material material;
 	private Animation animation;
+	private boolean containsItem;
+	private Item itemContent;
 	private AudioFilePlayer soundPlayer = new AudioFilePlayer();
 
 	// BLOCK DESTROYING
 	private long destroyStartTime;
 	private boolean destroying;
-	private boolean isDestructible;
-	private String worldConnection;
-
 	private boolean marker;
 	
-	private Item itemContent;
 
 	public Block(Material material, float x, float y, int width, int height) {
 		super(x, y, width, height);
 		this.material = material;
+//		animation = new Animation(destroy, dt);
 		marker = false;
-		switch(material.getID()) {
-		case 24:
-		case 25:
-		case 26:
-			isDestructible = true;
-		default:
-			isDestructible = false;
-		}
+		containsItem = false;
 	}
 
 	public void update() {
@@ -76,7 +70,6 @@ public class Block extends GameObject {
 			g.drawImage(animation.getImage(), (int) x - MarioWorldState.camera.getCamX(),
 					(int) y - MarioWorldState.camera.getCamY(), null);
 		}
-
 	}
 
 
@@ -85,15 +78,29 @@ public class Block extends GameObject {
 		case 24:
 		case 25:
 		case 26:
-			this.material = Material.BROWN_ITEM_OUT;
-			if(itemContent != null) {
-				MarioWorldState.world.items.add(itemContent);
+			if(containsItem) {
+				if(itemContent != null)
+					MarioWorldState.world.items.add(itemContent);
+				else if(MarioWorldState.player.playerIsSmall())
+						MarioWorldState.world.items.add(new Item(Item.Type.Mushroom, this.x, this.y));
+					else
+						MarioWorldState.world.items.add(new Item(Item.Type.FireFlower, this.x, this.y));
 				new Thread() {
 					public void run() {
 						soundPlayer.play("sounds/SuperMarioBros/ItemBlockItemOut.wav");
 					}
 				}.start();
+			} else {
+				Coin temp = new Coin(this.x, this.y);
+				temp.collect();
+				MarioWorldState.world.coins.add(temp);
+				MarioWorldState.player.coinCollected();
 			}
+			this.material = Material.BROWN_ITEM_OUT;
+			break;
+		case 1:
+			this.material = Material.AIR;
+			break;
 		}
 	}
 
@@ -112,16 +119,14 @@ public class Block extends GameObject {
 	public boolean isMarked() {
 		return marker;
 	}
-	public boolean isDestructible() {
-		return isDestructible;
+	
+	public void enableItemContent() {
+		containsItem = true;
 	}
 	
 	public void setItemContent(Item.Type type) {
 		itemContent = new Item(type, this.x, this.y);
-	}
-  
-	public void setWorldConnection(String worldConnection) {
-		this.worldConnection = worldConnection;
+		containsItem = true;
 	}
 }
 
