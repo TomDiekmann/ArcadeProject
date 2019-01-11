@@ -9,74 +9,59 @@ import Engine.GamePanel;
 
 public class Block extends GameObject {
 
+	// public static Spritesheet destroy = new
+	// Spritesheet(Game.imageLoader.load("img/destroy.png"), 10, 16, 16);
 
 	private Material material;
 	private Animation animation;
 	private AudioFilePlayer soundPlayer = new AudioFilePlayer();
 
 	// BLOCK DESTROYING
-	private long destroyStartTime;
 	private boolean destroying;
-	private boolean isDestructible;
-	private String worldConnection;
 
 	private boolean marker;
 	
 	private Item itemContent;
+	private boolean containsItem;
+	private boolean touched;
+	private int animPosition = 0;
+	private int animTime = 0;
 
 	public Block(Material material, float x, float y, int width, int height) {
 		super(x, y, width, height);
 		this.material = material;
 		marker = false;
-		switch(material.getID()) {
-		case 24:
-		case 25:
-		case 26:
-			isDestructible = true;
-		default:
-			isDestructible = false;
-		}
+		containsItem = false;
+		itemContent = null;
+		touched = false;
 	}
 
 	public void update() {
-
-		// BLOCK DESTROYING
-		if (destroying) {
-			int mouseX = GamePanel.mouse.mouseConvertedX;
-			int mouseY = GamePanel.mouse.mouseConvertedY;
-
-			animation.update();
-
-			// INTERRUPTS IF CONDITIONS ARE NOT FULFILLED
-			if (!GamePanel.mouse.pressed || !getBox().contains(new Point(mouseX, mouseY))
-					|| !MarioWorldState.player.isBlockInRadius(new Point((int) x, (int) y), 2)) {
-				destroying = false;
-				animation.stop();
-			}
-
-			// DESTROYS THE BLOCK AFTER DESTROYING TIME
-			if (System.currentTimeMillis() - destroyStartTime >= 1000) {
-
-//				soundPlayer.play("sounds/dig/grass2.mp3");
-
-				destroying = false;
-				animation.stop();
-			}
-
-		}
-
+		/*if(touched) {
+			this.y++;
+			touched = false;
+			System.out.println(y);
+		}*/
 	}
 
 	public void render(Graphics2D g) {
-		g.drawImage(material.getTexture(), (int) x - MarioWorldState.camera.getCamX(),
+		if (!touched)
+			g.drawImage(material.getTexture(), (int) x - MarioWorldState.camera.getCamX(),
 				(int) y - MarioWorldState.camera.getCamY(), null);
+		else {
+			animTime++;
+			if(animTime % 10 == 0) {				
+				animPosition = (int) (Math.sin(animTime) * 2);				
+				
+			}g.drawImage(material.getTexture(), (int) x - MarioWorldState.camera.getCamX(),
+					(int) y - MarioWorldState.camera.getCamY() + animPosition, null);
+		}
 
 		// DESTROYING ANIMATION
 		if (destroying) {
 			g.drawImage(animation.getImage(), (int) x - MarioWorldState.camera.getCamX(),
 					(int) y - MarioWorldState.camera.getCamY(), null);
 		}
-
 	}
 
 
@@ -85,15 +70,33 @@ public class Block extends GameObject {
 		case 24:
 		case 25:
 		case 26:
-			this.material = Material.BROWN_ITEM_OUT;
-			if(itemContent != null) {
-				MarioWorldState.world.items.add(itemContent);
+			if(containsItem) {
+				if(itemContent == null) {
+					if(MarioWorldState.player.playerIsSmall()) {
+						MarioWorldState.world.items.add(new Item(Item.Type.Mushroom, this.x, this.y));
+					} else {
+						MarioWorldState.world.items.add(new Item(Item.Type.FireFlower, this.x, this.y));
+					}
+				} else {
+					MarioWorldState.world.items.add(itemContent);
+				}
 				new Thread() {
 					public void run() {
 						soundPlayer.play("sounds/SuperMarioBros/ItemBlockItemOut.wav");
 					}
 				}.start();
 			}
+			this.material = Material.BROWN_ITEM_OUT;
+			break;
+		case 1:
+			if(!MarioWorldState.player.playerIsSmall())
+				this.material = Material.AIR;
+			else {
+				touched = true;
+			}
+				
+			break;
+
 		}
 	}
 
@@ -112,16 +115,14 @@ public class Block extends GameObject {
 	public boolean isMarked() {
 		return marker;
 	}
-	public boolean isDestructible() {
-		return isDestructible;
+	
+	public void enableItemContent() {
+		containsItem = true;
 	}
 	
 	public void setItemContent(Item.Type type) {
+		containsItem = true;
 		itemContent = new Item(type, this.x, this.y);
-	}
-  
-	public void setWorldConnection(String worldConnection) {
-		this.worldConnection = worldConnection;
 	}
 }
 
