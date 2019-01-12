@@ -9,15 +9,11 @@ import Engine.GamePanel;
 
 public class Block extends GameObject {
 
-	// public static Spritesheet destroy = new
-	// Spritesheet(Game.imageLoader.load("img/destroy.png"), 10, 16, 16);
 
 	private Material material;
-	private Animation animation;
 	private AudioFilePlayer soundPlayer = new AudioFilePlayer();
 
 	// BLOCK DESTROYING
-	private boolean destroying;
 
 	private boolean marker;
 	
@@ -57,11 +53,6 @@ public class Block extends GameObject {
 					(int) y - MarioWorldState.camera.getCamY() + animPosition, null);
 		}
 
-		// DESTROYING ANIMATION
-		if (destroying) {
-			g.drawImage(animation.getImage(), (int) x - MarioWorldState.camera.getCamX(),
-					(int) y - MarioWorldState.camera.getCamY(), null);
-		}
 	}
 
 
