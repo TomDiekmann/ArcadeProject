@@ -28,7 +28,9 @@ public class MarioWorldState extends State {
 	private boolean menuOpen = false;
 	public static int time;
 	private int timeTicks;
-
+	private int deadScreenTicks = 0;
+	public static boolean deadScreen;
+	
 	public MarioWorldState(GameStateManager gsm, String filepath) {
 		super(gsm);
 

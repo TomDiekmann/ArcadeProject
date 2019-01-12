@@ -41,7 +41,7 @@ public abstract class Entity extends GameObject {
 	protected boolean saveCollision;
 
 	// ANIMATION
-	private int idle;
+	protected int idle;
 	private int IDLE_LEFT;
 	private int IDLE_RIGHT;
 	private int LEFT;
@@ -172,7 +172,7 @@ public abstract class Entity extends GameObject {
 		}
 	}
 
-	private void calculateAnimations() {
+	protected void calculateAnimations() {
 		animation.update();
 		if (left && animation.getState() != LEFT) {
 			animation.setImages(LEFT, frames[LEFT]);
@@ -187,7 +187,7 @@ public abstract class Entity extends GameObject {
 		}
 	}
 
-	private void move() {
+	protected void move() {
 		if (!stopMoving) {
 			x += dx;
 			y += dy;
