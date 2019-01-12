@@ -76,6 +76,11 @@ public class MarioWorldState extends State {
 		if(!stopTime)
 			timeTicks++;
 		
+		if(timeTicks == 60) {
+			time--;
+			timeTicks = 0;
+		}
+		
 		g.setFont(new Font("Arial Black", 10 ,10));
 		g.setColor(Color.WHITE);
 		g.drawString("MARIO", 20,15);
